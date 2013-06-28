@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class ForecastItem implements Serializable {
   
   public ForecastItem()
@@ -22,22 +23,32 @@ public class ForecastItem implements Serializable {
   private int forecastItemId = 0;
   private String label = "";
 
-  private static final int ID_DTAP = 2;
-  private static final int ID_INFLUENZA = 3;
-  private static final int ID_HEPA = 4;
-  private static final int ID_HEPB = 5;
-  private static final int ID_HIB = 6;
-  private static final int ID_HPV = 7;
-  private static final int ID_MENING = 8;
-  private static final int ID_MMR = 9;
-  private static final int ID_PNEUMO = 10;
-  private static final int ID_POLIO = 11;
-  private static final int ID_ROTA = 12;
-  private static final int ID_VAR = 13;
-  private static final int ID_ZOSTER = 14;
-  private static final int ID_TDAP = 15;
+  public static final int ID_DTAP = 2;
+  public static final int ID_INFLUENZA = 3;
+  public static final int ID_HEPA = 4;
+  public static final int ID_HEPB = 5;
+  public static final int ID_HIB = 6;
+  public static final int ID_HPV = 7;
+  public static final int ID_MENING = 8;
+  public static final int ID_MMR = 9;
+  public static final int ID_PNEUMO = 10;
+  public static final int ID_POLIO = 11;
+  public static final int ID_ROTA = 12;
+  public static final int ID_VAR = 13;
+  public static final int ID_ZOSTER = 14;
+  public static final int ID_TDAP_TD = 15;
+  public static final int ID_PPSV = 16;
+  public static final int ID_PVC = 17;
+  public static final int ID_TD_ONLY = 18;
+  public static final int ID_DTAP_TDAP_TD = 19;
+  public static final int ID_HEPB_2_ONLY = 20;
+  public static final int ID_HEPB_3_ONLY = 21;
+  public static final int ID_MEASLES_ONLY = 22;
+  public static final int ID_MUMPS_ONLY = 23;
+  public static final int ID_RUBELLA_ONLY = 24;
+  public static final int ID_TDAP_ONLY = 25;
   
-  private static List<ForecastItem> forecastItemList = null; 
+private static List<ForecastItem> forecastItemList = null; 
   
   public static final List<ForecastItem> getForecastItemList()
   {
@@ -57,21 +68,31 @@ public class ForecastItem implements Serializable {
       forecastItemList.add(new ForecastItem(ID_ROTA, "Rotavirus"));
       forecastItemList.add(new ForecastItem(ID_VAR, "Varicella"));
       forecastItemList.add(new ForecastItem(ID_ZOSTER, "HerpesZoster"));
-      forecastItemList.add(new ForecastItem(ID_TDAP, "Td/Tdap"));
+      forecastItemList.add(new ForecastItem(ID_TDAP_TD, "Td or Tdap"));
+      forecastItemList.add(new ForecastItem(ID_PPSV, "PPSV"));
+      forecastItemList.add(new ForecastItem(ID_PVC, "PCV"));
+      forecastItemList.add(new ForecastItem(ID_TD_ONLY, "Td Only"));
+      forecastItemList.add(new ForecastItem(ID_DTAP_TDAP_TD, "DTaP, Tdap or Td"));
+      forecastItemList.add(new ForecastItem(ID_HEPB_2_ONLY, "Hep B 2 Dose Only"));
+      forecastItemList.add(new ForecastItem(ID_HEPB_3_ONLY, "Hep B 3 Dose Only"));
+      forecastItemList.add(new ForecastItem(ID_MEASLES_ONLY, "Measles Only"));
+      forecastItemList.add(new ForecastItem(ID_MUMPS_ONLY, "Mumps Only"));
+      forecastItemList.add(new ForecastItem(ID_RUBELLA_ONLY, "Rubella Only"));
+      forecastItemList.add(new ForecastItem(ID_TDAP_ONLY, "Tdap Only"));
     }
     return forecastItemList;
   }
   
+
   private int[] typicalGivenYear;
 
-  private int[] getTypicalGivenYear()
-  {
-    if (typicalGivenYear == null)
-    {
+  private int[] getTypicalGivenYear() {
+    if (typicalGivenYear == null) {
       typicalGivenYear = initTypicalGivenYear();
     }
     return typicalGivenYear;
   }
+
   private int[] initTypicalGivenYear() {
     switch (forecastItemId) {
     case ID_DTAP:
@@ -100,8 +121,26 @@ public class ForecastItem implements Serializable {
       return new int[] { 0, 120 };
     case ID_ZOSTER:
       return new int[] { 60, 120 };
-    case ID_TDAP:
+    case ID_TDAP_TD:
       return new int[] { 7, 120 };
+    case ID_PVC:
+      return new int[] { 65, 120 };
+    case ID_TD_ONLY:
+      return new int[] { 0, 0 };
+    case ID_DTAP_TDAP_TD:
+      return new int[] { 0, 0 };
+    case ID_HEPB_2_ONLY:
+      return new int[] { 0, 0 };
+    case ID_HEPB_3_ONLY:
+      return new int[] { 0, 0 };
+    case ID_MEASLES_ONLY:
+      return new int[] { 0, 0 };
+    case ID_MUMPS_ONLY:
+      return new int[] { 0, 0 };
+    case ID_RUBELLA_ONLY:
+      return new int[] { 0, 0 };
+    case ID_TDAP_ONLY:
+      return new int[] { 0, 0 };
     }
     return new int[] { 0, 120 };
   }
@@ -148,7 +187,5 @@ public class ForecastItem implements Serializable {
   public String toString() {
     return label;
   }
-  
-  
 
 }
