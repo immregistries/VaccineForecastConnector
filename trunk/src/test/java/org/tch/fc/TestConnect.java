@@ -19,8 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.tch.fc.ConnectFactory;
-import org.tch.fc.ConnectorInterface;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.ForecastItem;
 import org.tch.fc.model.Service;

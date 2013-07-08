@@ -7,7 +7,7 @@ import java.util.List;
 public enum Service implements Serializable {
   WEB1("web1", "Web1 Epic Interface"), TCH("tch", "TCH Forecaster Web Service"), SWP("swp",
       "Software Partners Web Service"), STC("stc", "Scientific Technologies Corporation Service"), ICE("ice",
-      "Immunization Calculation Engine");
+      "Immunization Calculation Engine"), BASE("base", "Generic representation of any service");
 
   private static final long serialVersionUID = 1L;
 

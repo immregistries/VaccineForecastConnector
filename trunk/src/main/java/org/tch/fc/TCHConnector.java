@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +20,9 @@ import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.ForecastItem;
 import org.tch.fc.model.Software;
+import org.tch.fc.model.SoftwareSetting;
 import org.tch.fc.model.TestCase;
+import org.tch.fc.model.TestCaseSetting;
 import org.tch.fc.model.TestEvent;
 
 public class TCHConnector implements ConnectorInterface {
@@ -56,35 +60,18 @@ public class TCHConnector implements ConnectorInterface {
   }
 
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
-    
+
     StringWriter sw = new StringWriter();
     PrintWriter logOut = new PrintWriter(sw);
-    StringBuilder sb = new StringBuilder();
-
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
-    sb.append("?evalDate=" + sdf.format(testCase.getEvalDate()));
-    sb.append("&evalSchedule=");
-    sb.append("&resultFormat=text");
-    sb.append("&patientDob=" + sdf.format(testCase.getPatientDob()) + "");
-    sb.append("&patientSex=" + testCase.getPatientSex() + "");
-    int count = 0;
-    for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
-        count++;
-        sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
-        sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());
-        sb.append("&vaccineMvx" + count + "=" + testEvent.getEvent().getVaccineMvx());
-      }
-    }
+    String queryString = createQueryString(testCase, software);
     logOut.println("TCH Forecaster");
     logOut.println();
     logOut.println("Current time " + new Date());
     logOut.println("Connecting to " + software.getServiceUrl());
-    logOut.println("Query " + software.getServiceUrl() + sb.toString());
+    logOut.println("Query " + software.getServiceUrl() + queryString);
     logOut.println();
     URLConnection urlConn;
-    URL url = new URL(software.getServiceUrl() + sb.toString());
+    URL url = new URL(software.getServiceUrl() + queryString);
     urlConn = url.openConnection();
     urlConn.setDoInput(true);
     urlConn.setDoOutput(true);
@@ -139,11 +126,53 @@ public class TCHConnector implements ConnectorInterface {
     }
     input.close();
     logOut.close();
-    for (ForecastActual forecastActual : list)
-    {
+    for (ForecastActual forecastActual : list) {
       forecastActual.setLogText(sw.toString());
     }
     return list;
+  }
+
+  public static String createQueryString(TestCase testCase, Software software) {
+    StringBuilder sb = new StringBuilder();
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+    sb.append("?evalDate=" + sdf.format(testCase.getEvalDate()));
+    sb.append("&evalSchedule=");
+    sb.append("&resultFormat=text");
+    sb.append("&patientDob=" + sdf.format(testCase.getPatientDob()) + "");
+    sb.append("&patientSex=" + testCase.getPatientSex() + "");
+    int count = 0;
+    for (TestEvent testEvent : testCase.getTestEventList()) {
+      if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+        count++;
+        sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
+        sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());
+        sb.append("&vaccineMvx" + count + "=" + testEvent.getEvent().getVaccineMvx());
+      }
+    }
+
+    Map<String, String> settingsMap = new HashMap<String, String>();
+    if (software.getSoftwareSettingList() != null) {
+      for (SoftwareSetting softwareSetting : software.getSoftwareSettingList()) {
+        settingsMap.put(softwareSetting.getServiceOption().getOptionName(), softwareSetting.getOptionValue());
+      }
+    }
+    if (testCase.getTestCaseSettingList() != null) {
+      for (TestCaseSetting testCaseSetting : testCase.getTestCaseSettingList()) {
+        settingsMap.put(testCaseSetting.getServiceOption().getOptionName(), testCaseSetting.getOptionValue());
+      }
+    }
+
+    try {
+      for (String key : settingsMap.keySet()) {
+        sb.append("&" + URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(settingsMap.get(key), "UTF-8"));
+      }
+    } catch (UnsupportedEncodingException uee) {
+      uee.printStackTrace();
+    }
+
+    return sb.toString();
   }
 
   private Date parseDate(String s) {
