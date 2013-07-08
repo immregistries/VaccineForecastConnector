@@ -22,7 +22,9 @@ public class TestCase implements Serializable {
   private String categoryName = null;
   private String testCaseNumber = "";
 
+  private List<TestEvent> testEventList = null;
 
+  private List<TestCaseSetting> testCaseSettingList = null;
   
   public TestCase()
   {
@@ -59,7 +61,6 @@ public class TestCase implements Serializable {
     this.categoryName = categoryName;
   }
 
-  private List<TestEvent> testEventList = null;
   public List<TestEvent> getTestEventList() {
     return testEventList;
   }
@@ -130,6 +131,14 @@ public class TestCase implements Serializable {
 
   public void setPatientDob(Date patientDob) {
     this.patientDob = patientDob;
+  }
+
+  public List<TestCaseSetting> getTestCaseSettingList() {
+    return testCaseSettingList;
+  }
+
+  public void setTestCaseSettingList(List<TestCaseSetting> testCaseSetting) {
+    this.testCaseSettingList = testCaseSetting;
   }
 
   @Override

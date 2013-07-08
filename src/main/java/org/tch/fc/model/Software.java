@@ -1,6 +1,7 @@
 package org.tch.fc.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Software implements Serializable {
 
@@ -16,6 +17,16 @@ public class Software implements Serializable {
   private Service service = null;
   private String scheduleName = "";
   private String visibleStatus = "";
+  
+  private List<SoftwareSetting> softwareSettingList = null;
+
+  public List<SoftwareSetting> getSoftwareSettingList() {
+    return softwareSettingList;
+  }
+
+  public void setSoftwareSettingList(List<SoftwareSetting> softwareSettingList) {
+    this.softwareSettingList = softwareSettingList;
+  }
 
   public String getVisibleStatus() {
     return visibleStatus;
