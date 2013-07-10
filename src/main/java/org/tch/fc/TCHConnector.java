@@ -27,33 +27,49 @@ import org.tch.fc.model.TestEvent;
 
 public class TCHConnector implements ConnectorInterface {
 
-  private Map<String, ForecastItem> familyMapping = new HashMap<String, ForecastItem>();
+  private Map<String, List<ForecastItem>> familyMapping = new HashMap<String, List<ForecastItem>>();
 
   private Software software = null;
 
   public TCHConnector(Software software, List<ForecastItem> forecastItemList) {
     this.software = software;
-    addForcastItem(forecastItemList, "Hib", 6);
-    addForcastItem(forecastItemList, "HepB", 5);
-    addForcastItem(forecastItemList, "DTaP", 2);
-    addForcastItem(forecastItemList, "Td", 15);
-    addForcastItem(forecastItemList, "Tdap", 15);
-    addForcastItem(forecastItemList, "IPV", 11);
-    addForcastItem(forecastItemList, "HepA", 4);
-    addForcastItem(forecastItemList, "MMR", 9);
-    addForcastItem(forecastItemList, "Var", 13);
-    addForcastItem(forecastItemList, "Influenza", 3);
-    addForcastItem(forecastItemList, "MCV4", 8);
-    addForcastItem(forecastItemList, "HPV", 7);
-    addForcastItem(forecastItemList, "Rota", 12);
-    addForcastItem(forecastItemList, "PCV13", 10);
-    addForcastItem(forecastItemList, "Zoster", 14);
+    addForcastItem(forecastItemList, "Hib", ForecastItem.ID_HIB);
+    addForcastItem(forecastItemList, "HepB", ForecastItem.ID_HEPB);
+    addForcastItem(forecastItemList, "DTaP", ForecastItem.ID_DTAP);
+    addForcastItem(forecastItemList, "DTaP", ForecastItem.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "Td", ForecastItem.ID_TD_ONLY);
+    addForcastItem(forecastItemList, "Td", ForecastItem.ID_TDAP_TD);
+    addForcastItem(forecastItemList, "Td", ForecastItem.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "Tdap", ForecastItem.ID_TDAP_ONLY);
+    addForcastItem(forecastItemList, "Tdap", ForecastItem.ID_TDAP_TD);
+    addForcastItem(forecastItemList, "Tdap", ForecastItem.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "IPV", ForecastItem.ID_POLIO);
+    addForcastItem(forecastItemList, "HepA", ForecastItem.ID_HEPA);
+    addForcastItem(forecastItemList, "MMR", ForecastItem.ID_MMR);
+    addForcastItem(forecastItemList, "Measles", ForecastItem.ID_MEASLES_ONLY);
+    addForcastItem(forecastItemList, "Mumps", ForecastItem.ID_MUMPS_ONLY);
+    addForcastItem(forecastItemList, "Rubella", ForecastItem.ID_RUBELLA_ONLY);
+    addForcastItem(forecastItemList, "Var", ForecastItem.ID_VAR);
+    addForcastItem(forecastItemList, "Influenza", ForecastItem.ID_INFLUENZA);
+    addForcastItem(forecastItemList, "MCV4", ForecastItem.ID_MENING);
+    addForcastItem(forecastItemList, "HPV", ForecastItem.ID_HPV);
+    addForcastItem(forecastItemList, "Rota", ForecastItem.ID_ROTA);
+    addForcastItem(forecastItemList, "PCV13", ForecastItem.ID_PNEUMO);
+    addForcastItem(forecastItemList, "PCV13", ForecastItem.ID_PCV);
+    addForcastItem(forecastItemList, "Zoster", ForecastItem.ID_ZOSTER);
+    addForcastItem(forecastItemList, "PPSV", ForecastItem.ID_PPSV);
+    addForcastItem(forecastItemList, "PPSV", ForecastItem.ID_PNEUMO);
   }
 
   private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int forecastItemId) {
     for (ForecastItem forecastItem : forecastItemList) {
       if (forecastItem.getForecastItemId() == forecastItemId) {
-        familyMapping.put(familyName, forecastItem);
+        List<ForecastItem> forecastItemListFromMap = familyMapping.get(familyName);
+        if (forecastItemListFromMap == null) {
+          forecastItemListFromMap = new ArrayList<ForecastItem>();
+          familyMapping.put(familyName, forecastItemListFromMap);
+        }
+        forecastItemListFromMap.add(forecastItem);
         return;
       }
     }
@@ -96,30 +112,34 @@ public class TCHConnector implements ConnectorInterface {
         // Forecasting Hib complete
         String[] parts = line.split("\\s");
         if (parts.length > 2) {
-          ForecastItem forecastItem = familyMapping.get(parts[1]);
-          if (forecastItem != null) {
-            ForecastActual forecastActual = new ForecastActual();
-            forecastActual.setForecastItem(forecastItem);
-            if ("complete".equalsIgnoreCase(parts[2])) {
-              forecastActual.setDoseNumber("COMP");
-            } else {
-              if (parts.length > 3 && "dose".equals(parts[2])) {
-                forecastActual.setDoseNumber(parts[3]);
-              }
-              if (parts.length > 5 && "due".equals(parts[4])) {
-                forecastActual.setDueDate(parseDate(parts[5]));
-              }
-              if (parts.length > 7 && "valid".equals(parts[6])) {
-                forecastActual.setValidDate(parseDate(parts[7]));
-              }
-              if (parts.length > 9 && "overdue".equals(parts[8])) {
-                forecastActual.setOverdueDate(parseDate(parts[9]));
-              }
-              if (parts.length > 11 && "finished".equals(parts[10])) {
-                forecastActual.setFinishedDate(parseDate(parts[11]));
+          List<ForecastItem> forecastItemListFromMap = familyMapping.get(parts[1]);
+          if (forecastItemListFromMap != null) {
+            for (ForecastItem forecastItem : forecastItemListFromMap) {
+              if (forecastItem != null) {
+                ForecastActual forecastActual = new ForecastActual();
+                forecastActual.setForecastItem(forecastItem);
+                if ("complete".equalsIgnoreCase(parts[2])) {
+                  forecastActual.setDoseNumber("COMP");
+                } else {
+                  if (parts.length > 3 && "dose".equals(parts[2])) {
+                    forecastActual.setDoseNumber(parts[3]);
+                  }
+                  if (parts.length > 5 && "due".equals(parts[4])) {
+                    forecastActual.setDueDate(parseDate(parts[5]));
+                  }
+                  if (parts.length > 7 && "valid".equals(parts[6])) {
+                    forecastActual.setValidDate(parseDate(parts[7]));
+                  }
+                  if (parts.length > 9 && "overdue".equals(parts[8])) {
+                    forecastActual.setOverdueDate(parseDate(parts[9]));
+                  }
+                  if (parts.length > 11 && "finished".equals(parts[10])) {
+                    forecastActual.setFinishedDate(parseDate(parts[11]));
+                  }
+                }
+                list.add(forecastActual);
               }
             }
-            list.add(forecastActual);
           }
         }
       }
