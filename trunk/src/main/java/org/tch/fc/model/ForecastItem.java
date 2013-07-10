@@ -38,7 +38,7 @@ public class ForecastItem implements Serializable {
   public static final int ID_ZOSTER = 14;
   public static final int ID_TDAP_TD = 15;
   public static final int ID_PPSV = 16;
-  public static final int ID_PVC = 17;
+  public static final int ID_PCV = 17;
   public static final int ID_TD_ONLY = 18;
   public static final int ID_DTAP_TDAP_TD = 19;
   public static final int ID_HEPB_2_ONLY = 20;
@@ -70,7 +70,7 @@ private static List<ForecastItem> forecastItemList = null;
       forecastItemList.add(new ForecastItem(ID_ZOSTER, "HerpesZoster"));
       forecastItemList.add(new ForecastItem(ID_TDAP_TD, "Td or Tdap"));
       forecastItemList.add(new ForecastItem(ID_PPSV, "PPSV"));
-      forecastItemList.add(new ForecastItem(ID_PVC, "PCV"));
+      forecastItemList.add(new ForecastItem(ID_PCV, "PCV"));
       forecastItemList.add(new ForecastItem(ID_TD_ONLY, "Td Only"));
       forecastItemList.add(new ForecastItem(ID_DTAP_TDAP_TD, "DTaP, Tdap or Td"));
       forecastItemList.add(new ForecastItem(ID_HEPB_2_ONLY, "Hep B 2 Dose Only"));
@@ -123,7 +123,7 @@ private static List<ForecastItem> forecastItemList = null;
       return new int[] { 60, 120 };
     case ID_TDAP_TD:
       return new int[] { 7, 120 };
-    case ID_PVC:
+    case ID_PCV:
       return new int[] { 65, 120 };
     case ID_TD_ONLY:
       return new int[] { 0, 0 };
