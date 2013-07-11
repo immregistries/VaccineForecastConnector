@@ -79,7 +79,7 @@ public class TCHConnector implements ConnectorInterface {
 
     StringWriter sw = new StringWriter();
     PrintWriter logOut = new PrintWriter(sw);
-    String queryString = createQueryString(testCase, software);
+    String queryString = createQueryString(testCase, software, "text");
     logOut.println("TCH Forecaster");
     logOut.println();
     logOut.println("Current time " + new Date());
@@ -152,14 +152,14 @@ public class TCHConnector implements ConnectorInterface {
     return list;
   }
 
-  public static String createQueryString(TestCase testCase, Software software) {
+  public static String createQueryString(TestCase testCase, Software software, String format) {
     StringBuilder sb = new StringBuilder();
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
     sb.append("?evalDate=" + sdf.format(testCase.getEvalDate()));
     sb.append("&evalSchedule=");
-    sb.append("&resultFormat=text");
+    sb.append("&resultFormat=" + format);
     sb.append("&patientDob=" + sdf.format(testCase.getPatientDob()) + "");
     sb.append("&patientSex=" + testCase.getPatientSex() + "");
     int count = 0;
