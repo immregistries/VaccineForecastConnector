@@ -58,7 +58,6 @@ public class TCHConnector implements ConnectorInterface {
     addForcastItem(forecastItemList, "PCV13", ForecastItem.ID_PCV);
     addForcastItem(forecastItemList, "Zoster", ForecastItem.ID_ZOSTER);
     addForcastItem(forecastItemList, "PPSV", ForecastItem.ID_PPSV);
-    addForcastItem(forecastItemList, "PPSV", ForecastItem.ID_PNEUMO);
   }
 
   private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int forecastItemId) {

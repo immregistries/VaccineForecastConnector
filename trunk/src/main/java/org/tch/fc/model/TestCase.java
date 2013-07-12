@@ -1,6 +1,7 @@
 package org.tch.fc.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,15 @@ public class TestCase implements Serializable {
     this.setPatientDob(parentTestCase.getPatientDob());
     this.setCategoryName(parentTestCase.getCategoryName());
     this.setTestCaseNumber(parentTestCase.getTestCaseNumber());
+    if (parentTestCase.getTestEventList() != null)
+    {
+      List<TestEvent> testEventList = new ArrayList<TestEvent>(parentTestCase.getTestEventList().size());
+      for (TestEvent testEvent : parentTestCase.getTestEventList())
+      {
+        testEventList.add(new TestEvent(testEvent, this));
+      }
+      this.setTestEventList(testEventList);
+    }
   }
 
 
