@@ -4,20 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ForecastItem implements Serializable {
-  
-  public ForecastItem()
-  {
+
+  public ForecastItem() {
     // default;
   }
-  
-  public ForecastItem(int forecastItemId, String label)
-  {
+
+  public ForecastItem(int forecastItemId, String label) {
     this.forecastItemId = forecastItemId;
     this.label = label;
   }
-  
+
   private static final long serialVersionUID = 1L;
 
   private int forecastItemId = 0;
@@ -47,13 +44,15 @@ public class ForecastItem implements Serializable {
   public static final int ID_MUMPS_ONLY = 23;
   public static final int ID_RUBELLA_ONLY = 24;
   public static final int ID_TDAP_ONLY = 25;
-  
-private static List<ForecastItem> forecastItemList = null; 
-  
-  public static final List<ForecastItem> getForecastItemList()
-  {
-    if (forecastItemList == null)
-    {
+  public static final int ID_ANTHRAX = 26;
+  public static final int ID_SMALLPOX_SHOT_OR_READING = 27;
+  public static final int ID_NOVEL_H1N1 = 28;
+  public static final int ID_TYPHOID = 29;
+
+  private static List<ForecastItem> forecastItemList = null;
+
+  public static final List<ForecastItem> getForecastItemList() {
+    if (forecastItemList == null) {
       forecastItemList = new ArrayList<ForecastItem>();
       forecastItemList.add(new ForecastItem(ID_DTAP, "DTaP"));
       forecastItemList.add(new ForecastItem(ID_INFLUENZA, "Influenza"));
@@ -82,7 +81,6 @@ private static List<ForecastItem> forecastItemList = null;
     }
     return forecastItemList;
   }
-  
 
   private int[] typicalGivenYear;
 

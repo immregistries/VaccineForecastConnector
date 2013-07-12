@@ -16,6 +16,13 @@ public class TestEvent implements Serializable {
     this.event = Event.getEvent(eventId);
     this.eventDate = eventDate;
   }
+  
+  public TestEvent(TestEvent testEventParent, TestCase testCase)
+  {
+    setEvent(testEventParent.getEvent());
+    setEventDate(testEventParent.getEventDate());
+    setTestCase(testCase);
+  }
 
   private static final long serialVersionUID = 1L;
 
