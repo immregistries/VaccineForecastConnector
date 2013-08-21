@@ -17,7 +17,7 @@ import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 
 public class TestICEConnector extends junit.framework.TestCase {
-  
+
   @Test
   public void testForecast() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -27,28 +27,31 @@ public class TestICEConnector extends junit.framework.TestCase {
     software.setServiceUrl("http://localhost:8086/o/evaluate");
     ICEConnector iceConnector = new ICEConnector(software, ForecastItem.getForecastItemList());
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase);
-    assertEquals(8, forecastActualList.size());
-    System.out.println(forecastActualList.get(0).getLogText());
+    assertEquals(24, forecastActualList.size());
+    for (ForecastActual forecastActual : forecastActualList) {
+      System.out.println("--> Forecasting for " + forecastActual.getForecastItem().getLabel());
+      System.out.println(forecastActual.getLogText());
+    }
   }
-  
-  public void testReadVMR() throws Exception
-  {
+
+  public void testReadVMR() throws Exception {
     StringBuilder sb = new StringBuilder();
-    BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("exampleReturn.xml")));
+    BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(
+        "exampleReturn.xml")));
     String line;
-    while ((line = in.readLine()) != null)
-    {
+    while ((line = in.readLine()) != null) {
       sb.append(line);
       sb.append("\n");
     }
     String exampleReturn = sb.toString();
-    
+
     Software software = new Software();
     ICEConnector iceConnector = new ICEConnector(software, ForecastItem.getForecastItemList());
     List<ForecastActual> forecastActualList = iceConnector.readVMR(exampleReturn);
     assertEquals(8, forecastActualList.size());
   }
-    private static final String EXAMPLE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+
+  private static final String EXAMPLE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
       + "<ns4:cdsInput xmlns:ns2=\"org.opencds\" xmlns:ns3=\"org.opencds.vmr.v1_0.schema.vmr\" xmlns:ns4=\"org.opencds.vmr.v1_0.schema.cdsinput\" xmlns:ns5=\"org.opencds.vmr.v1_0.schema.cdsoutput\">\n"
       + "    <templateId root=\"2.16.840.1.113883.3.795.11.1.1\"/>\n"
       + "    <cdsContext>\n"
@@ -128,7 +131,7 @@ public class TestICEConnector extends junit.framework.TestCase {
 
   @Test
   public void testMakeVMR() throws ParseException {
-    
+
     assertEquals("&gt;", ICEConnector.fix(">"));
     assertEquals("&lt;", ICEConnector.fix("<"));
     assertEquals("&quot;", ICEConnector.fix("\""));
@@ -138,7 +141,7 @@ public class TestICEConnector extends junit.framework.TestCase {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
-    TestCase testCase = createTestCase( sdf);
+    TestCase testCase = createTestCase(sdf);
 
     Software software = new Software();
     List<ForecastItem> forecastItemList = new ArrayList<ForecastItem>();
@@ -161,7 +164,7 @@ public class TestICEConnector extends junit.framework.TestCase {
     }
     {
       TestEvent testEvent = new TestEvent();
-      testEvent.setEvent(Event.getEvent( 45));
+      testEvent.setEvent(Event.getEvent(45));
       testEvent.setEventDate(sdf.parse("04/01/1990"));
       testEvent.setTestCase(testCase);
       testEventList.add(testEvent);
