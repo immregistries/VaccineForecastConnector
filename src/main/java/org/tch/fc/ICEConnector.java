@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,10 +35,13 @@ import org.w3c.dom.NodeList;
 
 public class ICEConnector implements ConnectorInterface {
 
+  private static final String LOG_PARSE_ID_END = "\"/>";
+  private static final String LOG_PARSE_ID_START = "<id root=\"";
+
   private static final String BASE64_ENCODED_PAYLOAD_TAG_START = "<base64EncodedPayload>";
   private static final String BASE64_ENCODED_PAYLOAD_TAG_END = "</base64EncodedPayload>";
 
-  private Map<String, ForecastItem> familyMapping = new HashMap<String, ForecastItem>();
+  private Map<String, ForecastItem[]> familyMapping = new HashMap<String, ForecastItem[]>();
 
   private Software software = null;
 
@@ -45,42 +49,55 @@ public class ICEConnector implements ConnectorInterface {
     this.software = software;
 
     // 100 Hep B Vaccine Group
-    addForcastItem(forecastItemList, "100", 5);
+    addForcastItem(forecastItemList, "100", new int[] { ForecastItem.ID_HEPB });
     // 810 Hep A Vaccine Group
-    addForcastItem(forecastItemList, "810", 4);
+    addForcastItem(forecastItemList, "810", new int[] { ForecastItem.ID_HEPA });
     // 200 DTP Vaccine Group
-    addForcastItem(forecastItemList, "200", 2);
+    addForcastItem(forecastItemList, "200", new int[] { ForecastItem.ID_DTAP });
     // 300 Hib Vaccine Group
-    addForcastItem(forecastItemList, "300", 6);
+    addForcastItem(forecastItemList, "300", new int[] { ForecastItem.ID_HIB });
     // 400 Polio Vaccine Group
-    addForcastItem(forecastItemList, "400", 11);
+    addForcastItem(forecastItemList, "400", new int[] { ForecastItem.ID_POLIO });
     // 500 MMR Vaccine Group
-    addForcastItem(forecastItemList, "500", 9);
+    addForcastItem(forecastItemList, "500", new int[] { ForecastItem.ID_MMR });
     // 600 Varicella Vaccine Group
-    addForcastItem(forecastItemList, "600", 13);
+    addForcastItem(forecastItemList, "600", new int[] { ForecastItem.ID_VAR });
     // 700 Pneumococcal Conjugate Vaccine Group
-    addForcastItem(forecastItemList, "700", 10);
+    addForcastItem(forecastItemList, "700", new int[] { ForecastItem.ID_PCV, ForecastItem.ID_PNEUMO });
     // 720 Pneumococcal Polysaccharid Vaccine Group
+    addForcastItem(forecastItemList, "720", new int[] { ForecastItem.ID_PPSV });
     // 800 Influenza
-    addForcastItem(forecastItemList, "800", 3);
+    addForcastItem(forecastItemList, "800", new int[] { ForecastItem.ID_INFLUENZA });
     // 820 Rotavirus Vaccine Group
-    addForcastItem(forecastItemList, "820", 12);
+    addForcastItem(forecastItemList, "820", new int[] { ForecastItem.ID_ROTA });
     // 830 Meningococcal Vaccine Group
-    addForcastItem(forecastItemList, "830", 8);
+    addForcastItem(forecastItemList, "830", new int[] { ForecastItem.ID_MENING });
     // 840 Human Papillomavirus Vaccine Group
-    addForcastItem(forecastItemList, "840", 7);
+    addForcastItem(forecastItemList, "840", new int[] { ForecastItem.ID_HPV });
     // 890 H1N1 Influenza
+    addForcastItem(forecastItemList, "890", new int[] { ForecastItem.ID_NOVEL_H1N1 });
 
   }
 
-  private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int forecastItemId) {
-    for (ForecastItem forecastItem : forecastItemList) {
-      if (forecastItem.getForecastItemId() == forecastItemId) {
-        familyMapping.put(familyName, forecastItem);
-        return;
-      }
+  private static int[] supportedItems = new int[] { ForecastItem.ID_HEPB, ForecastItem.ID_HEPA, ForecastItem.ID_MMR,
+      ForecastItem.ID_VAR, ForecastItem.ID_ROTA, ForecastItem.ID_HIB, ForecastItem.ID_HPV, ForecastItem.ID_PCV,
+      ForecastItem.ID_PPSV, ForecastItem.ID_PNEUMO };
+  private static int[] notSupportedItems = new int[] { ForecastItem.ID_DTAP, ForecastItem.ID_INFLUENZA,
+      ForecastItem.ID_MENING, ForecastItem.ID_POLIO, ForecastItem.ID_ZOSTER, ForecastItem.ID_TDAP_TD,
+      ForecastItem.ID_TD_ONLY, ForecastItem.ID_DTAP_TDAP_TD, ForecastItem.ID_HEPB_2_ONLY, ForecastItem.ID_HEPB_3_ONLY,
+      ForecastItem.ID_MEASLES_ONLY, ForecastItem.ID_MUMPS_ONLY, ForecastItem.ID_RUBELLA_ONLY,
+      ForecastItem.ID_TDAP_ONLY, ForecastItem.ID_ANTHRAX, ForecastItem.ID_SMALLPOX_SHOT_OR_READING,
+      ForecastItem.ID_NOVEL_H1N1, ForecastItem.ID_TYPHOID };
+
+  private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int[] forecastItemIds) {
+    ForecastItem[] forecastItems = new ForecastItem[forecastItemIds.length];
+    for (int i = 0; i < forecastItemIds.length; i++) {
+      forecastItems[i] = ForecastItem.getForecastItem(forecastItemIds[i]);
     }
+    familyMapping.put(familyName, forecastItems);
+    return;
   }
+
   private StringWriter sw;
   private PrintWriter logOut;
   private String originalLog;
@@ -89,7 +106,7 @@ public class ICEConnector implements ConnectorInterface {
 
     sw = new StringWriter();
     logOut = new PrintWriter(sw);
-    
+
     logOut.println("ICE");
     logOut.println();
     logOut.println("Current time " + new Date());
@@ -134,11 +151,87 @@ public class ICEConnector implements ConnectorInterface {
       line = line.substring(posStart + BASE64_ENCODED_PAYLOAD_TAG_START.length(), posEnd);
       line = new String(Base64.decode(line));
       list = readVMR(line);
+      for (int forecastItemId : notSupportedItems) {
+        boolean found = false;
+        for (ForecastActual forecastActual : list) {
+          if (forecastActual.getForecastItem().getForecastItemId() == forecastItemId) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          ForecastItem forecastItem = ForecastItem.getForecastItem(forecastItemId);
+          if (forecastItem != null) {
+            ForecastActual forecastActual = new ForecastActual();
+            forecastActual.setDoseNumber("NS");
+            forecastActual.setForecastItem(forecastItem);
+            forecastActual.setLogText(originalLog + "ICE Forecaster does not support " + forecastItem.getLabel()
+                + ". No results returned. \n");
+            list.add(forecastActual);
+          }
+        }
+      }
+      for (int forecastItemId : supportedItems) {
+        boolean found = false;
+        for (ForecastActual forecastActual : list) {
+          if (forecastActual.getForecastItem().getForecastItemId() == forecastItemId) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          ForecastItem forecastItem = ForecastItem.getForecastItem(forecastItemId);
+          if (forecastItem != null) {
+            ForecastActual forecastActual = new ForecastActual();
+            forecastActual.setComplete();
+            forecastActual.setForecastItem(forecastItem);
+            forecastActual.setLogText(originalLog + "ICE Forecaster did not return results " + forecastItem.getLabel()
+                + ". Results assumed to be complete. \n");
+            list.add(forecastActual);
+          }
+        }
+      }
     }
     return list;
   }
 
+  private Map<String, String> xmlLogMap = new HashMap<String, String>();
+
   protected List<ForecastActual> readVMR(String s) throws Exception {
+
+    {
+      BufferedReader in = new BufferedReader(new StringReader(s));
+      String line;
+      StringBuilder sb = null;
+      String id = null;
+      while ((line = in.readLine()) != null) {
+        if (line.indexOf("<substanceAdministrationProposal>") != -1) {
+          sb = new StringBuilder();
+        } else if (line.indexOf("</substanceAdministrationProposal>") != -1) {
+          if (id != null) {
+            xmlLogMap.put(id, sb.toString());
+          }
+          sb = null;
+          id = null;
+        } else if (sb != null) {
+          int pos = line.indexOf(LOG_PARSE_ID_START);
+          if (id == null && pos != -1) {
+            int endPos = line.indexOf(LOG_PARSE_ID_END);
+            if (endPos != -1) {
+              id = line.substring(pos + LOG_PARSE_ID_START.length(), endPos);
+            }
+          } else {
+            if (line.indexOf("<templateId") == -1) {
+              sb.append(line.trim());
+              sb.append("\n");
+            }
+          }
+        }
+
+      }
+      in.close();
+    }
+
     InputStream in = new ByteArrayInputStream(s.getBytes());
     List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -212,71 +305,107 @@ public class ICEConnector implements ConnectorInterface {
   }
 
   private void processSubstanceAdministrationProposal(List<ForecastActual> forecastActualList, Element pElement) {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     String substanceCode = readSubstanceCode(pElement);
-    ForecastItem forecastItem = familyMapping.get(substanceCode);
-    if (forecastItem != null) {
+    ForecastItem[] forecastItems = familyMapping.get(substanceCode);
+    if (forecastItems != null && forecastItems.length > 0) {
       Date recommendDate = readProposedTimeLow(pElement);
       Date overdueDate = readProposedTimeHigh(pElement);
+      String id = readId(pElement);
       NodeList nList = pElement.getElementsByTagName("relatedClinicalStatement");
       for (int i = 0; i < nList.getLength(); i++) {
+        StringBuilder sb = new StringBuilder();
         Node nNode = nList.item(i);
         if (nNode.getNodeType() == Node.ELEMENT_NODE) {
           Element eElement = (Element) nNode;
           String recommendationValue = readObservationValue(eElement);
+          sb.append("Found forecast results for " + forecastItems[0].getLabel() + "\n");
+          sb.append(" + RecommendationValue = " + recommendationValue + "\n");
           RecommendationReason recommendationReason = readInterpretation(eElement);
-          ForecastActual forecastActual = new ForecastActual();
-          forecastActual.setForecastItem(forecastItem);
-          forecastActual.setValidDate(recommendDate);
-          forecastActual.setDueDate(recommendDate);
-          forecastActual.setOverdueDate(overdueDate);
-          
-          
-          switch (recommendationReason) {
-          case ABOVE_AGE_MAY_COMPLETE:
-            forecastActual.setComplete();
-            break;
-          case COMPLETE:
-            forecastActual.setComplete();
-            break;
-          case COMPLETE_HIGH_RISK:
-            forecastActual.setComplete();
-            break;
-          case DISEASE_DOCUMENTED:
-            forecastActual.setComplete();
-            break;
-          case DUE_IN_FUTURE:
-            forecastActual.setDoseNumber("*");
-            break;
-          case DUE_NOW:
-            forecastActual.setDoseNumber("*");
-            break;
-          case HIGH_RISK:
-            forecastActual.setDoseNumber("*");
-            break;
-          case IGNORE:
-            continue;
-          case NOT_SPECIFIED:
-            continue;
-          case OUTSIDE_FLU_SEASON:
-            forecastActual.setComplete();
-            break;
-          case PROOF_OF_IMMUNITY:
-            forecastActual.setComplete();
-            break;
-          case TOO_OLD:
-            forecastActual.setComplete();
-            break;
-          case TOO_OLD_HIGH_RISK:
-            forecastActual.setComplete();
-            break;
-          case WRONG_GENDER:
-            forecastActual.setComplete();
-            break;
+          sb.append(" + RecommendationReason = " + recommendationReason + "\n");
+          if (recommendDate != null) {
+            sb.append(" + Recommended Date = " + sdf.format(recommendDate) + "\n");
           }
+          if (overdueDate != null) {
+            sb.append(" + Overdue Date = " + sdf.format(overdueDate) + "\n");
+          }
+          for (ForecastItem forecastItem : forecastItems) {
+            ForecastActual forecastActual = new ForecastActual();
+            forecastActual.setForecastItem(forecastItem);
+            forecastActual.setValidDate(recommendDate);
+            forecastActual.setDueDate(recommendDate);
+            forecastActual.setOverdueDate(overdueDate);
 
-          forecastActual.setLogText(originalLog + "RecommendationValue = " + recommendationValue + "\nRecommendationReason = " + recommendationReason + "\n");
+            forecastActual.setDoseNumber("*");
 
-          forecastActualList.add(forecastActual);
+            switch (recommendationReason) {
+            case ABOVE_AGE_MAY_COMPLETE:
+              forecastActual.setComplete();
+              sb.append(" + Above age to complete, so setting as recommendation as complete\n");
+              break;
+            case COMPLETE:
+              forecastActual.setComplete();
+              sb.append(" + Completed, so setting as recommendation as complete\n");
+              break;
+            case COMPLETE_HIGH_RISK:
+              forecastActual.setComplete();
+              sb.append(" + High risk series complete so setting as recommendation as complete\n");
+              break;
+            case DISEASE_DOCUMENTED:
+              forecastActual.setComplete();
+              sb.append(" + Disease was documented so setting as recommendation as complete\n");
+              break;
+            case DUE_IN_FUTURE:
+              forecastActual.setDoseNumber("*");
+              sb.append(" + Due in the future\n");
+              break;
+            case DUE_NOW:
+              forecastActual.setDoseNumber("*");
+              sb.append(" + Due now\n");
+              break;
+            case HIGH_RISK:
+              forecastActual.setDoseNumber("*");
+              sb.append(" + Is due because of high risk\n");
+              break;
+            case IGNORE:
+              sb.append(" + Ignoring this result\n");
+              continue;
+            case NOT_SPECIFIED:
+              sb.append(" + Result not specified\n");
+              continue;
+            case OUTSIDE_FLU_SEASON:
+              forecastActual.setComplete();
+              sb.append(" + Outsize of flu season so not recommending, marking as complete\n");
+              break;
+            case PROOF_OF_IMMUNITY:
+              forecastActual.setComplete();
+              sb.append(" + Patient has proof of immunity, marking as complete\n");
+              break;
+            case TOO_OLD:
+              forecastActual.setComplete();
+              sb.append(" + Patient is too old, marking as complete\n");
+              break;
+            case TOO_OLD_HIGH_RISK:
+              forecastActual.setComplete();
+              sb.append(" + Patient is too old for high risk vaccination\n");
+              break;
+            case WRONG_GENDER:
+              forecastActual.setComplete();
+              sb.append(" + Patient is wrong gender to receive this vaccination, marking as complete\n");
+              break;
+            }
+            String xmlLog = null;
+            if (id != null) {
+              xmlLog = xmlLogMap.get(id);
+            }
+            if (xmlLog != null) {
+              forecastActual.setLogText(originalLog + sb.toString() + "\nSubstance Administration XML Returned: \n"
+                  + xmlLog);
+            } else {
+              forecastActual.setLogText(originalLog + sb.toString());
+            }
+            forecastActualList.add(forecastActual);
+          }
         }
       }
 
@@ -398,6 +527,18 @@ public class ICEConnector implements ConnectorInterface {
     return null;
   }
 
+  private static String readId(Element pElement) {
+    NodeList nList = pElement.getElementsByTagName("id");
+    for (int i = 0; i < nList.getLength(); i++) {
+      Node nNode = nList.item(i);
+      if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+        Element eElement = (Element) nNode;
+        return eElement.getAttribute("root");
+      }
+    }
+    return null;
+  }
+
   protected static final boolean SUPPORT_HISTORY_OF_DISEASE = false;
 
   private String makeRequest(TestCase testCase) {
@@ -411,10 +552,9 @@ public class ICEConnector implements ConnectorInterface {
     sb.append("    <S:Body>\n");
     sb.append("        <ns2:evaluateAtSpecifiedTime xmlns:ns2=\"http://www.omg.org/spec/CDSS/201105/dss\">\n");
     sb.append("            <interactionId scopingEntityId=\"gov.nyc.health\" interactionId=\"123456\"/>\n");
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Date evalDate = testCase.getEvalDate();
-    if (evalDate == null)
-    {
+    if (evalDate == null) {
       evalDate = new Date();
     }
     // TODO get the timezone right

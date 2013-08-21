@@ -2,7 +2,9 @@ package org.tch.fc.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ForecastItem implements Serializable {
 
@@ -50,6 +52,13 @@ public class ForecastItem implements Serializable {
   public static final int ID_TYPHOID = 29;
 
   private static List<ForecastItem> forecastItemList = null;
+  private static Map<Integer, ForecastItem> forecastItemMap = null;
+  
+  public static final ForecastItem getForecastItem(int id)
+  {
+    getForecastItemList();
+    return forecastItemMap.get(id);
+  }
 
   public static final List<ForecastItem> getForecastItemList() {
     if (forecastItemList == null) {
@@ -78,6 +87,11 @@ public class ForecastItem implements Serializable {
       forecastItemList.add(new ForecastItem(ID_MUMPS_ONLY, "Mumps Only"));
       forecastItemList.add(new ForecastItem(ID_RUBELLA_ONLY, "Rubella Only"));
       forecastItemList.add(new ForecastItem(ID_TDAP_ONLY, "Tdap Only"));
+      forecastItemMap = new HashMap<Integer, ForecastItem>();
+      for (ForecastItem forecastItem : forecastItemList)
+      {
+        forecastItemMap.put(forecastItem.getForecastItemId(), forecastItem);
+      }
     }
     return forecastItemList;
   }
