@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.ForecastItem;
@@ -25,9 +26,14 @@ import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestCaseSetting;
 import org.tch.fc.model.TestEvent;
 
-public class TCHConnector implements ConnectorInterface {
+public class TCHConnector implements ConnectorInterface
+{
+
+  private static final String VACCINATION_LINE_PREFIX = "Vaccination #";
 
   private Map<String, List<ForecastItem>> familyMapping = new HashMap<String, List<ForecastItem>>();
+
+  private Map<String, String> evaluationToCvxMapping = new HashMap<String, String>();
 
   private Software software = null;
 
@@ -58,6 +64,25 @@ public class TCHConnector implements ConnectorInterface {
     addForcastItem(forecastItemList, "PCV13", ForecastItem.ID_PCV);
     addForcastItem(forecastItemList, "Zoster", ForecastItem.ID_ZOSTER);
     addForcastItem(forecastItemList, "PPSV", ForecastItem.ID_PPSV);
+
+    evaluationToCvxMapping.put("Varicella", "21");
+    evaluationToCvxMapping.put("Rubella", "06");
+    evaluationToCvxMapping.put("Measles", "05");
+    evaluationToCvxMapping.put("Influenza", "88");
+    evaluationToCvxMapping.put("Hib", "17");
+    evaluationToCvxMapping.put("HPV", "137");
+    evaluationToCvxMapping.put("HepB", "45");
+    evaluationToCvxMapping.put("HepA", "85");
+    evaluationToCvxMapping.put("Diphtheria", "107");
+    evaluationToCvxMapping.put("Mening", "147");
+    evaluationToCvxMapping.put("Mumps", "07");
+    evaluationToCvxMapping.put("Pertussis", "11");
+    evaluationToCvxMapping.put("Pneumo", "152");
+    evaluationToCvxMapping.put("Polio", "89");
+    evaluationToCvxMapping.put("Rotavirus", "122");
+    evaluationToCvxMapping.put("Zoster", "121");
+    evaluationToCvxMapping.put("PPSV", "33");
+
   }
 
   private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int forecastItemId) {
@@ -141,6 +166,67 @@ public class TCHConnector implements ConnectorInterface {
             }
           }
         }
+      } else if (line.startsWith(VACCINATION_LINE_PREFIX)) {
+        line = line.substring(VACCINATION_LINE_PREFIX.length());
+        int pos = line.indexOf(':');
+        if (pos > 0) {
+          try {
+            int i = Integer.parseInt(line.substring(0, pos).trim());
+            int count = 0;
+            for (TestEvent testEvent : testCase.getTestEventList()) {
+              if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+                count++;
+                if (count == i) {
+                  line = line.substring(pos + 1).trim();
+                  int isValidPos = line.indexOf(" is a valid ");
+                  int isInvalidPos = line.indexOf(" is an invalid ");
+                  if (isValidPos > 0 || isInvalidPos > 0) {
+                    boolean isValid = isInvalidPos == -1 && isValidPos > -1;
+                    pos = isInvalidPos + 15;
+                    if (isInvalidPos == -1) {
+                      pos = isValidPos + 12;
+                    }
+                    int startPos = line.indexOf(" dose ", pos);
+                    String doseName = "";
+                    String vaccineCvx = "";
+                    String doseNumber = "";
+                    if (startPos > 0) {
+                      doseName = line.substring(pos, startPos).trim();
+                      vaccineCvx = evaluationToCvxMapping.get(doseName);
+                      if (vaccineCvx == null) {
+                        vaccineCvx = "";
+                      }
+                      startPos += 6;
+                      int endPos = line.indexOf(".", startPos);
+                      if (endPos > 0) {
+                        doseNumber = line.substring(startPos, endPos);
+                      }
+                    }
+                    EvaluationActual evaluationActual = new EvaluationActual();
+                    evaluationActual.setSoftware(software);
+                    evaluationActual.setTestEvent(testEvent);
+                    evaluationActual.setDoseNumber(doseNumber);
+                    evaluationActual.setDoseValid(isValid ? "Y" : "N");
+                    //evaluationActual.setReasonCode(reasonCode);
+                    evaluationActual.setReasonText(line);
+                    evaluationActual.setSeriesUsedCode(vaccineCvx);
+                    evaluationActual.setSeriesUsedText(doseName);
+                    evaluationActual.setVaccineCvx(vaccineCvx);
+                    
+                    if (testEvent.getEvaluationActualList() == null)
+                    {
+                      testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
+                    }
+                    testEvent.getEvaluationActualList().add(evaluationActual);
+                  }
+                  break;
+                }
+              }
+            }
+          } catch (NumberFormatException nfe) {
+            // ignore
+          }
+        }
       }
     }
     input.close();
@@ -163,7 +249,7 @@ public class TCHConnector implements ConnectorInterface {
     sb.append("&patientSex=" + testCase.getPatientSex() + "");
     int count = 0;
     for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINE) {
         count++;
         sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
         sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());

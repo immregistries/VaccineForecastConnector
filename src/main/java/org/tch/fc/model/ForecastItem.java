@@ -12,15 +12,34 @@ public class ForecastItem implements Serializable {
     // default;
   }
 
-  public ForecastItem(int forecastItemId, String label) {
+  public ForecastItem(int forecastItemId, String label, String vaccineCvx) {
     this.forecastItemId = forecastItemId;
     this.label = label;
+    this.vaccineCvx = vaccineCvx;
   }
 
   private static final long serialVersionUID = 1L;
 
   private int forecastItemId = 0;
   private String label = "";
+  private String vaccineCvx = "";
+  private List<EvaluationActual> evaluationActualList = null;
+  
+  public List<EvaluationActual> getEvaluationActualList() {
+    return evaluationActualList;
+  }
+
+  public void setEvaluationActualList(List<EvaluationActual> evaluationActualList) {
+    this.evaluationActualList = evaluationActualList;
+  }
+
+  public String getVaccineCvx() {
+    return vaccineCvx;
+  }
+
+  public void setVaccineCvx(String vaccineCvx) {
+    this.vaccineCvx = vaccineCvx;
+  }
 
   public static final int ID_DTAP = 2;
   public static final int ID_INFLUENZA = 3;
@@ -63,30 +82,30 @@ public class ForecastItem implements Serializable {
   public static final List<ForecastItem> getForecastItemList() {
     if (forecastItemList == null) {
       forecastItemList = new ArrayList<ForecastItem>();
-      forecastItemList.add(new ForecastItem(ID_DTAP, "DTaP"));
-      forecastItemList.add(new ForecastItem(ID_INFLUENZA, "Influenza"));
-      forecastItemList.add(new ForecastItem(ID_HEPA, "HepA"));
-      forecastItemList.add(new ForecastItem(ID_HEPB, "HepB"));
-      forecastItemList.add(new ForecastItem(ID_HIB, "Hib"));
-      forecastItemList.add(new ForecastItem(ID_HPV, "HPV"));
-      forecastItemList.add(new ForecastItem(ID_MENING, "Meningococcal"));
-      forecastItemList.add(new ForecastItem(ID_MMR, "MMR"));
-      forecastItemList.add(new ForecastItem(ID_PNEUMO, "Pneumococcal"));
-      forecastItemList.add(new ForecastItem(ID_POLIO, "Polio"));
-      forecastItemList.add(new ForecastItem(ID_ROTA, "Rotavirus"));
-      forecastItemList.add(new ForecastItem(ID_VAR, "Varicella"));
-      forecastItemList.add(new ForecastItem(ID_ZOSTER, "HerpesZoster"));
-      forecastItemList.add(new ForecastItem(ID_TDAP_TD, "Td or Tdap"));
-      forecastItemList.add(new ForecastItem(ID_PPSV, "PPSV"));
-      forecastItemList.add(new ForecastItem(ID_PCV, "PCV"));
-      forecastItemList.add(new ForecastItem(ID_TD_ONLY, "Td Only"));
-      forecastItemList.add(new ForecastItem(ID_DTAP_TDAP_TD, "DTaP, Tdap or Td"));
-      forecastItemList.add(new ForecastItem(ID_HEPB_2_ONLY, "Hep B 2 Dose Only"));
-      forecastItemList.add(new ForecastItem(ID_HEPB_3_ONLY, "Hep B 3 Dose Only"));
-      forecastItemList.add(new ForecastItem(ID_MEASLES_ONLY, "Measles Only"));
-      forecastItemList.add(new ForecastItem(ID_MUMPS_ONLY, "Mumps Only"));
-      forecastItemList.add(new ForecastItem(ID_RUBELLA_ONLY, "Rubella Only"));
-      forecastItemList.add(new ForecastItem(ID_TDAP_ONLY, "Tdap Only"));
+      forecastItemList.add(new ForecastItem(ID_DTAP, "DTaP", "20"));
+      forecastItemList.add(new ForecastItem(ID_INFLUENZA, "Influenza", "88"));
+      forecastItemList.add(new ForecastItem(ID_HEPA, "HepA", "85"));
+      forecastItemList.add(new ForecastItem(ID_HEPB, "HepB", "45"));
+      forecastItemList.add(new ForecastItem(ID_HIB, "Hib", "17"));
+      forecastItemList.add(new ForecastItem(ID_HPV, "HPV", "137"));
+      forecastItemList.add(new ForecastItem(ID_MENING, "Meningococcal", "108"));
+      forecastItemList.add(new ForecastItem(ID_MMR, "MMR", "03"));
+      forecastItemList.add(new ForecastItem(ID_PNEUMO, "Pneumococcal", "152"));
+      forecastItemList.add(new ForecastItem(ID_POLIO, "Polio", "89"));
+      forecastItemList.add(new ForecastItem(ID_ROTA, "Rotavirus", "122"));
+      forecastItemList.add(new ForecastItem(ID_VAR, "Varicella", "21"));
+      forecastItemList.add(new ForecastItem(ID_ZOSTER, "HerpesZoster", "121"));
+      forecastItemList.add(new ForecastItem(ID_TDAP_TD, "Td or Tdap", "139"));
+      forecastItemList.add(new ForecastItem(ID_PPSV, "PPSV", "33"));
+      forecastItemList.add(new ForecastItem(ID_PCV, "PCV", "152"));
+      forecastItemList.add(new ForecastItem(ID_TD_ONLY, "Td Only", "139"));
+      forecastItemList.add(new ForecastItem(ID_DTAP_TDAP_TD, "DTaP, Tdap or Td", "20"));
+      forecastItemList.add(new ForecastItem(ID_HEPB_2_ONLY, "Hep B 2 Dose Only", "43"));
+      forecastItemList.add(new ForecastItem(ID_HEPB_3_ONLY, "Hep B 3 Dose Only", "08"));
+      forecastItemList.add(new ForecastItem(ID_MEASLES_ONLY, "Measles Only", "05"));
+      forecastItemList.add(new ForecastItem(ID_MUMPS_ONLY, "Mumps Only", "07"));
+      forecastItemList.add(new ForecastItem(ID_RUBELLA_ONLY, "Rubella Only", "06"));
+      forecastItemList.add(new ForecastItem(ID_TDAP_ONLY, "Tdap Only", "115"));
       forecastItemMap = new HashMap<Integer, ForecastItem>();
       for (ForecastItem forecastItem : forecastItemList)
       {

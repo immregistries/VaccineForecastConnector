@@ -238,7 +238,11 @@ public class ICEConnector implements ConnectorInterface {
     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
     Document doc = dBuilder.parse(in);
     doc.getDocumentElement().normalize();
-    NodeList nList = doc.getElementsByTagName("ns4:cdsOutput");
+    NodeList nList = doc.getElementsByTagName("ns5:cdsOutput");
+    if (nList.getLength() == 0)
+    {
+      nList = doc.getElementsByTagName("ns4:cdsOutput");
+    }
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {

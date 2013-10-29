@@ -24,7 +24,7 @@ public class TestICEConnector extends junit.framework.TestCase {
     TestCase testCase = createTestCase(sdf);
 
     Software software = new Software();
-    software.setServiceUrl("http://localhost:8086/o/evaluate");
+    software.setServiceUrl("http://tchforecasttester.org/ice/evaluate");
     ICEConnector iceConnector = new ICEConnector(software, ForecastItem.getForecastItemList());
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase);
     assertEquals(24, forecastActualList.size());
