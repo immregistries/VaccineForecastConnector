@@ -2,6 +2,7 @@ package org.tch.fc.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 public class TestEvent implements Serializable {
@@ -30,8 +31,17 @@ public class TestEvent implements Serializable {
 	private TestCase testCase = null;
 	private Event event = null;
 	private Date eventDate = null;
+	private List<EvaluationActual> evaluationActualList = null;
 
-	public int getTestEventId() {
+	public List<EvaluationActual> getEvaluationActualList() {
+    return evaluationActualList;
+  }
+
+  public void setEvaluationActualList(List<EvaluationActual> evaluationActualList) {
+    this.evaluationActualList = evaluationActualList;
+  }
+
+  public int getTestEventId() {
 		return testEventId;
 	}
 

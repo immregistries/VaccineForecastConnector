@@ -12,6 +12,15 @@ public class ForecastActual extends ForecastResult implements Serializable {
 	private String scheduleName = "";
 	private Date runDate = null;
 	private String logText = null;
+	private String vaccineCvx = "";
+
+  public String getVaccineCvx() {
+    return vaccineCvx;
+  }
+
+  public void setVaccineCvx(String vaccineCvx) {
+    this.vaccineCvx = vaccineCvx;
+  }
 
   public String getLogText() {
     return logText;
