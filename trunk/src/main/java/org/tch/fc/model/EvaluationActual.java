@@ -1,6 +1,8 @@
 package org.tch.fc.model;
 
-public class EvaluationActual
+import java.io.Serializable;
+
+public class EvaluationActual implements Serializable
 {
   private int evaluationActualId = 0;
   private TestEvent testEvent = null;
