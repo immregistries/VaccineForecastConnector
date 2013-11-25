@@ -69,6 +69,9 @@ public class ForecastItem implements Serializable {
   public static final int ID_SMALLPOX_SHOT_OR_READING = 27;
   public static final int ID_NOVEL_H1N1 = 28;
   public static final int ID_TYPHOID = 29;
+  public static final int ID_JAPENESE_ENCEPHALITIS = 30;
+  public static final int ID_RABIES = 31;
+  public static final int ID_YELLOW_FEVER = 32;
 
   private static List<ForecastItem> forecastItemList = null;
   private static Map<Integer, ForecastItem> forecastItemMap = null;
