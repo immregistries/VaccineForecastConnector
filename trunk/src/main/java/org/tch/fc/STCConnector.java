@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
-import org.tch.fc.model.ForecastItem;
+import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
@@ -32,20 +32,20 @@ import com.stchome.saf.messages.get._1_2.PersonDetailsType;
 import com.stchome.saf.messages.get._1_2.ResponseDetailType;
 import com.stchome.saf.messages.get._1_2.VaccinationType;
 
-import static org.tch.fc.model.ForecastItem.*;
+import static org.tch.fc.model.VaccineGroup.*;
 
 public class STCConnector extends GetForecastRequestSoap11Stub implements ConnectorInterface {
 
-  private Map<String, List<ForecastItem>> familyMapping = new HashMap<String, List<ForecastItem>>();
+  private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
   private Map<String, String> notSupported = new HashMap<String, String>();
 
   private Software software = null;
-  private List<ForecastItem> forecastItemList = null;
+  private List<VaccineGroup> forecastItemList = null;
 
   private static String STC_HEP_3_DOSE = "4";
   private static String STC_HEP_2_DOSE = "12";
 
-  public STCConnector(Software software, List<ForecastItem> forecastItemList) throws Exception {
+  public STCConnector(Software software, List<VaccineGroup> forecastItemList) throws Exception {
     super(new URL(software.getServiceUrl()), null);
     this.software = software;
     this.forecastItemList = forecastItemList;
@@ -116,11 +116,11 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
   }
 
   private void map(String familyName, int forecastItemId) {
-    for (ForecastItem forecastItem : forecastItemList) {
-      if (forecastItem.getForecastItemId() == forecastItemId) {
-        List<ForecastItem> forecastItemListFromMap = familyMapping.get(familyName);
+    for (VaccineGroup forecastItem : forecastItemList) {
+      if (forecastItem.getVaccineGroupId() == forecastItemId) {
+        List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
         if (forecastItemListFromMap == null) {
-          forecastItemListFromMap = new ArrayList<ForecastItem>();
+          forecastItemListFromMap = new ArrayList<VaccineGroup>();
           familyMapping.put(familyName, forecastItemListFromMap);
         }
         forecastItemListFromMap.add(forecastItem);
@@ -193,9 +193,9 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
         logOut.println(" + Valid:    " + forecastDetailsType.getMinAllowableDate());
         logOut.println(" + Overdue:  " + forecastDetailsType.getPastDueDate());
         logOut.println(" + Finished: " + forecastDetailsType.getMaxAllowableDate());
-        List<ForecastItem> forecastItemListFromMap = familyMapping.get(forecastDetailsType.getFamilyCode());
+        List<VaccineGroup> forecastItemListFromMap = familyMapping.get(forecastDetailsType.getFamilyCode());
         if (forecastItemListFromMap != null) {
-          for (ForecastItem forecastItem : forecastItemListFromMap) {
+          for (VaccineGroup forecastItem : forecastItemListFromMap) {
             if (forecastItem == null) {
               String label = notSupported.get(forecastDetailsType.getFamilyCode());
               if (label != null) {
@@ -205,7 +205,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
               }
             }
             else {
-              if (forecastItem.getForecastItemId() == ID_DTAP || forecastItem.getForecastItemId() == ID_TDAP_TD) {
+              if (forecastItem.getVaccineGroupId() == ID_DTAP || forecastItem.getVaccineGroupId() == ID_TDAP_TD) {
                 // screen out the DTaP and Td recommendations for the age of the
                 // patient
                 Calendar sevenYearsOld = Calendar.getInstance();
@@ -213,21 +213,21 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
                 sevenYearsOld.add(Calendar.YEAR, 7);
                 boolean isSevenYearsOldOrOlder = sevenYearsOld.after(testCase.getEvalDate());
                 if (isSevenYearsOldOrOlder) {
-                  if (forecastItem.getForecastItemId() == ID_DTAP) {
+                  if (forecastItem.getVaccineGroupId() == ID_DTAP) {
                     // Don't add DTaP recommendation because test case is now 7
                     // years or older at time of recommendation
                     logOut.println("Patient is 7 years old or older so not saving DTaP/Td/Tdap recommendation as DTaP");
                     continue;
                   }
                 } else {
-                  if (forecastItem.getForecastItemId() == ID_TDAP_TD) {
+                  if (forecastItem.getVaccineGroupId() == ID_TDAP_TD) {
                     // Don't add Tdap recommendation because test case is not
                     // yet at 7 years of age
                     logOut.println("Patient is younger than 7 years so not saving DTaP/Td/Tdap recommendation as Tdap/Td");
                     continue;
                   }
                 }
-              } else if (forecastItem.getForecastItemId() == ID_HEPB) {
+              } else if (forecastItem.getVaccineGroupId() == ID_HEPB) {
                 // need to decide on which hep b recommendation is going to
                 // survive
                 // by default we assume that a 3 dose HepB series is used, the
@@ -267,7 +267,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
               }
               logOut.println("Saving as results for forecast item " + forecastItem.getLabel());
               ForecastActual forecastActual = new ForecastActual();
-              forecastActual.setForecastItem(forecastItem);
+              forecastActual.setVaccineGroup(forecastItem);
               forecastActual.setDoseNumber("" + forecastDetailsType.getDoseNumber());
               forecastActual.setDueDate(parseDate(forecastDetailsType.getRecommendedDate()));
               forecastActual.setValidDate(parseDate(forecastDetailsType.getMinAllowableDate()));
@@ -282,7 +282,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
 
     logOut.close();
     for (ForecastActual forecastActual : list) {
-      forecastActual.setLogText(sw.toString());
+      forecastActual.getSoftwareResult().setLogText(sw.toString());
     }
     return list;
   }
