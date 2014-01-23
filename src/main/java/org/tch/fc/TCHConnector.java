@@ -19,7 +19,7 @@ import java.util.Map;
 import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
-import org.tch.fc.model.ForecastItem;
+import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.SoftwareSetting;
 import org.tch.fc.model.TestCase;
@@ -31,39 +31,39 @@ public class TCHConnector implements ConnectorInterface
 
   private static final String VACCINATION_LINE_PREFIX = "Vaccination #";
 
-  private Map<String, List<ForecastItem>> familyMapping = new HashMap<String, List<ForecastItem>>();
+  private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
 
   private Map<String, String> evaluationToCvxMapping = new HashMap<String, String>();
 
   private Software software = null;
 
-  public TCHConnector(Software software, List<ForecastItem> forecastItemList) {
+  public TCHConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
-    addForcastItem(forecastItemList, "Hib", ForecastItem.ID_HIB);
-    addForcastItem(forecastItemList, "HepB", ForecastItem.ID_HEPB);
-    addForcastItem(forecastItemList, "DTaP", ForecastItem.ID_DTAP);
-    addForcastItem(forecastItemList, "DTaP", ForecastItem.ID_DTAP_TDAP_TD);
-    addForcastItem(forecastItemList, "Td", ForecastItem.ID_TD_ONLY);
-    addForcastItem(forecastItemList, "Td", ForecastItem.ID_TDAP_TD);
-    addForcastItem(forecastItemList, "Td", ForecastItem.ID_DTAP_TDAP_TD);
-    addForcastItem(forecastItemList, "Tdap", ForecastItem.ID_TDAP_ONLY);
-    addForcastItem(forecastItemList, "Tdap", ForecastItem.ID_TDAP_TD);
-    addForcastItem(forecastItemList, "Tdap", ForecastItem.ID_DTAP_TDAP_TD);
-    addForcastItem(forecastItemList, "IPV", ForecastItem.ID_POLIO);
-    addForcastItem(forecastItemList, "HepA", ForecastItem.ID_HEPA);
-    addForcastItem(forecastItemList, "MMR", ForecastItem.ID_MMR);
-    addForcastItem(forecastItemList, "Measles", ForecastItem.ID_MEASLES_ONLY);
-    addForcastItem(forecastItemList, "Mumps", ForecastItem.ID_MUMPS_ONLY);
-    addForcastItem(forecastItemList, "Rubella", ForecastItem.ID_RUBELLA_ONLY);
-    addForcastItem(forecastItemList, "Var", ForecastItem.ID_VAR);
-    addForcastItem(forecastItemList, "Influenza", ForecastItem.ID_INFLUENZA);
-    addForcastItem(forecastItemList, "MCV4", ForecastItem.ID_MENING);
-    addForcastItem(forecastItemList, "HPV", ForecastItem.ID_HPV);
-    addForcastItem(forecastItemList, "Rota", ForecastItem.ID_ROTA);
-    addForcastItem(forecastItemList, "PCV13", ForecastItem.ID_PNEUMO);
-    addForcastItem(forecastItemList, "PCV13", ForecastItem.ID_PCV);
-    addForcastItem(forecastItemList, "Zoster", ForecastItem.ID_ZOSTER);
-    addForcastItem(forecastItemList, "PPSV", ForecastItem.ID_PPSV);
+    addForcastItem(forecastItemList, "Hib", VaccineGroup.ID_HIB);
+    addForcastItem(forecastItemList, "HepB", VaccineGroup.ID_HEPB);
+    addForcastItem(forecastItemList, "DTaP", VaccineGroup.ID_DTAP);
+    addForcastItem(forecastItemList, "DTaP", VaccineGroup.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "Td", VaccineGroup.ID_TD_ONLY);
+    addForcastItem(forecastItemList, "Td", VaccineGroup.ID_TDAP_TD);
+    addForcastItem(forecastItemList, "Td", VaccineGroup.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "Tdap", VaccineGroup.ID_TDAP_ONLY);
+    addForcastItem(forecastItemList, "Tdap", VaccineGroup.ID_TDAP_TD);
+    addForcastItem(forecastItemList, "Tdap", VaccineGroup.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "IPV", VaccineGroup.ID_POLIO);
+    addForcastItem(forecastItemList, "HepA", VaccineGroup.ID_HEPA);
+    addForcastItem(forecastItemList, "MMR", VaccineGroup.ID_MMR);
+    addForcastItem(forecastItemList, "Measles", VaccineGroup.ID_MEASLES_ONLY);
+    addForcastItem(forecastItemList, "Mumps", VaccineGroup.ID_MUMPS_ONLY);
+    addForcastItem(forecastItemList, "Rubella", VaccineGroup.ID_RUBELLA_ONLY);
+    addForcastItem(forecastItemList, "Var", VaccineGroup.ID_VAR);
+    addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA);
+    addForcastItem(forecastItemList, "MCV4", VaccineGroup.ID_MENING);
+    addForcastItem(forecastItemList, "HPV", VaccineGroup.ID_HPV);
+    addForcastItem(forecastItemList, "Rota", VaccineGroup.ID_ROTA);
+    addForcastItem(forecastItemList, "PCV13", VaccineGroup.ID_PNEUMO);
+    addForcastItem(forecastItemList, "PCV13", VaccineGroup.ID_PCV);
+    addForcastItem(forecastItemList, "Zoster", VaccineGroup.ID_ZOSTER);
+    addForcastItem(forecastItemList, "PPSV", VaccineGroup.ID_PPSV);
 
     evaluationToCvxMapping.put("Varicella", "21");
     evaluationToCvxMapping.put("Rubella", "06");
@@ -85,12 +85,12 @@ public class TCHConnector implements ConnectorInterface
 
   }
 
-  private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int forecastItemId) {
-    for (ForecastItem forecastItem : forecastItemList) {
-      if (forecastItem.getForecastItemId() == forecastItemId) {
-        List<ForecastItem> forecastItemListFromMap = familyMapping.get(familyName);
+  private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
+    for (VaccineGroup forecastItem : forecastItemList) {
+      if (forecastItem.getVaccineGroupId() == forecastItemId) {
+        List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
         if (forecastItemListFromMap == null) {
-          forecastItemListFromMap = new ArrayList<ForecastItem>();
+          forecastItemListFromMap = new ArrayList<VaccineGroup>();
           familyMapping.put(familyName, forecastItemListFromMap);
         }
         forecastItemListFromMap.add(forecastItem);
@@ -136,12 +136,12 @@ public class TCHConnector implements ConnectorInterface
         // Forecasting Hib complete
         String[] parts = line.split("\\s");
         if (parts.length > 2) {
-          List<ForecastItem> forecastItemListFromMap = familyMapping.get(parts[1]);
+          List<VaccineGroup> forecastItemListFromMap = familyMapping.get(parts[1]);
           if (forecastItemListFromMap != null) {
-            for (ForecastItem forecastItem : forecastItemListFromMap) {
+            for (VaccineGroup forecastItem : forecastItemListFromMap) {
               if (forecastItem != null) {
                 ForecastActual forecastActual = new ForecastActual();
-                forecastActual.setForecastItem(forecastItem);
+                forecastActual.setVaccineGroup(forecastItem);
                 if ("complete".equalsIgnoreCase(parts[2])) {
                   forecastActual.setDoseNumber("COMP");
                 } else {
@@ -203,7 +203,7 @@ public class TCHConnector implements ConnectorInterface
                       }
                     }
                     EvaluationActual evaluationActual = new EvaluationActual();
-                    evaluationActual.setSoftware(software);
+                    evaluationActual.getSoftwareResult().setSoftware(software);
                     evaluationActual.setTestEvent(testEvent);
                     evaluationActual.setDoseNumber(doseNumber);
                     evaluationActual.setDoseValid(isValid ? "Y" : "N");
@@ -232,7 +232,7 @@ public class TCHConnector implements ConnectorInterface
     input.close();
     logOut.close();
     for (ForecastActual forecastActual : list) {
-      forecastActual.setLogText(sw.toString());
+      forecastActual.getSoftwareResult().setLogText(sw.toString());
     }
     return list;
   }

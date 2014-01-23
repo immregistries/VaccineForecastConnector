@@ -9,13 +9,32 @@ public abstract class ForecastResult {
   public static final String DOSE_NUMBER_ERROR = "ERROR";
 
   protected TestCase testCase = null;
-  protected ForecastItem forecastItem = null;
+  protected VaccineGroup vaccineGroup = null;
   protected String doseNumber = null;
   protected Date validDate = null;
   protected Date dueDate = null;
   protected Date overdueDate = null;
   protected Date finishedDate = null;
   protected String vaccineCvx = "";
+  private Admin admin = null;
+  private String forecastReason = "";
+  
+  public String getForecastReason() {
+    return forecastReason;
+  }
+
+  public void setForecastReason(String forecastReason) {
+    this.forecastReason = forecastReason;
+  }
+
+  public Admin getAdmin() {
+    return admin;
+  }
+
+  public void setAdmin(Admin admin) {
+    this.admin = admin;
+  }
+
 
   public String getVaccineCvx() {
     return vaccineCvx;
@@ -41,12 +60,12 @@ public abstract class ForecastResult {
     this.testCase = testCase;
   }
 
-  public ForecastItem getForecastItem() {
-    return forecastItem;
+  public VaccineGroup getVaccineGroup() {
+    return vaccineGroup;
   }
 
-  public void setForecastItem(ForecastItem forecastItem) {
-    this.forecastItem = forecastItem;
+  public void setVaccineGroup(VaccineGroup forecastItem) {
+    this.vaccineGroup = forecastItem;
   }
   
   public void setComplete()
@@ -88,6 +107,16 @@ public abstract class ForecastResult {
 
   public boolean isComplete() {
     return doseNumber != null && doseNumber.equals(DOSE_NUMBER_COMPLETE);
+  }
+  
+  public String getAdminStatus()
+  {
+    return admin == null ? "" : admin.getAdminStatus();
+  }
+  
+  public void setAdminStatus(String adminStatus)
+  {
+    admin = Admin.getAdmin(adminStatus);
   }
 
 }

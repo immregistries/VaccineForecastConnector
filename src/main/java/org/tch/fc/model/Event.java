@@ -29,6 +29,15 @@ public class Event implements Serializable {
   private EventType eventType = null;
   private String vaccineCvx = "";
   private String vaccineMvx = "";
+  private String tradeLabel = "";
+
+  public String getTradeLabel() {
+    return tradeLabel;
+  }
+
+  public void setTradeLabel(String tradeLabel) {
+    this.tradeLabel = tradeLabel;
+  }
 
   public int getEventId() {
     return eventId;

@@ -18,7 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
-import org.tch.fc.model.ForecastItem;
+import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
@@ -29,7 +29,7 @@ import org.w3c.dom.NodeList;
 
 public class SWPConnector implements ConnectorInterface {
 
-  private Map<String, ForecastItem> familyMapping = new HashMap<String, ForecastItem>();
+  private Map<String, VaccineGroup> familyMapping = new HashMap<String, VaccineGroup>();
   private Software software = null;
 
   private static final Map<String, String> cvxOut = new HashMap<String, String>();
@@ -152,7 +152,7 @@ public class SWPConnector implements ConnectorInterface {
     groupMapping.put("144", new String[] {"13"});
   }
 
-  public SWPConnector(Software software, List<ForecastItem> forecastItemList) {
+  public SWPConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
     addForcastItem(forecastItemList, "Hib", 6);
     addForcastItem(forecastItemList, "HepB", 5);
@@ -171,9 +171,9 @@ public class SWPConnector implements ConnectorInterface {
     addForcastItem(forecastItemList, "Pneumonia", 10);
   }
 
-  private void addForcastItem(List<ForecastItem> forecastItemList, String familyName, int forecastItemId) {
-    for (ForecastItem forecastItem : forecastItemList) {
-      if (forecastItem.getForecastItemId() == forecastItemId) {
+  private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
+    for (VaccineGroup forecastItem : forecastItemList) {
+      if (forecastItem.getVaccineGroupId() == forecastItemId) {
         familyMapping.put(familyName, forecastItem);
         return;
       }
@@ -247,7 +247,7 @@ public class SWPConnector implements ConnectorInterface {
     logOut.close();
     for (ForecastActual forecastActual : list)
     {
-      forecastActual.setLogText(sw.toString());
+      forecastActual.getSoftwareResult().setLogText(sw.toString());
     }
     return list;
   }
@@ -330,11 +330,11 @@ public class SWPConnector implements ConnectorInterface {
           String cvx = safe(map.getNamedItem("cvx"));
           String family = safe(map.getNamedItem("family"));
           // String groupid = safe(map.getNamedItem("groupid"));
-          ForecastItem forecastItem = familyMapping.get(family);
+          VaccineGroup forecastItem = familyMapping.get(family);
 
           if (forecastItem != null) {
             ForecastActual forecastActual = new ForecastActual();
-            forecastActual.setForecastItem(forecastItem);
+            forecastActual.setVaccineGroup(forecastItem);
             forecastActual.setDoseNumber(dosenum);
             forecastActual.setValidDate(parseDate(mindate));
             forecastActual.setDueDate(parseDate(recommendeddate));
