@@ -19,12 +19,13 @@ import java.util.Map;
 import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
-import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.SoftwareSetting;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestCaseSetting;
 import org.tch.fc.model.TestEvent;
+import org.tch.fc.model.VaccineGroup;
 
 public class TCHConnector implements ConnectorInterface
 {
@@ -141,6 +142,7 @@ public class TCHConnector implements ConnectorInterface
             for (VaccineGroup forecastItem : forecastItemListFromMap) {
               if (forecastItem != null) {
                 ForecastActual forecastActual = new ForecastActual();
+                forecastActual.setSoftwareResult(new SoftwareResult());
                 forecastActual.setVaccineGroup(forecastItem);
                 if ("complete".equalsIgnoreCase(parts[2])) {
                   forecastActual.setDoseNumber("COMP");
@@ -202,7 +204,9 @@ public class TCHConnector implements ConnectorInterface
                         doseNumber = line.substring(startPos, endPos);
                       }
                     }
+                    SoftwareResult softwareResult = new SoftwareResult();
                     EvaluationActual evaluationActual = new EvaluationActual();
+                    evaluationActual.setSoftwareResult(softwareResult);
                     evaluationActual.getSoftwareResult().setSoftware(software);
                     evaluationActual.setTestEvent(testEvent);
                     evaluationActual.setDoseNumber(doseNumber);
