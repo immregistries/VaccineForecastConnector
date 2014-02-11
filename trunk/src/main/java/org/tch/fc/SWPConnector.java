@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
@@ -27,10 +28,21 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class SWPConnector implements ConnectorInterface {
+public class SWPConnector implements ConnectorInterface
+{
 
   private Map<String, VaccineGroup> familyMapping = new HashMap<String, VaccineGroup>();
   private Software software = null;
+
+  private boolean logText = false;
+
+  public boolean isLogText() {
+    return logText;
+  }
+
+  public void setLogText(boolean logText) {
+    this.logText = logText;
+  }
 
   private static final Map<String, String> cvxOut = new HashMap<String, String>();
   private static final Map<String, String> cvxIn = new HashMap<String, String>();
@@ -57,99 +69,94 @@ public class SWPConnector implements ConnectorInterface {
 
   private static final Map<String, String[]> groupMapping = new HashMap<String, String[]>();
   static {
-    groupMapping.put("01", new String[] {"7"});
-    groupMapping.put("02", new String[] {"20"});
-    groupMapping.put("03", new String[] {"17"});
-    groupMapping.put("04", new String[] {"37"});
-    groupMapping.put("05", new String[] {"37"});
-    groupMapping.put("06", new String[] {"37"});
-    groupMapping.put("07", new String[] {"37"});
-    groupMapping.put("08", new String[] {"12"});
-    groupMapping.put("09", new String[] {"40"});
-    groupMapping.put("10", new String[] {"20"});
-    groupMapping.put("11", new String[] {"7"});
-    groupMapping.put("15", new String[] {"9"});
-    groupMapping.put("16", new String[] {"9"});
-    groupMapping.put("17", new String[] {"13"});
-    groupMapping.put("18", new String[] {"21"});
-    groupMapping.put("20", new String[] {"7"});
-    groupMapping.put("21", new String[] {"26"});
+    groupMapping.put("01", new String[] { "7" });
+    groupMapping.put("02", new String[] { "20" });
+    groupMapping.put("03", new String[] { "17" });
+    groupMapping.put("04", new String[] { "37" });
+    groupMapping.put("05", new String[] { "37" });
+    groupMapping.put("06", new String[] { "37" });
+    groupMapping.put("07", new String[] { "37" });
+    groupMapping.put("08", new String[] { "12" });
+    groupMapping.put("09", new String[] { "40" });
+    groupMapping.put("10", new String[] { "20" });
+    groupMapping.put("11", new String[] { "7" });
+    groupMapping.put("15", new String[] { "9" });
+    groupMapping.put("16", new String[] { "9" });
+    groupMapping.put("17", new String[] { "13" });
+    groupMapping.put("18", new String[] { "21" });
+    groupMapping.put("20", new String[] { "7" });
+    groupMapping.put("21", new String[] { "26" });
 
-    groupMapping.put("22", new String[] {"7", "13"});
-    groupMapping.put("28", new String[] {"7"});
-    groupMapping.put("31", new String[] {"11"});
-    groupMapping.put("32", new String[] {"16"});
-    groupMapping.put("33", new String[] {"34"});
-    groupMapping.put("35", new String[] {"40"});
-    groupMapping.put("38", new String[] {"37"});
-    groupMapping.put("40", new String[] {"21"});
-    groupMapping.put("42", new String[] {"12"});
-    groupMapping.put("43", new String[] {"12"});
-    groupMapping.put("44", new String[] {"12"});
-    groupMapping.put("45", new String[] {"12"});
-    groupMapping.put("46", new String[] {"13"});
-    groupMapping.put("47", new String[] {"13"});
-    groupMapping.put("48", new String[] {"13"});
-    groupMapping.put("49", new String[] {"13"});
+    groupMapping.put("22", new String[] { "7", "13" });
+    groupMapping.put("28", new String[] { "7" });
+    groupMapping.put("31", new String[] { "11" });
+    groupMapping.put("32", new String[] { "16" });
+    groupMapping.put("33", new String[] { "34" });
+    groupMapping.put("35", new String[] { "40" });
+    groupMapping.put("38", new String[] { "37" });
+    groupMapping.put("40", new String[] { "21" });
+    groupMapping.put("42", new String[] { "12" });
+    groupMapping.put("43", new String[] { "12" });
+    groupMapping.put("44", new String[] { "12" });
+    groupMapping.put("45", new String[] { "12" });
+    groupMapping.put("46", new String[] { "13" });
+    groupMapping.put("47", new String[] { "13" });
+    groupMapping.put("48", new String[] { "13" });
+    groupMapping.put("49", new String[] { "13" });
 
-    groupMapping.put("50", new String[] {"7", "13"});
+    groupMapping.put("50", new String[] { "7", "13" });
 
-    groupMapping.put("51", new String[] {"12", "13"});
-    groupMapping.put("52", new String[] {"11"});
-    groupMapping.put("62", new String[] {"38"});
-    groupMapping.put("74", new String[] {"23"});
-    groupMapping.put("83", new String[] {"11"});
-    groupMapping.put("84", new String[] {"11"});
-    groupMapping.put("85", new String[] {"11"});
-    groupMapping.put("88", new String[] {"9"});
-    groupMapping.put("89", new String[] {"20"});
-    groupMapping.put("90", new String[] {"21"});
+    groupMapping.put("51", new String[] { "12", "13" });
+    groupMapping.put("52", new String[] { "11" });
+    groupMapping.put("62", new String[] { "38" });
+    groupMapping.put("74", new String[] { "23" });
+    groupMapping.put("83", new String[] { "11" });
+    groupMapping.put("84", new String[] { "11" });
+    groupMapping.put("85", new String[] { "11" });
+    groupMapping.put("88", new String[] { "9" });
+    groupMapping.put("89", new String[] { "20" });
+    groupMapping.put("90", new String[] { "21" });
 
-    groupMapping.put("94", new String[] {"17", "26"});
-    groupMapping.put("100", new String[] {"19"});
+    groupMapping.put("94", new String[] { "17", "26" });
+    groupMapping.put("100", new String[] { "19" });
 
+    groupMapping.put("102", new String[] { "7", "12", "13" });
 
-    groupMapping.put("102", new String[] {"7", "12", "13"});
+    groupMapping.put("104", new String[] { "11", "12" });
+    groupMapping.put("106", new String[] { "7" });
+    groupMapping.put("107", new String[] { "7" });
+    groupMapping.put("108", new String[] { "16" });
+    groupMapping.put("109", new String[] { "19" });
 
-    groupMapping.put("104", new String[] {"11", "12"});
-    groupMapping.put("106", new String[] {"7"});
-    groupMapping.put("107", new String[] {"7"});
-    groupMapping.put("108", new String[] {"16"});
-    groupMapping.put("109", new String[] {"19"});
+    groupMapping.put("110", new String[] { "7", "12", "20" });
+    groupMapping.put("111", new String[] { "9" });
+    groupMapping.put("112", new String[] { "40" });
+    groupMapping.put("114", new String[] { "16" });
+    groupMapping.put("115", new String[] { "40" });
+    groupMapping.put("116", new String[] { "23" });
+    groupMapping.put("118", new String[] { "38" });
+    groupMapping.put("119", new String[] { "23" });
 
+    groupMapping.put("120", new String[] { "7", "13", "20" });
+    groupMapping.put("121", new String[] { "39" });
+    groupMapping.put("122", new String[] { "23" });
+    groupMapping.put("125", new String[] { "69" });
+    groupMapping.put("126", new String[] { "69" });
 
-    groupMapping.put("110", new String[] {"7", "12", "20"});
-    groupMapping.put("111", new String[] {"9"});
-    groupMapping.put("112", new String[] {"40"});
-    groupMapping.put("114", new String[] {"16"});
-    groupMapping.put("115", new String[] {"40"});
-    groupMapping.put("116", new String[] {"23"});
-    groupMapping.put("118", new String[] {"38"});
-    groupMapping.put("119", new String[] {"23"});
+    groupMapping.put("127", new String[] { "69", "69" });
+    groupMapping.put("128", new String[] { "41" });
 
+    groupMapping.put("130", new String[] { "7", "20" });
 
-    groupMapping.put("120", new String[] {"7", "13", "20"});
-    groupMapping.put("121", new String[] {"39"});
-    groupMapping.put("122", new String[] {"23"});
-    groupMapping.put("125", new String[] {"69"});
-    groupMapping.put("126", new String[] {"69"});
-
-    groupMapping.put("127", new String[] {"69", "69"});
-    groupMapping.put("128", new String[] {"41"});
-
-    groupMapping.put("130", new String[] {"7", "20"});
-
-
-
-    groupMapping.put("132", new String[] {"7", "12", "13", "20"});
-    groupMapping.put("133", new String[] {"19"});
-    groupMapping.put("135", new String[] {"9"});
-    groupMapping.put("136", new String[] {"16"});
-    groupMapping.put("137", new String[] {"38"});
-    groupMapping.put("140", new String[] {"9"});
-    groupMapping.put("141", new String[] {"9"});
-    groupMapping.put("142", new String[] {"40"});
-    groupMapping.put("144", new String[] {"13"});
+    groupMapping.put("132", new String[] { "7", "12", "13", "20" });
+    groupMapping.put("133", new String[] { "19" });
+    groupMapping.put("135", new String[] { "9" });
+    groupMapping.put("136", new String[] { "16" });
+    groupMapping.put("137", new String[] { "38" });
+    groupMapping.put("140", new String[] { "9" });
+    groupMapping.put("141", new String[] { "9" });
+    groupMapping.put("142", new String[] { "40" });
+    groupMapping.put("144", new String[] { "13" });
   }
 
   public SWPConnector(Software software, List<VaccineGroup> forecastItemList) {
@@ -181,8 +188,14 @@ public class SWPConnector implements ConnectorInterface {
   }
 
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
+
+    SoftwareResult softwareResult = new SoftwareResult();
+    softwareResult.setSoftware(software);
     StringWriter sw = new StringWriter();
-    PrintWriter logOut = new PrintWriter(sw);
+    PrintWriter logOut = null;
+    if (logText) {
+      logOut = new PrintWriter(sw);
+    }
 
     URLConnection urlConn;
     DataOutputStream printOut;
@@ -212,12 +225,15 @@ public class SWPConnector implements ConnectorInterface {
           cvx = cvxOut.get(cvx);
         }
         if (groupArray != null) {
+          if (logOut != null) {
             logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate()));
-          for (String groupId : groupArray) {
-            logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate()) + " with group id = " + groupId);
-            sb.append("            <swp:dose cvx=\"" + cvx + "\" ");
-            sb.append("date=\"" + sdf.format(testEvent.getEventDate()) + "\" ");
-            sb.append("groupid=\"" + groupId + "\"/> \n");
+            for (String groupId : groupArray) {
+              logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate())
+                  + " with group id = " + groupId);
+              sb.append("            <swp:dose cvx=\"" + cvx + "\" ");
+              sb.append("date=\"" + sdf.format(testEvent.getEventDate()) + "\" ");
+              sb.append("groupid=\"" + groupId + "\"/> \n");
+            }
           }
         }
       }
@@ -228,8 +244,10 @@ public class SWPConnector implements ConnectorInterface {
     sb.append("   </soapenv:Body>  \n");
     sb.append("</soapenv:Envelope> \n");
     printOut.writeBytes(sb.toString());
-    logOut.println("Querying SWP software for forecast");
-    logOut.println(sb);
+    if (logOut != null) {
+      logOut.println("Querying SWP software for forecast");
+      logOut.println(sb);
+    }
     printOut.flush();
     printOut.close();
 
@@ -241,14 +259,14 @@ public class SWPConnector implements ConnectorInterface {
     doc.getDocumentElement().normalize();
     NodeList nodes = doc.getChildNodes();
     if (nodes.getLength() == 1) {
-      list =  parseEnvelope(nodes.item(0).getChildNodes(), logOut);
+      list = parseEnvelope(nodes.item(0).getChildNodes(), logOut);
     }
 
-    logOut.close();
-    for (ForecastActual forecastActual : list)
-    {
-      forecastActual.getSoftwareResult().setLogText(sw.toString());
+    if (logOut != null) {
+      logOut.close();
+      softwareResult.setLogText(sw.toString());
     }
+
     return list;
   }
 
@@ -256,7 +274,9 @@ public class SWPConnector implements ConnectorInterface {
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
-        logOut.println("  <" + node.getNodeName());
+        if (logOut != null) {
+          logOut.println("  <" + node.getNodeName());
+        }
         if ("S:Body".equals(node.getNodeName())) {
           return parseBody(node.getChildNodes(), logOut);
         }
@@ -269,7 +289,9 @@ public class SWPConnector implements ConnectorInterface {
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
-        logOut.println("    <" + node.getNodeName());
+        if (logOut != null) {
+          logOut.println("    <" + node.getNodeName());
+        }
         if ("executeVFM".equals(node.getNodeName())) {
           return parseExecute(node.getChildNodes(), logOut);
         }
@@ -282,7 +304,9 @@ public class SWPConnector implements ConnectorInterface {
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
-        logOut.println("      <" + node.getNodeName());
+        if (logOut != null) {
+          logOut.println("      <" + node.getNodeName());
+        }
         if ("vfm".equals(node.getNodeName())) {
           return parsePatient(node.getChildNodes(), logOut);
         }
@@ -295,7 +319,9 @@ public class SWPConnector implements ConnectorInterface {
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
-        logOut.println("        <" + node.getNodeName());
+        if (logOut != null) {
+          logOut.println("        <" + node.getNodeName());
+        }
         if ("patient".equals(node.getNodeName())) {
           return parseForecast(node.getChildNodes(), logOut);
         }
@@ -310,14 +336,16 @@ public class SWPConnector implements ConnectorInterface {
       Node node = nodes.item(i);
       if (node.getNodeType() == Node.ELEMENT_NODE) {
         NamedNodeMap map = node.getAttributes();
-        logOut.print("          <" + node.getNodeName());
-        for (int j = 0; j < map.getLength(); j++) {
-          Node n2 = map.item(j);
-          if (n2.getNodeType() == Node.ATTRIBUTE_NODE) {
-            logOut.print(" " + n2.getNodeName() + "=\"" + n2.getNodeValue() + "\"");
+        if (logOut != null) {
+          logOut.print("          <" + node.getNodeName());
+          for (int j = 0; j < map.getLength(); j++) {
+            Node n2 = map.item(j);
+            if (n2.getNodeType() == Node.ATTRIBUTE_NODE) {
+              logOut.print(" " + n2.getNodeName() + "=\"" + n2.getNodeValue() + "\"");
+            }
           }
+          logOut.println(">");
         }
-        logOut.println(">");
         if ("forecast".equals(node.getNodeName())) {
           String overduedate = safe(map.getNamedItem("overduedate"));
           // recommendeddate="2006-04-01" mindate="2006-04-01"
@@ -342,7 +370,7 @@ public class SWPConnector implements ConnectorInterface {
             forecastActual.setFinishedDate(parseDate(maxdate));
             list.add(forecastActual);
           }
-        } 
+        }
       }
     }
     return list;

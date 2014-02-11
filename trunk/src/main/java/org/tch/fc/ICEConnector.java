@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.axis.encoding.Base64;
 import org.tch.fc.model.ForecastActual;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
@@ -33,7 +34,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class ICEConnector implements ConnectorInterface {
+public class ICEConnector implements ConnectorInterface
+{
 
   private static final String LOG_PARSE_ID_END = "\"/>";
   private static final String LOG_PARSE_ID_START = "<id root=\"";
@@ -44,6 +46,16 @@ public class ICEConnector implements ConnectorInterface {
   private Map<String, VaccineGroup[]> familyMapping = new HashMap<String, VaccineGroup[]>();
 
   private Software software = null;
+
+  private boolean logText = false;
+
+  public boolean isLogText() {
+    return logText;
+  }
+
+  public void setLogText(boolean logText) {
+    this.logText = logText;
+  }
 
   public ICEConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
@@ -100,18 +112,21 @@ public class ICEConnector implements ConnectorInterface {
 
   private StringWriter sw;
   private PrintWriter logOut;
-  private String originalLog;
 
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
 
+    SoftwareResult softwareResult = new SoftwareResult();
+    softwareResult.setSoftware(software);
     sw = new StringWriter();
-    logOut = new PrintWriter(sw);
+    logOut = logText ? new PrintWriter(sw) : null;
 
-    logOut.println("ICE");
-    logOut.println();
-    logOut.println("Current time " + new Date());
-    logOut.println("Connecting to " + software.getServiceUrl());
-    logOut.println();
+    if (logOut != null) {
+      logOut.println("ICE");
+      logOut.println();
+      logOut.println("Current time " + new Date());
+      logOut.println("Connecting to " + software.getServiceUrl());
+      logOut.println();
+    }
     URLConnection urlConn;
     URL url = new URL(software.getServiceUrl());
     urlConn = url.openConnection();
@@ -143,13 +158,16 @@ public class ICEConnector implements ConnectorInterface {
     int posEnd = line.indexOf(BASE64_ENCODED_PAYLOAD_TAG_END);
     List<ForecastActual> list = new ArrayList<ForecastActual>();
     if (posStart == -1 || posEnd == -1 || posEnd < posStart) {
-      logOut.println("Unable to read results, couldn't find base 64 contents");
-      logOut.println(line);
+      if (logOut != null) {
+        logOut.println("Unable to read results, couldn't find base 64 contents");
+        logOut.println(line);
+      }
     } else {
-      logOut.close();
-      originalLog = sw.toString();
       line = line.substring(posStart + BASE64_ENCODED_PAYLOAD_TAG_START.length(), posEnd);
       line = new String(Base64.decode(line));
+      if (logOut != null) {
+        logOut.print(line);
+      }
       list = readVMR(line);
       for (int forecastItemId : notSupportedItems) {
         boolean found = false;
@@ -165,8 +183,9 @@ public class ICEConnector implements ConnectorInterface {
             ForecastActual forecastActual = new ForecastActual();
             forecastActual.setDoseNumber("NS");
             forecastActual.setVaccineGroup(forecastItem);
-            forecastActual.getSoftwareResult().setLogText(originalLog + "ICE Forecaster does not support " + forecastItem.getLabel()
-                + ". No results returned. \n");
+            if (logOut != null) {
+              logOut.println("ICE Forecaster does not support " + forecastItem.getLabel() + ". No results returned.");
+            }
             list.add(forecastActual);
           }
         }
@@ -185,12 +204,17 @@ public class ICEConnector implements ConnectorInterface {
             ForecastActual forecastActual = new ForecastActual();
             forecastActual.setComplete();
             forecastActual.setVaccineGroup(forecastItem);
-            forecastActual.getSoftwareResult().setLogText(originalLog + "ICE Forecaster did not return results " + forecastItem.getLabel()
-                + ". Results assumed to be complete. \n");
+            if (logOut != null) {
+              logOut.println("ICE Forecaster did not return results " + forecastItem.getLabel()
+                    + ". Results assumed to be complete. ");}
             list.add(forecastActual);
           }
         }
       }
+    }
+    if (logOut != null) {
+      logOut.close();
+      softwareResult.setLogText(sw.toString());
     }
     return list;
   }
@@ -239,8 +263,7 @@ public class ICEConnector implements ConnectorInterface {
     Document doc = dBuilder.parse(in);
     doc.getDocumentElement().normalize();
     NodeList nList = doc.getElementsByTagName("ns5:cdsOutput");
-    if (nList.getLength() == 0)
-    {
+    if (nList.getLength() == 0) {
       nList = doc.getElementsByTagName("ns4:cdsOutput");
     }
     for (int i = 0; i < nList.getLength(); i++) {
@@ -401,12 +424,6 @@ public class ICEConnector implements ConnectorInterface {
             String xmlLog = null;
             if (id != null) {
               xmlLog = xmlLogMap.get(id);
-            }
-            if (xmlLog != null) {
-              forecastActual.getSoftwareResult().setLogText(originalLog + sb.toString() + "\nSubstance Administration XML Returned: \n"
-                  + xmlLog);
-            } else {
-              forecastActual.getSoftwareResult().setLogText(originalLog + sb.toString());
             }
             forecastActualList.add(forecastActual);
           }
