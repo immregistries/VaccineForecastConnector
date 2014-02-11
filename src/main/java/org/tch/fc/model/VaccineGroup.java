@@ -43,6 +43,8 @@ public class VaccineGroup implements Serializable {
 
   public static final int ID_DTAP = 2;
   public static final int ID_INFLUENZA = 3;
+  public static final int ID_INFLUENZA_IIV = 34;
+  public static final int ID_INFLUENZA_LAIV = 33;
   public static final int ID_HEPA = 4;
   public static final int ID_HEPB = 5;
   public static final int ID_HIB = 6;
