@@ -11,6 +11,15 @@ public class ForecastActual extends ForecastResult implements Serializable {
 	private String scheduleName = "";
 	private String vaccineCvx = "";
   private SoftwareResult softwareResult = null;
+  private String explanationHtml = "";
+
+  public String getExplanationHtml() {
+    return explanationHtml;
+  }
+
+  public void setExplanationHtml(String explanationHtml) {
+    this.explanationHtml = explanationHtml;
+  }
 
   public SoftwareResult getSoftwareResult() {
     return softwareResult;

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tch.fc.model.Admin;
 import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
@@ -30,11 +31,28 @@ import org.tch.fc.model.VaccineGroup;
 public class TCHConnector implements ConnectorInterface
 {
 
+  private static final String STATUS = " status ";
+  private static final String FINISHED = " finished ";
+  private static final String OVERDUE = " overdue ";
+  private static final String VALID = " valid ";
+  private static final String DUE = " due ";
+  private static final String DOSE = " dose ";
+  private static final String FORECASTING = "Forecasting ";
   private static final String VACCINATION_LINE_PREFIX = "Vaccination #";
+  private static final String DETAILS_FOR_PREFIX = "DETAILS FOR: ";
+
+  private static final String STATUS_DESCRIPTION_DUE_LATER = "due later";
+  private static final String STATUS_DESCRIPTION_DUE = "due";
+  private static final String STATUS_DESCRIPTION_OVERDUE = "overdue";
+  private static final String STATUS_DESCRIPTION_FINISHED = "finished";
+  private static final String STATUS_DESCRIPTION_COMPLETE = "complete";
+  private static final String STATUS_DESCRIPTION_CONTRAINDICATED = "contraindicated";
 
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
 
   private Map<String, String> evaluationToCvxMapping = new HashMap<String, String>();
+
+  private Map<String, Admin> adminStatusMapping = new HashMap<String, Admin>();
 
   private Software software = null;
   private boolean logText = false;
@@ -68,6 +86,7 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "Var", VaccineGroup.ID_VAR);
     addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA);
     addForcastItem(forecastItemList, "Influenza IIV", VaccineGroup.ID_INFLUENZA_IIV);
+    addForcastItem(forecastItemList, "Influenza IIV", VaccineGroup.ID_INFLUENZA);
     addForcastItem(forecastItemList, "Influenza LAIV", VaccineGroup.ID_INFLUENZA_LAIV);
     addForcastItem(forecastItemList, "MCV4", VaccineGroup.ID_MENING);
     addForcastItem(forecastItemList, "HPV", VaccineGroup.ID_HPV);
@@ -95,6 +114,12 @@ public class TCHConnector implements ConnectorInterface
     evaluationToCvxMapping.put("Zoster", "121");
     evaluationToCvxMapping.put("PPSV", "33");
 
+    adminStatusMapping.put(STATUS_DESCRIPTION_DUE_LATER, Admin.DUE_LATER);
+    adminStatusMapping.put(STATUS_DESCRIPTION_DUE, Admin.DUE);
+    adminStatusMapping.put(STATUS_DESCRIPTION_OVERDUE, Admin.OVERDUE);
+    adminStatusMapping.put(STATUS_DESCRIPTION_FINISHED, Admin.FINISHED);
+    adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE, Admin.COMPLETE);
+    adminStatusMapping.put(STATUS_DESCRIPTION_CONTRAINDICATED, Admin.CONTRAINDICATED);
   }
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
@@ -112,6 +137,8 @@ public class TCHConnector implements ConnectorInterface
   }
 
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
+
+    Map<String, ForecastActual> forecastActualMap = new HashMap<String, ForecastActual>();
 
     SoftwareResult softwareResult = new SoftwareResult();
     softwareResult.setSoftware(software);
@@ -151,45 +178,90 @@ public class TCHConnector implements ConnectorInterface
         logOut.println(line);
       }
       line = line.trim();
-      if (line.startsWith("Forecasting ")) {
-        // Example lines
-        // 0 1 2 3 4 5 6 7 8 9 10 11
-        // Forecasting MMR dose 1 due 05/01/2066 valid 04/29/2006 overdue
-        // 04/29/2006 finished 10/05/2009
-        // Forecasting Hib complete
-        String[] parts = line.split("\\s");
-        if (parts.length > 2) {
-          List<VaccineGroup> forecastItemListFromMap = familyMapping.get(parts[1]);
+      if (line.startsWith(FORECASTING)) {
+        line = line.substring(FORECASTING.length());
+        // Example line
+        // Forecasting Influenza IIV status overdue dose 1 due 08/01/2013 valid 08/01/2013 overdue 12/01/2013 finished 01/14/2159
+        int statusPos = line.indexOf(STATUS);
+        if (statusPos > 0) {
+          String vaccineType = line.substring(0, statusPos);
+          List<VaccineGroup> forecastItemListFromMap = familyMapping.get(vaccineType);
+
+          int dosePos = line.indexOf(DOSE);
+          if (dosePos == -1) {
+            dosePos = line.length();
+          }
+          String status = line.substring(statusPos + STATUS.length(), dosePos);
+          String dose = "";
+          String due = "";
+          String valid = "";
+          String overdue = "";
+          String finished = "";
+          if (dosePos < line.length()) {
+            line = line.substring(dosePos + DOSE.length());
+            int duePos = line.indexOf(DUE);
+            int validPos = line.indexOf(VALID);
+            int overduePos = line.indexOf(OVERDUE);
+            int finishedPos = line.indexOf(FINISHED);
+            if (duePos > 0) {
+              dose = line.substring(0, duePos);
+              if (validPos > duePos) {
+                due = line.substring(duePos + DUE.length(), validPos);
+                if (overduePos > validPos) {
+                  valid = line.substring(validPos + VALID.length(), overduePos);
+                  if (finishedPos > overduePos) {
+                    overdue = line.substring(overduePos + OVERDUE.length(), finishedPos);
+                    finished = line.substring(finishedPos + FINISHED.length());
+                  }
+                }
+              }
+            }
+          }
+
+          Admin adminStatus = adminStatusMapping.get(status);
+          if (adminStatus == null) {
+            adminStatus = Admin.UNKNOWN;
+          }
+          Date dueDate = null;
+          Date validDate = null;
+          Date overdueDate = null;
+          Date finishedDate = null;
+          if (due.length() == 10) {
+            dueDate = parseDate(due);
+          }
+          if (valid.length() == 10) {
+            validDate = parseDate(valid);
+          }
+          if (overdue.length() == 10) {
+            overdueDate = parseDate(overdue);
+          }
+          if (finished.length() == 10) {
+            finishedDate = parseDate(finished);
+          }
+
           if (forecastItemListFromMap != null) {
             for (VaccineGroup forecastItem : forecastItemListFromMap) {
               if (forecastItem != null) {
                 ForecastActual forecastActual = new ForecastActual();
                 forecastActual.setSoftwareResult(softwareResult);
                 forecastActual.setVaccineGroup(forecastItem);
-                if ("complete".equalsIgnoreCase(parts[2])) {
+                forecastActual.setAdmin(adminStatus);
+                if (adminStatus == Admin.COMPLETE || adminStatus == Admin.FINISHED) {
                   forecastActual.setDoseNumber("COMP");
                 } else {
-                  if (parts.length > 3 && "dose".equals(parts[2])) {
-                    forecastActual.setDoseNumber(parts[3]);
-                  }
-                  if (parts.length > 5 && "due".equals(parts[4])) {
-                    forecastActual.setDueDate(parseDate(parts[5]));
-                  }
-                  if (parts.length > 7 && "valid".equals(parts[6])) {
-                    forecastActual.setValidDate(parseDate(parts[7]));
-                  }
-                  if (parts.length > 9 && "overdue".equals(parts[8])) {
-                    forecastActual.setOverdueDate(parseDate(parts[9]));
-                  }
-                  if (parts.length > 11 && "finished".equals(parts[10])) {
-                    forecastActual.setFinishedDate(parseDate(parts[11]));
-                  }
+                  forecastActual.setDoseNumber(dose);
+                  forecastActual.setDueDate(dueDate);
+                  forecastActual.setValidDate(validDate);
+                  forecastActual.setOverdueDate(overdueDate);
+                  forecastActual.setFinishedDate(finishedDate);
                 }
                 list.add(forecastActual);
+                forecastActualMap.put(vaccineType, forecastActual);
               }
             }
           }
         }
+
       } else if (line.startsWith(VACCINATION_LINE_PREFIX)) {
         line = line.substring(VACCINATION_LINE_PREFIX.length());
         int pos = line.indexOf(':');
@@ -210,7 +282,7 @@ public class TCHConnector implements ConnectorInterface
                     if (isInvalidPos == -1) {
                       pos = isValidPos + 12;
                     }
-                    int startPos = line.indexOf(" dose ", pos);
+                    int startPos = line.indexOf(DOSE, pos);
                     String doseName = "";
                     String vaccineCvx = "";
                     String doseNumber = "";
@@ -242,6 +314,7 @@ public class TCHConnector implements ConnectorInterface
                       testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
                     }
                     testEvent.getEvaluationActualList().add(evaluationActual);
+
                   }
                   break;
                 }
@@ -250,6 +323,13 @@ public class TCHConnector implements ConnectorInterface
           } catch (NumberFormatException nfe) {
             // ignore
           }
+        }
+      } else if (line.startsWith(DETAILS_FOR_PREFIX)) {
+        String vaccineType = line.substring(DETAILS_FOR_PREFIX.length());
+        ForecastActual forecastActual = forecastActualMap.get(vaccineType);
+        String html = in.readLine();
+        if (forecastActual != null && html != null) {
+          forecastActual.setExplanationHtml(html);
         }
       }
     }

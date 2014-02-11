@@ -73,6 +73,7 @@ public class TestConnect extends junit.framework.TestCase {
     software.setService(Service.TCH);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    connector.setLogText(true);
     List<ForecastActual> forecastActualList = connector.queryForForecast(testCase);
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
