@@ -12,4 +12,8 @@ public interface ConnectorInterface {
    * @return
    */
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception;
+  
+  public void setLogText(boolean logText);
+  
+  public boolean isLogText();
 }

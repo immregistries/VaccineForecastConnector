@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
@@ -34,13 +35,24 @@ import com.stchome.saf.messages.get._1_2.VaccinationType;
 
 import static org.tch.fc.model.VaccineGroup.*;
 
-public class STCConnector extends GetForecastRequestSoap11Stub implements ConnectorInterface {
+public class STCConnector extends GetForecastRequestSoap11Stub implements ConnectorInterface
+{
 
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
   private Map<String, String> notSupported = new HashMap<String, String>();
 
   private Software software = null;
   private List<VaccineGroup> forecastItemList = null;
+
+  private boolean logText = false;
+
+  public boolean isLogText() {
+    return logText;
+  }
+
+  public void setLogText(boolean logText) {
+    this.logText = logText;
+  }
 
   private static String STC_HEP_3_DOSE = "4";
   private static String STC_HEP_2_DOSE = "12";
@@ -104,13 +116,11 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
     stcFamilyCodeNameMap.put("23", "NOVEL INFLUENZA H1N1-09");
     stcFamilyCodeNameMap.put("24", "Tdap");
   }
-  
-  private static String getStcLabel(String id)
-  {
+
+  private static String getStcLabel(String id) {
     String label = stcFamilyCodeNameMap.get(id);
-    if (label == null)
-    {
-      return "Unknown STC Family Code " + id; 
+    if (label == null) {
+      return "Unknown STC Family Code " + id;
     }
     return label;
   }
@@ -131,15 +141,19 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
 
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
 
+    SoftwareResult softwareResult = new SoftwareResult();
+    softwareResult.setSoftware(software);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
     StringWriter sw = new StringWriter();
-    PrintWriter logOut = new PrintWriter(sw);
+    PrintWriter logOut = logText ? new PrintWriter(sw) : null;
 
-    logOut.println("STC Forecaster");
-    logOut.println();
-    logOut.println("Current time " + new Date());
-    logOut.println("Connecting to " + software.getServiceUrl());
+    if (logOut != null) {
+      logOut.println("STC Forecaster");
+      logOut.println();
+      logOut.println("Current time " + new Date());
+      logOut.println("Connecting to " + software.getServiceUrl());
+    }
     PersonDetailsType personDetailsType = new PersonDetailsType();
     personDetailsType.setDateOfBirth(sdf.format(testCase.getPatientDob()));
     personDetailsType.setGender("M".equals(testCase.getPatientSex()) ? GenderType.M : GenderType.F);
@@ -165,46 +179,57 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
     List<ForecastActual> list = new ArrayList<ForecastActual>();
     ResponseDetailType[] responseDetailTypes = getForecast(new PersonDetailsType[] { personDetailsType });
     if (responseDetailTypes.length == 0) {
-      logOut.println("No results returned!");
+      if (logOut != null) {
+        logOut.println("No results returned!");
+      }
     } else {
       ResponseDetailType responseDetailType = responseDetailTypes[0];
       personDetailsType = responseDetailType.getPersonDetails();
-      logOut.println("Results returned");
-      logOut.println("Information: " + responseDetailType.getInformation());
+      if (logOut != null) {
+        logOut.println("Results returned");
+        logOut.println("Information: " + responseDetailType.getInformation());
+      }
 
       if (personDetailsType.getVaccination() == null) {
-        logOut.println("No vaccinations");
+        if (logOut != null) {
+          logOut.println("No vaccinations");
+        }
       } else {
         for (VaccinationType vaccinationType : personDetailsType.getVaccination()) {
-          logOut.println("Vacc: " + vaccinationType.getVaccCode() + " given " + vaccinationType.getVaccDate());
-          if (vaccinationType.getMessage() != null) {
-            for (VaccMessageType message : vaccinationType.getMessage()) {
-              logOut.println("  + " + message.getMessage() + " (" + message.getMessageType() + ")");
+          if (logOut != null) {
+            logOut.println("Vacc: " + vaccinationType.getVaccCode() + " given " + vaccinationType.getVaccDate());
+            if (vaccinationType.getMessage() != null) {
+              for (VaccMessageType message : vaccinationType.getMessage()) {
+                logOut.println("  + " + message.getMessage() + " (" + message.getMessageType() + ")");
+              }
             }
           }
         }
       }
 
       for (ForecastDetailsType forecastDetailsType : responseDetailType.getForecastDetails()) {
-        logOut.println("----------------------------------------------------------------");
-        logOut.println("Reading " + getStcLabel(forecastDetailsType.getFamilyCode()));
-        logOut.println(" + Dose:     " + forecastDetailsType.getDoseNumber());
-        logOut.println(" + Due:      " + forecastDetailsType.getRecommendedDate());
-        logOut.println(" + Valid:    " + forecastDetailsType.getMinAllowableDate());
-        logOut.println(" + Overdue:  " + forecastDetailsType.getPastDueDate());
-        logOut.println(" + Finished: " + forecastDetailsType.getMaxAllowableDate());
+        if (logOut != null) {
+          logOut.println("----------------------------------------------------------------");
+          logOut.println("Reading " + getStcLabel(forecastDetailsType.getFamilyCode()));
+          logOut.println(" + Dose:     " + forecastDetailsType.getDoseNumber());
+          logOut.println(" + Due:      " + forecastDetailsType.getRecommendedDate());
+          logOut.println(" + Valid:    " + forecastDetailsType.getMinAllowableDate());
+          logOut.println(" + Overdue:  " + forecastDetailsType.getPastDueDate());
+          logOut.println(" + Finished: " + forecastDetailsType.getMaxAllowableDate());
+        }
         List<VaccineGroup> forecastItemListFromMap = familyMapping.get(forecastDetailsType.getFamilyCode());
         if (forecastItemListFromMap != null) {
           for (VaccineGroup forecastItem : forecastItemListFromMap) {
             if (forecastItem == null) {
               String label = notSupported.get(forecastDetailsType.getFamilyCode());
-              if (label != null) {
-                logOut.println("Unsupported family code " + forecastDetailsType.getFamilyCode() + " (" + label + ")");
-              } else {
-                logOut.println("Unrecognized family code " + forecastDetailsType.getFamilyCode() + " ");
+              if (logOut != null) {
+                if (label != null) {
+                  logOut.println("Unsupported family code " + forecastDetailsType.getFamilyCode() + " (" + label + ")");
+                } else {
+                  logOut.println("Unrecognized family code " + forecastDetailsType.getFamilyCode() + " ");
+                }
               }
-            }
-            else {
+            } else {
               if (forecastItem.getVaccineGroupId() == ID_DTAP || forecastItem.getVaccineGroupId() == ID_TDAP_TD) {
                 // screen out the DTaP and Td recommendations for the age of the
                 // patient
@@ -216,14 +241,20 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
                   if (forecastItem.getVaccineGroupId() == ID_DTAP) {
                     // Don't add DTaP recommendation because test case is now 7
                     // years or older at time of recommendation
-                    logOut.println("Patient is 7 years old or older so not saving DTaP/Td/Tdap recommendation as DTaP");
+                    if (logOut != null) {
+                      logOut
+                          .println("Patient is 7 years old or older so not saving DTaP/Td/Tdap recommendation as DTaP");
+                    }
                     continue;
                   }
                 } else {
                   if (forecastItem.getVaccineGroupId() == ID_TDAP_TD) {
                     // Don't add Tdap recommendation because test case is not
                     // yet at 7 years of age
-                    logOut.println("Patient is younger than 7 years so not saving DTaP/Td/Tdap recommendation as Tdap/Td");
+                    if (logOut != null) {
+                      logOut.println("Patient is younger than 7 years so not saving "
+                          + "DTaP/Td/Tdap recommendation as Tdap/Td");
+                    }
                     continue;
                   }
                 }
@@ -255,17 +286,25 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
                 }
                 if (use3Dose) {
                   if (forecastDetailsType.getFamilyCode().equals(STC_HEP_2_DOSE)) {
-                    logOut.println("The first dose was for 3-dose series, not saving 2 dose series under Hep B forecast item.");
+                    if (logOut != null) {
+                      logOut.println("The first dose was for 3-dose series, "
+                          + "not saving 2 dose series under Hep B forecast item.");
+                    }
                     continue;
                   }
                 } else {
                   if (forecastDetailsType.getFamilyCode().equals(STC_HEP_3_DOSE)) {
-                    logOut.println("The first dose was for 2-dose series, not saving 3 dose series under Hep B forecast item.");
+                    {
+                      logOut.println("The first dose was for 2-dose series, "
+                          + "not saving 3 dose series under Hep B forecast item.");
+                    }
                     continue;
                   }
                 }
               }
-              logOut.println("Saving as results for forecast item " + forecastItem.getLabel());
+              if (logOut != null) {
+                logOut.println("Saving as results for forecast item " + forecastItem.getLabel());
+              }
               ForecastActual forecastActual = new ForecastActual();
               forecastActual.setVaccineGroup(forecastItem);
               forecastActual.setDoseNumber("" + forecastDetailsType.getDoseNumber());
@@ -280,9 +319,9 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
       }
     }
 
-    logOut.close();
-    for (ForecastActual forecastActual : list) {
-      forecastActual.getSoftwareResult().setLogText(sw.toString());
+    if (logOut != null) {
+      logOut.close();
+      softwareResult.setLogText(sw.toString());
     }
     return list;
   }

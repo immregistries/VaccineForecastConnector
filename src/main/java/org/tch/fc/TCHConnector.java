@@ -37,6 +37,15 @@ public class TCHConnector implements ConnectorInterface
   private Map<String, String> evaluationToCvxMapping = new HashMap<String, String>();
 
   private Software software = null;
+  private boolean logText = false;
+
+  public boolean isLogText() {
+    return logText;
+  }
+
+  public void setLogText(boolean logText) {
+    this.logText = logText;
+  }
 
   public TCHConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
@@ -102,15 +111,22 @@ public class TCHConnector implements ConnectorInterface
 
   public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
 
+    SoftwareResult softwareResult = new SoftwareResult();
+    softwareResult.setSoftware(software);
     StringWriter sw = new StringWriter();
-    PrintWriter logOut = new PrintWriter(sw);
+    PrintWriter logOut = null;
+    if (logText) {
+      logOut = new PrintWriter(sw);
+    }
     String queryString = createQueryString(testCase, software, "text");
-    logOut.println("TCH Forecaster");
-    logOut.println();
-    logOut.println("Current time " + new Date());
-    logOut.println("Connecting to " + software.getServiceUrl());
-    logOut.println("Query " + software.getServiceUrl() + queryString);
-    logOut.println();
+    if (logOut != null) {
+      logOut.println("TCH Forecaster");
+      logOut.println();
+      logOut.println("Current time " + new Date());
+      logOut.println("Connecting to " + software.getServiceUrl());
+      logOut.println("Query " + software.getServiceUrl() + queryString);
+      logOut.println();
+    }
     URLConnection urlConn;
     URL url = new URL(software.getServiceUrl() + queryString);
     urlConn = url.openConnection();
@@ -125,9 +141,13 @@ public class TCHConnector implements ConnectorInterface
     List<ForecastActual> list = new ArrayList<ForecastActual>();
     BufferedReader in = new BufferedReader(input);
     String line;
-    logOut.println("Results:");
+    if (logOut != null) {
+      logOut.println("Results:");
+    }
     while ((line = in.readLine()) != null) {
-      logOut.println(line);
+      if (logOut != null) {
+        logOut.println(line);
+      }
       line = line.trim();
       if (line.startsWith("Forecasting ")) {
         // Example lines
@@ -142,7 +162,7 @@ public class TCHConnector implements ConnectorInterface
             for (VaccineGroup forecastItem : forecastItemListFromMap) {
               if (forecastItem != null) {
                 ForecastActual forecastActual = new ForecastActual();
-                forecastActual.setSoftwareResult(new SoftwareResult());
+                forecastActual.setSoftwareResult(softwareResult);
                 forecastActual.setVaccineGroup(forecastItem);
                 if ("complete".equalsIgnoreCase(parts[2])) {
                   forecastActual.setDoseNumber("COMP");
@@ -204,7 +224,6 @@ public class TCHConnector implements ConnectorInterface
                         doseNumber = line.substring(startPos, endPos);
                       }
                     }
-                    SoftwareResult softwareResult = new SoftwareResult();
                     EvaluationActual evaluationActual = new EvaluationActual();
                     evaluationActual.setSoftwareResult(softwareResult);
                     evaluationActual.getSoftwareResult().setSoftware(software);
@@ -216,9 +235,8 @@ public class TCHConnector implements ConnectorInterface
                     evaluationActual.setSeriesUsedCode(vaccineCvx);
                     evaluationActual.setSeriesUsedText(doseName);
                     evaluationActual.setVaccineCvx(vaccineCvx);
-                    
-                    if (testEvent.getEvaluationActualList() == null)
-                    {
+
+                    if (testEvent.getEvaluationActualList() == null) {
                       testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
                     }
                     testEvent.getEvaluationActualList().add(evaluationActual);
@@ -234,10 +252,11 @@ public class TCHConnector implements ConnectorInterface
       }
     }
     input.close();
-    logOut.close();
-    for (ForecastActual forecastActual : list) {
-      forecastActual.getSoftwareResult().setLogText(sw.toString());
+    if (logOut != null) {
+      logOut.close();
+      softwareResult.setLogText(sw.toString());
     }
+
     return list;
   }
 
