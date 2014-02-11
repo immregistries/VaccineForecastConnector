@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 public enum Admin implements Serializable {
   DUE("D", "Due"), OVERDUE("O", "Overdue"), DUE_LATER("L", "Due Later"), CONTRAINDICATED("X", "Contraindicated"), COMPLETE(
-      "C", "Complete"), NOT_COMPLETE("F", "Not Complete"), FINISHED("N", "Finished"), IMMUNE("I", "Immune"), UNKNOWN("U", "Unknown");
+      "C", "Complete"), COMPLETE_FOR_SEASON("C", "Complete For Season"), NOT_COMPLETE("F", "Not Complete"), FINISHED(
+      "N", "Finished"), IMMUNE("I", "Immune"), UNKNOWN("U", "Unknown");
 
   private Admin(String adminStatus, String label) {
     this.adminStatus = adminStatus;

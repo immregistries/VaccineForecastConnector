@@ -47,6 +47,7 @@ public class TCHConnector implements ConnectorInterface
   private static final String STATUS_DESCRIPTION_FINISHED = "finished";
   private static final String STATUS_DESCRIPTION_COMPLETE = "complete";
   private static final String STATUS_DESCRIPTION_CONTRAINDICATED = "contraindicated";
+  private static final String STATUS_DESCRIPTION_COMPLETE_FOR_SEASON = "complete for season";
 
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
 
@@ -120,6 +121,7 @@ public class TCHConnector implements ConnectorInterface
     adminStatusMapping.put(STATUS_DESCRIPTION_FINISHED, Admin.FINISHED);
     adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE, Admin.COMPLETE);
     adminStatusMapping.put(STATUS_DESCRIPTION_CONTRAINDICATED, Admin.CONTRAINDICATED);
+    adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE_FOR_SEASON, Admin.COMPLETE_FOR_SEASON);
   }
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
@@ -246,7 +248,7 @@ public class TCHConnector implements ConnectorInterface
                 forecastActual.setSoftwareResult(softwareResult);
                 forecastActual.setVaccineGroup(forecastItem);
                 forecastActual.setAdmin(adminStatus);
-                if (adminStatus == Admin.COMPLETE || adminStatus == Admin.FINISHED) {
+                if (adminStatus == Admin.COMPLETE || adminStatus == Admin.COMPLETE_FOR_SEASON || adminStatus == Admin.FINISHED) {
                   forecastActual.setDoseNumber("COMP");
                 } else {
                   forecastActual.setDoseNumber(dose);
