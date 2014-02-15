@@ -5,9 +5,6 @@ import java.util.Date;
 
 public abstract class ForecastResult {
 
-  public static final String DOSE_NUMBER_COMPLETE = "COMP";
-  public static final String DOSE_NUMBER_ERROR = "ERROR";
-
   protected TestCase testCase = null;
   protected VaccineGroup vaccineGroup = null;
   protected String doseNumber = null;
@@ -68,11 +65,6 @@ public abstract class ForecastResult {
     this.vaccineGroup = forecastItem;
   }
   
-  public void setComplete()
-  {
-    this.doseNumber = "COMP";
-  }
-
   public String getDoseNumber() {
     return doseNumber;
   }
@@ -105,10 +97,6 @@ public abstract class ForecastResult {
     this.overdueDate = overdueDate;
   }
 
-  public boolean isComplete() {
-    return doseNumber != null && doseNumber.equals(DOSE_NUMBER_COMPLETE);
-  }
-  
   public String getAdminStatus()
   {
     return admin == null ? "" : admin.getAdminStatus();
