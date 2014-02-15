@@ -86,6 +86,8 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "Rubella", VaccineGroup.ID_RUBELLA_ONLY);
     addForcastItem(forecastItemList, "Var", VaccineGroup.ID_VAR);
     addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA);
+    addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA_IIV);
+    addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA_LAIV);
     addForcastItem(forecastItemList, "Influenza IIV", VaccineGroup.ID_INFLUENZA_IIV);
     addForcastItem(forecastItemList, "Influenza IIV", VaccineGroup.ID_INFLUENZA);
     addForcastItem(forecastItemList, "Influenza LAIV", VaccineGroup.ID_INFLUENZA_LAIV);
@@ -248,9 +250,8 @@ public class TCHConnector implements ConnectorInterface
                 forecastActual.setSoftwareResult(softwareResult);
                 forecastActual.setVaccineGroup(forecastItem);
                 forecastActual.setAdmin(adminStatus);
-                if (adminStatus == Admin.COMPLETE || adminStatus == Admin.COMPLETE_FOR_SEASON || adminStatus == Admin.FINISHED) {
-                  forecastActual.setDoseNumber("COMP");
-                } else {
+                if (adminStatus != Admin.COMPLETE && adminStatus != Admin.COMPLETE_FOR_SEASON
+                    && adminStatus != Admin.FINISHED) {
                   forecastActual.setDoseNumber(dose);
                   forecastActual.setDueDate(dueDate);
                   forecastActual.setValidDate(validDate);

@@ -23,6 +23,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.axis.encoding.Base64;
+import org.tch.fc.model.Admin;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
@@ -202,7 +203,7 @@ public class ICEConnector implements ConnectorInterface
           VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
           if (forecastItem != null) {
             ForecastActual forecastActual = new ForecastActual();
-            forecastActual.setComplete();
+            forecastActual.setAdmin(Admin.NO_RESULTS);
             forecastActual.setVaccineGroup(forecastItem);
             if (logOut != null) {
               logOut.println("ICE Forecaster did not return results " + forecastItem.getLabel()
@@ -367,57 +368,62 @@ public class ICEConnector implements ConnectorInterface
 
             switch (recommendationReason) {
             case ABOVE_AGE_MAY_COMPLETE:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.FINISHED);
               sb.append(" + Above age to complete, so setting as recommendation as complete\n");
               break;
             case COMPLETE:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.COMPLETE);
               sb.append(" + Completed, so setting as recommendation as complete\n");
               break;
             case COMPLETE_HIGH_RISK:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.COMPLETE);
               sb.append(" + High risk series complete so setting as recommendation as complete\n");
               break;
             case DISEASE_DOCUMENTED:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.IMMUNE);
               sb.append(" + Disease was documented so setting as recommendation as complete\n");
               break;
             case DUE_IN_FUTURE:
+              forecastActual.setAdmin(Admin.DUE_LATER);
               forecastActual.setDoseNumber("*");
               sb.append(" + Due in the future\n");
               break;
             case DUE_NOW:
+              forecastActual.setAdmin(Admin.DUE);
               forecastActual.setDoseNumber("*");
               sb.append(" + Due now\n");
               break;
             case HIGH_RISK:
+              forecastActual.setAdmin(Admin.DUE);
               forecastActual.setDoseNumber("*");
               sb.append(" + Is due because of high risk\n");
               break;
             case IGNORE:
+              forecastActual.setAdmin(Admin.UNKNOWN);
               sb.append(" + Ignoring this result\n");
               continue;
             case NOT_SPECIFIED:
+              forecastActual.setAdmin(Admin.UNKNOWN);
               sb.append(" + Result not specified\n");
               continue;
             case OUTSIDE_FLU_SEASON:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.COMPLETE_FOR_SEASON);
               sb.append(" + Outsize of flu season so not recommending, marking as complete\n");
               break;
             case PROOF_OF_IMMUNITY:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.IMMUNE);
               sb.append(" + Patient has proof of immunity, marking as complete\n");
               break;
             case TOO_OLD:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.FINISHED);
               sb.append(" + Patient is too old, marking as complete\n");
               break;
             case TOO_OLD_HIGH_RISK:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.FINISHED);
               sb.append(" + Patient is too old for high risk vaccination\n");
               break;
             case WRONG_GENDER:
-              forecastActual.setComplete();
+              forecastActual.setAdmin(Admin.COMPLETE);
               sb.append(" + Patient is wrong gender to receive this vaccination, marking as complete\n");
               break;
             }

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tch.fc.model.Admin;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
@@ -306,6 +307,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
                 logOut.println("Saving as results for forecast item " + forecastItem.getLabel());
               }
               ForecastActual forecastActual = new ForecastActual();
+              forecastActual.setAdmin(Admin.UNKNOWN);
               forecastActual.setVaccineGroup(forecastItem);
               forecastActual.setDoseNumber("" + forecastDetailsType.getDoseNumber());
               forecastActual.setDueDate(parseDate(forecastDetailsType.getRecommendedDate()));
