@@ -48,6 +48,7 @@ public class TCHConnector implements ConnectorInterface
   private static final String STATUS_DESCRIPTION_COMPLETE = "complete";
   private static final String STATUS_DESCRIPTION_CONTRAINDICATED = "contraindicated";
   private static final String STATUS_DESCRIPTION_COMPLETE_FOR_SEASON = "complete for season";
+  private static final String STATUS_DESCRIPTION_ASSUMED_COMPLETE_OR_IMMUNIE = "assumed complete or immune";
 
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
 
@@ -124,6 +125,7 @@ public class TCHConnector implements ConnectorInterface
     adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE, Admin.COMPLETE);
     adminStatusMapping.put(STATUS_DESCRIPTION_CONTRAINDICATED, Admin.CONTRAINDICATED);
     adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE_FOR_SEASON, Admin.COMPLETE_FOR_SEASON);
+    adminStatusMapping.put(STATUS_DESCRIPTION_ASSUMED_COMPLETE_OR_IMMUNIE, Admin.ASSUMED_COMPLETE_OR_IMMUNE);
   }
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
