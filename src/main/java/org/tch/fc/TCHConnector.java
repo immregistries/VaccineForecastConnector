@@ -364,6 +364,10 @@ public class TCHConnector implements ConnectorInterface
         sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
         sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());
         sb.append("&vaccineMvx" + count + "=" + testEvent.getEvent().getVaccineMvx());
+        if (testEvent.getCondition() != null)
+        {
+          sb.append("&vaccineConditionCode" + count + "=" + testEvent.getCondition().getConditionCode());
+        }
       }
     }
 
