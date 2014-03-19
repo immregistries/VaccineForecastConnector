@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tch.fc.model.ForecastActual;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
@@ -44,14 +45,14 @@ public class TestConnect extends junit.framework.TestCase {
     software.setService(Service.SWP);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase);
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
       System.out.println("--> " + forecastActual.getVaccineGroup().getLabel() + " Dose "
           + forecastActual.getDoseNumber() + " Due " + sdf.format(forecastActual.getDueDate()) + " Valid " + sdf.format(forecastActual.getValidDate()) + " Overdue " + sdf.format(forecastActual.getOverdueDate()));
       if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
-        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
+        assertEquals(sdf.parse("04/01/2006"), forecastActual.getDueDate());
         foundHepB = true;
       }
     }
@@ -74,7 +75,7 @@ public class TestConnect extends junit.framework.TestCase {
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase);
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
@@ -104,12 +105,13 @@ public class TestConnect extends junit.framework.TestCase {
     software.setService(Service.STC);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase);
+    connector.setLogText(true);
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
       if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
-        assertEquals(sdf.parse("04/01/2006"), forecastActual.getDueDate());
+        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
         assertNotNull(forecastActual.getSoftwareResult().getLogText());
         System.out.print(forecastActual.getSoftwareResult().getLogText().toString());
         foundHepB = true;
