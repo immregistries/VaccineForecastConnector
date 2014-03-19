@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.tch.fc.model.ForecastActual;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
@@ -57,7 +58,7 @@ public class ForecastDemo {
     software.setService(service);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase);
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
 
     System.out.println("RAW RESULTS");
     System.out.println();

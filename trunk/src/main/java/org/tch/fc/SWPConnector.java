@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.tch.fc.model.Admin;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
@@ -31,7 +33,7 @@ import org.w3c.dom.NodeList;
 public class SWPConnector implements ConnectorInterface
 {
 
-  private Map<String, VaccineGroup> familyMapping = new HashMap<String, VaccineGroup>();
+  private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
   private Software software = null;
 
   private boolean logText = false;
@@ -159,114 +161,196 @@ public class SWPConnector implements ConnectorInterface
     groupMapping.put("144", new String[] { "13" });
   }
 
-  public SWPConnector(Software software, List<VaccineGroup> forecastItemList) {
+  public SWPConnector(Software software, List<VaccineGroup> vaccineGroupList) {
     this.software = software;
-    addForcastItem(forecastItemList, "Hib", 6);
-    addForcastItem(forecastItemList, "HepB", 5);
-    addForcastItem(forecastItemList, "DTP", 2);
-    addForcastItem(forecastItemList, "Td/Tdap", 15);
-    addForcastItem(forecastItemList, "Polio", 11);
-    addForcastItem(forecastItemList, "HepA", 4);
-    addForcastItem(forecastItemList, "MMR", 9);
-    addForcastItem(forecastItemList, "Rotavirus", 12);
-    addForcastItem(forecastItemList, "Varicella", 13);
-    addForcastItem(forecastItemList, "Influenza", 3);
-    addForcastItem(forecastItemList, "MCV4", 8);
-    addForcastItem(forecastItemList, "HPV", 7);
-    addForcastItem(forecastItemList, "HerpesZoster", 14);
-    addForcastItem(forecastItemList, "Pneumo-Poly", 10);
-    addForcastItem(forecastItemList, "Pneumonia", 10);
+    addForcastItem(vaccineGroupList, "Hib", VaccineGroup.ID_HIB);
+    addForcastItem(vaccineGroupList, "HepB", VaccineGroup.ID_HEPB);
+    addForcastItem(vaccineGroupList, "DTP", VaccineGroup.ID_DTAP);
+    addForcastItem(vaccineGroupList, "Td/Tdap", VaccineGroup.ID_TDAP_TD);
+    addForcastItem(vaccineGroupList, "Polio", VaccineGroup.ID_POLIO);
+    addForcastItem(vaccineGroupList, "HepA", VaccineGroup.ID_HEPA);
+    addForcastItem(vaccineGroupList, "MMR", VaccineGroup.ID_MMR);
+    addForcastItem(vaccineGroupList, "Rotavirus", VaccineGroup.ID_ROTA);
+    addForcastItem(vaccineGroupList, "Varicella", VaccineGroup.ID_VAR);
+    addForcastItem(vaccineGroupList, "Influenza", VaccineGroup.ID_INFLUENZA);
+    addForcastItem(vaccineGroupList, "MCV4", VaccineGroup.ID_MENING);
+    addForcastItem(vaccineGroupList, "HPV", VaccineGroup.ID_HPV);
+    addForcastItem(vaccineGroupList, "HerpesZoster", VaccineGroup.ID_ZOSTER);
+    addForcastItem(vaccineGroupList, "Pneumo-Poly", VaccineGroup.ID_PPSV);
+    addForcastItem(vaccineGroupList, "Pneumonia", VaccineGroup.ID_PCV);
+    addForcastItem(vaccineGroupList, "Pneumonia", VaccineGroup.ID_PNEUMO);
+
+    for (VaccineGroup vaccineGroup : vaccineGroupList) {
+      vaccineGroupIdMap.put(vaccineGroup.getVaccineGroupId(), vaccineGroup);
+    }
   }
 
-  private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
-    for (VaccineGroup forecastItem : forecastItemList) {
-      if (forecastItem.getVaccineGroupId() == forecastItemId) {
-        familyMapping.put(familyName, forecastItem);
+  private Map<Integer, VaccineGroup> vaccineGroupIdMap = new HashMap<Integer, VaccineGroup>();
+
+  private static int[] VACCINE_GROUPS_EXPECTED_FOR_CHILD = new int[] { VaccineGroup.ID_HIB, VaccineGroup.ID_HEPB,
+      VaccineGroup.ID_DTAP, VaccineGroup.ID_POLIO, VaccineGroup.ID_HEPA, VaccineGroup.ID_MMR, VaccineGroup.ID_ROTA,
+      VaccineGroup.ID_VAR, VaccineGroup.ID_INFLUENZA, VaccineGroup.ID_MENING, VaccineGroup.ID_HPV, VaccineGroup.ID_PCV,
+      VaccineGroup.ID_PNEUMO };
+  private static int[] VACCINE_GROUPS_EXPECTED_FOR_TEEN = new int[] { VaccineGroup.ID_HIB, VaccineGroup.ID_HEPB,
+      VaccineGroup.ID_TDAP_TD, VaccineGroup.ID_POLIO, VaccineGroup.ID_HEPA, VaccineGroup.ID_MMR, VaccineGroup.ID_ROTA,
+      VaccineGroup.ID_VAR, VaccineGroup.ID_INFLUENZA, VaccineGroup.ID_MENING, VaccineGroup.ID_HPV, VaccineGroup.ID_PCV,
+      VaccineGroup.ID_PNEUMO };
+  private static int[] VACCINE_GROUPS_EXPECTED_FOR_OLDER_ADULT = new int[] { VaccineGroup.ID_ZOSTER,
+      VaccineGroup.ID_PPSV };
+
+  private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int vaccineGroupId) {
+    for (VaccineGroup vaccineGroup : forecastItemList) {
+      if (vaccineGroup.getVaccineGroupId() == vaccineGroupId) {
+        List<VaccineGroup> vaccineGroupList = familyMapping.get(familyName);
+        if (vaccineGroupList == null) {
+          vaccineGroupList = new ArrayList<VaccineGroup>();
+          familyMapping.put(familyName, vaccineGroupList);
+        }
+        vaccineGroupList.add(vaccineGroup);
         return;
       }
     }
   }
 
-  public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
+  public List<ForecastActual> queryForForecast(TestCase testCase, SoftwareResult softwareResult) throws Exception {
 
-    SoftwareResult softwareResult = new SoftwareResult();
-    softwareResult.setSoftware(software);
     StringWriter sw = new StringWriter();
     PrintWriter logOut = null;
     if (logText) {
       logOut = new PrintWriter(sw);
     }
+    List<ForecastActual> list = null;
 
-    URLConnection urlConn;
-    DataOutputStream printOut;
-    URL url = new URL(software.getServiceUrl());
-    urlConn = url.openConnection();
-    urlConn.setDoInput(true);
-    urlConn.setDoOutput(true);
-    urlConn.setUseCaches(true);
-    urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
-    printOut = new DataOutputStream(urlConn.getOutputStream());
-    StringBuilder sb = new StringBuilder();
+    try {
+      URLConnection urlConn;
+      DataOutputStream printOut;
+      URL url = new URL(software.getServiceUrl());
+      urlConn = url.openConnection();
+      urlConn.setDoInput(true);
+      urlConn.setDoOutput(true);
+      urlConn.setUseCaches(true);
+      urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
+      printOut = new DataOutputStream(urlConn.getOutputStream());
+      StringBuilder sb = new StringBuilder();
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:swp=\"http://swpartners.com\"> \n");
-    sb.append("  <soapenv:Header/>  \n");
-    sb.append("  <soapenv:Body>  \n");
-    sb.append("    <swp:executeVFM>  \n");
-    sb.append("      <swp:vfm>  \n");
-    sb.append("         <swp:patient dob=\"" + sdf.format(testCase.getPatientDob()) + "\" gender=\""
-        + testCase.getPatientSex() + "\">  \n");
-    for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
-        String cvx = testEvent.getEvent().getVaccineCvx();
-        String[] groupArray = groupMapping.get(cvx);
-        if (cvxOut.get(cvx) != null) {
-          cvx = cvxOut.get(cvx);
-        }
-        if (groupArray != null) {
-          if (logOut != null) {
-            logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate()));
-            for (String groupId : groupArray) {
-              logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate())
-                  + " with group id = " + groupId);
-              sb.append("            <swp:dose cvx=\"" + cvx + "\" ");
-              sb.append("date=\"" + sdf.format(testEvent.getEventDate()) + "\" ");
-              sb.append("groupid=\"" + groupId + "\"/> \n");
+      sb.append("<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:swp=\"http://swpartners.com\"> \n");
+      sb.append("  <soapenv:Header/>  \n");
+      sb.append("  <soapenv:Body>  \n");
+      sb.append("    <swp:executeVFM>  \n");
+      sb.append("      <swp:vfm>  \n");
+      sb.append("         <swp:patient dob=\"" + sdf.format(testCase.getPatientDob()) + "\" gender=\""
+          + testCase.getPatientSex() + "\">  \n");
+      for (TestEvent testEvent : testCase.getTestEventList()) {
+        if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+          String cvx = testEvent.getEvent().getVaccineCvx();
+          String[] groupArray = groupMapping.get(cvx);
+          if (cvxOut.get(cvx) != null) {
+            cvx = cvxOut.get(cvx);
+          }
+          if (groupArray != null) {
+            if (logOut != null) {
+              logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate()));
+              for (String groupId : groupArray) {
+                logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate())
+                    + " with group id = " + groupId);
+                sb.append("            <swp:dose cvx=\"" + cvx + "\" ");
+                sb.append("date=\"" + sdf.format(testEvent.getEventDate()) + "\" ");
+                sb.append("groupid=\"" + groupId + "\"/> \n");
+              }
             }
           }
         }
       }
-    }
-    sb.append("         </swp:patient>  \n");
-    sb.append("       </swp:vfm>  \n");
-    sb.append("     </swp:executeVFM>  \n");
-    sb.append("   </soapenv:Body>  \n");
-    sb.append("</soapenv:Envelope> \n");
-    printOut.writeBytes(sb.toString());
-    if (logOut != null) {
-      logOut.println("Querying SWP software for forecast");
-      logOut.println(sb);
-    }
-    printOut.flush();
-    printOut.close();
+      sb.append("         </swp:patient>  \n");
+      sb.append("       </swp:vfm>  \n");
+      sb.append("     </swp:executeVFM>  \n");
+      sb.append("   </soapenv:Body>  \n");
+      sb.append("</soapenv:Envelope> \n");
+      printOut.writeBytes(sb.toString());
+      if (logOut != null) {
+        logOut.println("Querying SWP software for forecast");
+        logOut.println(sb);
+      }
+      printOut.flush();
+      printOut.close();
 
-    DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-    Document doc = docBuilder.parse(urlConn.getInputStream());
+      DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+      Document doc = docBuilder.parse(urlConn.getInputStream());
 
-    List<ForecastActual> list = null;
-    doc.getDocumentElement().normalize();
-    NodeList nodes = doc.getChildNodes();
-    if (nodes.getLength() == 1) {
-      list = parseEnvelope(nodes.item(0).getChildNodes(), logOut);
+      doc.getDocumentElement().normalize();
+      NodeList nodes = doc.getChildNodes();
+      if (nodes.getLength() == 1) {
+        list = parseEnvelope(nodes.item(0).getChildNodes(), logOut);
+      }
+
+      for (ForecastActual forecastActual : list) {
+        forecastActual.setSoftwareResult(softwareResult);
+        Date dueDate = forecastActual.getDueDate();
+        Date overdueDate = forecastActual.getOverdueDate();
+        forecastActual.setAdmin(Admin.UNKNOWN);
+        if (dueDate == null) {
+          forecastActual.setAdmin(Admin.COMPLETE);
+        } else {
+          if (testCase.getEvalDate().before(dueDate)) {
+            forecastActual.setAdmin(Admin.DUE_LATER);
+          } else {
+            if (overdueDate != null && !testCase.getEvalDate().before(overdueDate)) {
+              forecastActual.setAdmin(Admin.OVERDUE);
+            } else {
+            }
+          }
+        }
+      }
+
+      Date evalDate = new Date(); // Currently this forecaster does not look at eval date but gives back results for today
+      int[] expectedVaccineGroups = VACCINE_GROUPS_EXPECTED_FOR_CHILD;
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(testCase.getPatientDob());
+      calendar.add(Calendar.YEAR, 7);
+      // age when patient is 7
+      if (calendar.getTime().before(evalDate)) {
+        expectedVaccineGroups = VACCINE_GROUPS_EXPECTED_FOR_TEEN;
+        calendar.add(Calendar.YEAR, 60 - 7);
+        // age when patient is 60
+        if (calendar.getTime().before(evalDate)) {
+          expectedVaccineGroups = VACCINE_GROUPS_EXPECTED_FOR_OLDER_ADULT;
+        }
+      }
+
+      for (int vaccineGroupId : expectedVaccineGroups) {
+        boolean matchFound = false;
+        for (ForecastActual forecastActual : list) {
+          if (forecastActual.getVaccineGroup().getVaccineGroupId() == vaccineGroupId) {
+            matchFound = true;
+            break;
+          }
+        }
+        if (!matchFound) {
+          ForecastActual forecastActual = new ForecastActual();
+          forecastActual.setSoftwareResult(softwareResult);
+          forecastActual.setVaccineGroup(vaccineGroupIdMap.get(vaccineGroupId));
+          forecastActual.setAdmin(Admin.COMPLETE);
+          list.add(forecastActual);
+        }
+      }
+
+    } catch (Exception e) {
+      if (logOut != null) {
+        logOut.println("Unable to get forecast results");
+        e.printStackTrace(logOut);
+      } else {
+        e.printStackTrace();
+      }
+      throw new Exception("Unable to get forecast results", e);
+    } finally {
+      if (logOut != null) {
+        logOut.close();
+        softwareResult.setLogText(sw.toString());
+      }
     }
-
-    if (logOut != null) {
-      logOut.close();
-      softwareResult.setLogText(sw.toString());
-    }
-
     return list;
   }
 
@@ -358,18 +442,20 @@ public class SWPConnector implements ConnectorInterface
           String cvx = safe(map.getNamedItem("cvx"));
           String family = safe(map.getNamedItem("family"));
           // String groupid = safe(map.getNamedItem("groupid"));
-          VaccineGroup forecastItem = familyMapping.get(family);
-
-          if (forecastItem != null) {
-            ForecastActual forecastActual = new ForecastActual();
-            forecastActual.setVaccineGroup(forecastItem);
-            forecastActual.setDoseNumber(dosenum);
-            forecastActual.setValidDate(parseDate(mindate));
-            forecastActual.setDueDate(parseDate(recommendeddate));
-            forecastActual.setOverdueDate(parseDate(overduedate));
-            forecastActual.setFinishedDate(parseDate(maxdate));
-            list.add(forecastActual);
+          List<VaccineGroup> vaccineGroupList = familyMapping.get(family);
+          if (vaccineGroupList != null) {
+            for (VaccineGroup vaccineGroup : vaccineGroupList) {
+              ForecastActual forecastActual = new ForecastActual();
+              forecastActual.setVaccineGroup(vaccineGroup);
+              forecastActual.setDoseNumber(dosenum);
+              forecastActual.setValidDate(parseDate(mindate));
+              forecastActual.setDueDate(parseDate(recommendeddate));
+              forecastActual.setOverdueDate(parseDate(overduedate));
+              forecastActual.setFinishedDate(parseDate(maxdate));
+              list.add(forecastActual);
+            }
           }
+
         }
       }
     }

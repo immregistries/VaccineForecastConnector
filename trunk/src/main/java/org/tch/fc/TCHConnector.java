@@ -142,206 +142,215 @@ public class TCHConnector implements ConnectorInterface
     }
   }
 
-  public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
+  public List<ForecastActual> queryForForecast(TestCase testCase, SoftwareResult softwareResult) throws Exception {
 
     Map<String, ForecastActual> forecastActualMap = new HashMap<String, ForecastActual>();
+    List<ForecastActual> list = new ArrayList<ForecastActual>();
 
-    SoftwareResult softwareResult = new SoftwareResult();
-    softwareResult.setSoftware(software);
     StringWriter sw = new StringWriter();
     PrintWriter logOut = null;
     if (logText) {
       logOut = new PrintWriter(sw);
     }
-    String queryString = createQueryString(testCase, software, "text");
-    if (logOut != null) {
-      logOut.println("TCH Forecaster");
-      logOut.println();
-      logOut.println("Current time " + new Date());
-      logOut.println("Connecting to " + software.getServiceUrl());
-      logOut.println("Query " + software.getServiceUrl() + queryString);
-      logOut.println();
-    }
-    URLConnection urlConn;
-    URL url = new URL(software.getServiceUrl() + queryString);
-    urlConn = url.openConnection();
-    urlConn.setDoInput(true);
-    urlConn.setDoOutput(true);
-    urlConn.setUseCaches(true);
-    urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
-    urlConn.connect();
-
-    InputStreamReader input = null;
-    input = new InputStreamReader(urlConn.getInputStream());
-    List<ForecastActual> list = new ArrayList<ForecastActual>();
-    BufferedReader in = new BufferedReader(input);
-    String line;
-    if (logOut != null) {
-      logOut.println("Results:");
-    }
-    while ((line = in.readLine()) != null) {
+    try {
+      String queryString = createQueryString(testCase, software, "text");
       if (logOut != null) {
-        logOut.println(line);
+        logOut.println("TCH Forecaster");
+        logOut.println();
+        logOut.println("Current time " + new Date());
+        logOut.println("Connecting to " + software.getServiceUrl());
+        logOut.println("Query " + software.getServiceUrl() + queryString);
+        logOut.println();
       }
-      line = line.trim();
-      if (line.startsWith(FORECASTING)) {
-        line = line.substring(FORECASTING.length());
-        // Example line
-        // Forecasting Influenza IIV status overdue dose 1 due 08/01/2013 valid 08/01/2013 overdue 12/01/2013 finished 01/14/2159
-        int statusPos = line.indexOf(STATUS);
-        if (statusPos > 0) {
-          String vaccineType = line.substring(0, statusPos);
-          List<VaccineGroup> forecastItemListFromMap = familyMapping.get(vaccineType);
+      URLConnection urlConn;
+      URL url = new URL(software.getServiceUrl() + queryString);
+      urlConn = url.openConnection();
+      urlConn.setDoInput(true);
+      urlConn.setDoOutput(true);
+      urlConn.setUseCaches(true);
+      urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
+      urlConn.connect();
 
-          int dosePos = line.indexOf(DOSE);
-          if (dosePos == -1) {
-            dosePos = line.length();
-          }
-          String status = line.substring(statusPos + STATUS.length(), dosePos);
-          String dose = "";
-          String due = "";
-          String valid = "";
-          String overdue = "";
-          String finished = "";
-          if (dosePos < line.length()) {
-            line = line.substring(dosePos + DOSE.length());
-            int duePos = line.indexOf(DUE);
-            int validPos = line.indexOf(VALID);
-            int overduePos = line.indexOf(OVERDUE);
-            int finishedPos = line.indexOf(FINISHED);
-            if (duePos > 0) {
-              dose = line.substring(0, duePos);
-              if (validPos > duePos) {
-                due = line.substring(duePos + DUE.length(), validPos);
-                if (overduePos > validPos) {
-                  valid = line.substring(validPos + VALID.length(), overduePos);
-                  if (finishedPos > overduePos) {
-                    overdue = line.substring(overduePos + OVERDUE.length(), finishedPos);
-                    finished = line.substring(finishedPos + FINISHED.length());
+      InputStreamReader input = null;
+      input = new InputStreamReader(urlConn.getInputStream());
+      BufferedReader in = new BufferedReader(input);
+      String line;
+      if (logOut != null) {
+        logOut.println("Results:");
+      }
+      while ((line = in.readLine()) != null) {
+        if (logOut != null) {
+          logOut.println(line);
+        }
+        line = line.trim();
+        if (line.startsWith(FORECASTING)) {
+          line = line.substring(FORECASTING.length());
+          // Example line
+          // Forecasting Influenza IIV status overdue dose 1 due 08/01/2013 valid 08/01/2013 overdue 12/01/2013 finished 01/14/2159
+          int statusPos = line.indexOf(STATUS);
+          if (statusPos > 0) {
+            String vaccineType = line.substring(0, statusPos);
+            List<VaccineGroup> forecastItemListFromMap = familyMapping.get(vaccineType);
+
+            int dosePos = line.indexOf(DOSE);
+            if (dosePos == -1) {
+              dosePos = line.length();
+            }
+            String status = line.substring(statusPos + STATUS.length(), dosePos);
+            String dose = "";
+            String due = "";
+            String valid = "";
+            String overdue = "";
+            String finished = "";
+            if (dosePos < line.length()) {
+              line = line.substring(dosePos + DOSE.length());
+              int duePos = line.indexOf(DUE);
+              int validPos = line.indexOf(VALID);
+              int overduePos = line.indexOf(OVERDUE);
+              int finishedPos = line.indexOf(FINISHED);
+              if (duePos > 0) {
+                dose = line.substring(0, duePos);
+                if (validPos > duePos) {
+                  due = line.substring(duePos + DUE.length(), validPos);
+                  if (overduePos > validPos) {
+                    valid = line.substring(validPos + VALID.length(), overduePos);
+                    if (finishedPos > overduePos) {
+                      overdue = line.substring(overduePos + OVERDUE.length(), finishedPos);
+                      finished = line.substring(finishedPos + FINISHED.length());
+                    }
                   }
                 }
               }
             }
-          }
 
-          Admin adminStatus = adminStatusMapping.get(status);
-          if (adminStatus == null) {
-            adminStatus = Admin.UNKNOWN;
-          }
-          Date dueDate = null;
-          Date validDate = null;
-          Date overdueDate = null;
-          Date finishedDate = null;
-          if (due.length() == 10) {
-            dueDate = parseDate(due);
-          }
-          if (valid.length() == 10) {
-            validDate = parseDate(valid);
-          }
-          if (overdue.length() == 10) {
-            overdueDate = parseDate(overdue);
-          }
-          if (finished.length() == 10) {
-            finishedDate = parseDate(finished);
-          }
-
-          if (forecastItemListFromMap != null) {
-            for (VaccineGroup forecastItem : forecastItemListFromMap) {
-              if (forecastItem != null) {
-                ForecastActual forecastActual = new ForecastActual();
-                forecastActual.setSoftwareResult(softwareResult);
-                forecastActual.setVaccineGroup(forecastItem);
-                forecastActual.setAdmin(adminStatus);
-                if (adminStatus != Admin.COMPLETE && adminStatus != Admin.COMPLETE_FOR_SEASON
-                    && adminStatus != Admin.FINISHED) {
-                  forecastActual.setDoseNumber(dose);
-                  forecastActual.setDueDate(dueDate);
-                  forecastActual.setValidDate(validDate);
-                  forecastActual.setOverdueDate(overdueDate);
-                  forecastActual.setFinishedDate(finishedDate);
-                }
-                list.add(forecastActual);
-                forecastActualMap.put(vaccineType, forecastActual);
-              }
+            Admin adminStatus = adminStatusMapping.get(status);
+            if (adminStatus == null) {
+              adminStatus = Admin.UNKNOWN;
             }
-          }
-        }
+            Date dueDate = null;
+            Date validDate = null;
+            Date overdueDate = null;
+            Date finishedDate = null;
+            if (due.length() == 10) {
+              dueDate = parseDate(due);
+            }
+            if (valid.length() == 10) {
+              validDate = parseDate(valid);
+            }
+            if (overdue.length() == 10) {
+              overdueDate = parseDate(overdue);
+            }
+            if (finished.length() == 10) {
+              finishedDate = parseDate(finished);
+            }
 
-      } else if (line.startsWith(VACCINATION_LINE_PREFIX)) {
-        line = line.substring(VACCINATION_LINE_PREFIX.length());
-        int pos = line.indexOf(':');
-        if (pos > 0) {
-          try {
-            int i = Integer.parseInt(line.substring(0, pos).trim());
-            int count = 0;
-            for (TestEvent testEvent : testCase.getTestEventList()) {
-              if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
-                count++;
-                if (count == i) {
-                  line = line.substring(pos + 1).trim();
-                  int isValidPos = line.indexOf(" is a valid ");
-                  int isInvalidPos = line.indexOf(" is an invalid ");
-                  if (isValidPos > 0 || isInvalidPos > 0) {
-                    boolean isValid = isInvalidPos == -1 && isValidPos > -1;
-                    pos = isInvalidPos + 15;
-                    if (isInvalidPos == -1) {
-                      pos = isValidPos + 12;
-                    }
-                    int startPos = line.indexOf(DOSE, pos);
-                    String doseName = "";
-                    String vaccineCvx = "";
-                    String doseNumber = "";
-                    if (startPos > 0) {
-                      doseName = line.substring(pos, startPos).trim();
-                      vaccineCvx = evaluationToCvxMapping.get(doseName);
-                      if (vaccineCvx == null) {
-                        vaccineCvx = "";
-                      }
-                      startPos += 6;
-                      int endPos = line.indexOf(".", startPos);
-                      if (endPos > 0) {
-                        doseNumber = line.substring(startPos, endPos);
-                      }
-                    }
-                    EvaluationActual evaluationActual = new EvaluationActual();
-                    evaluationActual.setSoftwareResult(softwareResult);
-                    evaluationActual.getSoftwareResult().setSoftware(software);
-                    evaluationActual.setTestEvent(testEvent);
-                    evaluationActual.setDoseNumber(doseNumber);
-                    evaluationActual.setDoseValid(isValid ? "Y" : "N");
-                    //evaluationActual.setReasonCode(reasonCode);
-                    evaluationActual.setReasonText(line);
-                    evaluationActual.setSeriesUsedCode(vaccineCvx);
-                    evaluationActual.setSeriesUsedText(doseName);
-                    evaluationActual.setVaccineCvx(vaccineCvx);
-
-                    if (testEvent.getEvaluationActualList() == null) {
-                      testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
-                    }
-                    testEvent.getEvaluationActualList().add(evaluationActual);
-
+            if (forecastItemListFromMap != null) {
+              for (VaccineGroup forecastItem : forecastItemListFromMap) {
+                if (forecastItem != null) {
+                  ForecastActual forecastActual = new ForecastActual();
+                  forecastActual.setSoftwareResult(softwareResult);
+                  forecastActual.setVaccineGroup(forecastItem);
+                  forecastActual.setAdmin(adminStatus);
+                  if (adminStatus != Admin.COMPLETE && adminStatus != Admin.COMPLETE_FOR_SEASON
+                      && adminStatus != Admin.FINISHED) {
+                    forecastActual.setDoseNumber(dose);
+                    forecastActual.setDueDate(dueDate);
+                    forecastActual.setValidDate(validDate);
+                    forecastActual.setOverdueDate(overdueDate);
+                    forecastActual.setFinishedDate(finishedDate);
                   }
-                  break;
+                  list.add(forecastActual);
+                  forecastActualMap.put(vaccineType, forecastActual);
                 }
               }
             }
-          } catch (NumberFormatException nfe) {
-            // ignore
           }
-        }
-      } else if (line.startsWith(DETAILS_FOR_PREFIX)) {
-        String vaccineType = line.substring(DETAILS_FOR_PREFIX.length());
-        ForecastActual forecastActual = forecastActualMap.get(vaccineType);
-        String html = in.readLine();
-        if (forecastActual != null && html != null) {
-          forecastActual.setExplanationHtml(html);
+
+        } else if (line.startsWith(VACCINATION_LINE_PREFIX)) {
+          line = line.substring(VACCINATION_LINE_PREFIX.length());
+          int pos = line.indexOf(':');
+          if (pos > 0) {
+            try {
+              int i = Integer.parseInt(line.substring(0, pos).trim());
+              int count = 0;
+              for (TestEvent testEvent : testCase.getTestEventList()) {
+                if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+                  count++;
+                  if (count == i) {
+                    line = line.substring(pos + 1).trim();
+                    int isValidPos = line.indexOf(" is a valid ");
+                    int isInvalidPos = line.indexOf(" is an invalid ");
+                    if (isValidPos > 0 || isInvalidPos > 0) {
+                      boolean isValid = isInvalidPos == -1 && isValidPos > -1;
+                      pos = isInvalidPos + 15;
+                      if (isInvalidPos == -1) {
+                        pos = isValidPos + 12;
+                      }
+                      int startPos = line.indexOf(DOSE, pos);
+                      String doseName = "";
+                      String vaccineCvx = "";
+                      String doseNumber = "";
+                      if (startPos > 0) {
+                        doseName = line.substring(pos, startPos).trim();
+                        vaccineCvx = evaluationToCvxMapping.get(doseName);
+                        if (vaccineCvx == null) {
+                          vaccineCvx = "";
+                        }
+                        startPos += 6;
+                        int endPos = line.indexOf(".", startPos);
+                        if (endPos > 0) {
+                          doseNumber = line.substring(startPos, endPos);
+                        }
+                      }
+                      EvaluationActual evaluationActual = new EvaluationActual();
+                      evaluationActual.setSoftwareResult(softwareResult);
+                      evaluationActual.getSoftwareResult().setSoftware(software);
+                      evaluationActual.setTestEvent(testEvent);
+                      evaluationActual.setDoseNumber(doseNumber);
+                      evaluationActual.setDoseValid(isValid ? "Y" : "N");
+                      //evaluationActual.setReasonCode(reasonCode);
+                      evaluationActual.setReasonText(line);
+                      evaluationActual.setSeriesUsedCode(vaccineCvx);
+                      evaluationActual.setSeriesUsedText(doseName);
+                      evaluationActual.setVaccineCvx(vaccineCvx);
+
+                      if (testEvent.getEvaluationActualList() == null) {
+                        testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
+                      }
+                      testEvent.getEvaluationActualList().add(evaluationActual);
+
+                    }
+                    break;
+                  }
+                }
+              }
+            } catch (NumberFormatException nfe) {
+              // ignore
+            }
+          }
+        } else if (line.startsWith(DETAILS_FOR_PREFIX)) {
+          String vaccineType = line.substring(DETAILS_FOR_PREFIX.length());
+          ForecastActual forecastActual = forecastActualMap.get(vaccineType);
+          String html = in.readLine();
+          if (forecastActual != null && html != null) {
+            forecastActual.setExplanationHtml(html);
+          }
         }
       }
-    }
-    input.close();
-    if (logOut != null) {
-      logOut.close();
-      softwareResult.setLogText(sw.toString());
+      input.close();
+    } catch (Exception e) {
+      if (logOut != null) {
+        logOut.println("Unable to get forecast results");
+        e.printStackTrace(logOut);
+      } else {
+        e.printStackTrace();
+      }
+      throw new Exception("Unable to get forecast results", e);
+    } finally {
+      if (logOut != null) {
+        logOut.close();
+        softwareResult.setLogText(sw.toString());
+      }
     }
 
     return list;
@@ -364,8 +373,7 @@ public class TCHConnector implements ConnectorInterface
         sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
         sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());
         sb.append("&vaccineMvx" + count + "=" + testEvent.getEvent().getVaccineMvx());
-        if (testEvent.getCondition() != null)
-        {
+        if (testEvent.getCondition() != null) {
           sb.append("&vaccineConditionCode" + count + "=" + testEvent.getCondition().getConditionCode());
         }
       }

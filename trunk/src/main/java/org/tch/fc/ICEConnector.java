@@ -114,108 +114,118 @@ public class ICEConnector implements ConnectorInterface
   private StringWriter sw;
   private PrintWriter logOut;
 
-  public List<ForecastActual> queryForForecast(TestCase testCase) throws Exception {
+  public List<ForecastActual> queryForForecast(TestCase testCase, SoftwareResult softwareResult) throws Exception {
 
-    SoftwareResult softwareResult = new SoftwareResult();
-    softwareResult.setSoftware(software);
     sw = new StringWriter();
     logOut = logText ? new PrintWriter(sw) : null;
-
-    if (logOut != null) {
-      logOut.println("ICE");
-      logOut.println();
-      logOut.println("Current time " + new Date());
-      logOut.println("Connecting to " + software.getServiceUrl());
-      logOut.println();
-    }
-    URLConnection urlConn;
-    URL url = new URL(software.getServiceUrl());
-    urlConn = url.openConnection();
-    urlConn.setDoInput(true);
-    urlConn.setDoOutput(true);
-    urlConn.setUseCaches(true);
-    ((HttpURLConnection) urlConn).setRequestMethod("POST");
-    urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
-    urlConn.setRequestProperty("SoapAction",
-        "http://www.omg.org/spec/CDSS/201105/dssWsdl:operation:evaluateAtSpecifiedTime");
-
-    DataOutputStream printout = new DataOutputStream(urlConn.getOutputStream());
-    printout.writeBytes(makeRequest(testCase));
-    printout.flush();
-    printout.close();
-
-    InputStreamReader input = null;
-    input = new InputStreamReader(urlConn.getInputStream());
-    BufferedReader in = new BufferedReader(input);
-    StringBuilder sb = new StringBuilder();
-    String line;
-    while ((line = in.readLine()) != null) {
-      sb.append(line);
-    }
-    input.close();
-    line = sb.toString();
-
-    int posStart = line.indexOf(BASE64_ENCODED_PAYLOAD_TAG_START);
-    int posEnd = line.indexOf(BASE64_ENCODED_PAYLOAD_TAG_END);
     List<ForecastActual> list = new ArrayList<ForecastActual>();
-    if (posStart == -1 || posEnd == -1 || posEnd < posStart) {
+
+    try {
       if (logOut != null) {
-        logOut.println("Unable to read results, couldn't find base 64 contents");
-        logOut.println(line);
+        logOut.println("ICE");
+        logOut.println();
+        logOut.println("Current time " + new Date());
+        logOut.println("Connecting to " + software.getServiceUrl());
+        logOut.println();
       }
-    } else {
-      line = line.substring(posStart + BASE64_ENCODED_PAYLOAD_TAG_START.length(), posEnd);
-      line = new String(Base64.decode(line));
-      if (logOut != null) {
-        logOut.print(line);
+      URLConnection urlConn;
+      URL url = new URL(software.getServiceUrl());
+      urlConn = url.openConnection();
+      urlConn.setDoInput(true);
+      urlConn.setDoOutput(true);
+      urlConn.setUseCaches(true);
+      ((HttpURLConnection) urlConn).setRequestMethod("POST");
+      urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
+      urlConn.setRequestProperty("SoapAction",
+          "http://www.omg.org/spec/CDSS/201105/dssWsdl:operation:evaluateAtSpecifiedTime");
+
+      DataOutputStream printout = new DataOutputStream(urlConn.getOutputStream());
+      printout.writeBytes(makeRequest(testCase));
+      printout.flush();
+      printout.close();
+
+      InputStreamReader input = null;
+      input = new InputStreamReader(urlConn.getInputStream());
+      BufferedReader in = new BufferedReader(input);
+      StringBuilder sb = new StringBuilder();
+      String line;
+      while ((line = in.readLine()) != null) {
+        sb.append(line);
       }
-      list = readVMR(line);
-      for (int forecastItemId : notSupportedItems) {
-        boolean found = false;
-        for (ForecastActual forecastActual : list) {
-          if (forecastActual.getVaccineGroup().getVaccineGroupId() == forecastItemId) {
-            found = true;
-            break;
-          }
+      input.close();
+      line = sb.toString();
+
+      int posStart = line.indexOf(BASE64_ENCODED_PAYLOAD_TAG_START);
+      int posEnd = line.indexOf(BASE64_ENCODED_PAYLOAD_TAG_END);
+      if (posStart == -1 || posEnd == -1 || posEnd < posStart) {
+        if (logOut != null) {
+          logOut.println("Unable to read results, couldn't find base 64 contents");
+          logOut.println(line);
         }
-        if (!found) {
-          VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
-          if (forecastItem != null) {
-            ForecastActual forecastActual = new ForecastActual();
-            forecastActual.setDoseNumber("NS");
-            forecastActual.setVaccineGroup(forecastItem);
-            if (logOut != null) {
-              logOut.println("ICE Forecaster does not support " + forecastItem.getLabel() + ". No results returned.");
+      } else {
+        line = line.substring(posStart + BASE64_ENCODED_PAYLOAD_TAG_START.length(), posEnd);
+        line = new String(Base64.decode(line));
+        if (logOut != null) {
+          logOut.print(line);
+        }
+        list = readVMR(line);
+        for (int forecastItemId : notSupportedItems) {
+          boolean found = false;
+          for (ForecastActual forecastActual : list) {
+            if (forecastActual.getVaccineGroup().getVaccineGroupId() == forecastItemId) {
+              found = true;
+              break;
             }
-            list.add(forecastActual);
+          }
+          if (!found) {
+            VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
+            if (forecastItem != null) {
+              ForecastActual forecastActual = new ForecastActual();
+              forecastActual.setDoseNumber("NS");
+              forecastActual.setVaccineGroup(forecastItem);
+              if (logOut != null) {
+                logOut.println("ICE Forecaster does not support " + forecastItem.getLabel() + ". No results returned.");
+              }
+              list.add(forecastActual);
+            }
+          }
+        }
+        for (int forecastItemId : supportedItems) {
+          boolean found = false;
+          for (ForecastActual forecastActual : list) {
+            if (forecastActual.getVaccineGroup().getVaccineGroupId() == forecastItemId) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
+            if (forecastItem != null) {
+              ForecastActual forecastActual = new ForecastActual();
+              forecastActual.setAdmin(Admin.NO_RESULTS);
+              forecastActual.setVaccineGroup(forecastItem);
+              if (logOut != null) {
+                logOut.println("ICE Forecaster did not return results " + forecastItem.getLabel()
+                    + ". Results assumed to be complete. ");
+              }
+              list.add(forecastActual);
+            }
           }
         }
       }
-      for (int forecastItemId : supportedItems) {
-        boolean found = false;
-        for (ForecastActual forecastActual : list) {
-          if (forecastActual.getVaccineGroup().getVaccineGroupId() == forecastItemId) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
-          if (forecastItem != null) {
-            ForecastActual forecastActual = new ForecastActual();
-            forecastActual.setAdmin(Admin.NO_RESULTS);
-            forecastActual.setVaccineGroup(forecastItem);
-            if (logOut != null) {
-              logOut.println("ICE Forecaster did not return results " + forecastItem.getLabel()
-                    + ". Results assumed to be complete. ");}
-            list.add(forecastActual);
-          }
-        }
+    } catch (Exception e) {
+      if (logOut != null) {
+        logOut.println("Unable to get forecast results");
+        e.printStackTrace(logOut);
+      } else {
+        e.printStackTrace();
       }
-    }
-    if (logOut != null) {
-      logOut.close();
-      softwareResult.setLogText(sw.toString());
+      throw new Exception("Unable to get forecast results", e);
+    } finally {
+      if (logOut != null) {
+        logOut.close();
+        softwareResult.setLogText(sw.toString());
+      }
     }
     return list;
   }
