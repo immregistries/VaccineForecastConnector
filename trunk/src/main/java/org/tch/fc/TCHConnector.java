@@ -362,7 +362,7 @@ public class TCHConnector implements ConnectorInterface
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
     sb.append("?evalDate=" + sdf.format(testCase.getEvalDate()));
-    sb.append("&evalSchedule=");
+    sb.append("&scheduleName=" + software.getScheduleName());
     sb.append("&resultFormat=" + format);
     sb.append("&patientDob=" + sdf.format(testCase.getPatientDob()) + "");
     sb.append("&patientSex=" + testCase.getPatientSex() + "");
