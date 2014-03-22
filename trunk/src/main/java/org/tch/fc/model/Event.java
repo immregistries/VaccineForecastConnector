@@ -8,6 +8,11 @@ import java.util.Map;
 
 public class Event implements Serializable {
   
+  // All event ids from 0 to 99,000 are reserved for CVX codes
+  public static final int EVENT_ID_RANGE_CVX = 0;
+  // All event ids from 100,000 to 199,999 are reserved for MIIS specified ids
+  public static final int EVENT_ID_RANGE_MIIS = 100000;
+  
   public Event()
   {
     // default;
