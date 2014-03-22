@@ -19,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.tch.fc.model.Event;
+import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.VaccineGroup;
@@ -27,7 +29,8 @@ import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 
-public class TestConnect extends junit.framework.TestCase {
+public class TestConnect extends junit.framework.TestCase
+{
 
   public void testConnectSWP() throws Exception {
 
@@ -39,6 +42,22 @@ public class TestConnect extends junit.framework.TestCase {
     testCase.setPatientDob(sdf.parse("04/01/2006"));
     List<TestEvent> testEventList = new ArrayList<TestEvent>();
     testEventList.add(new TestEvent(8, sdf.parse("04/01/2006")));
+    {
+      TestEvent testEvent = new TestEvent();
+      Event event = new Event();
+      event.setEventType(EventType.CONTRAINDICATION_ALERGY_TO_PREVIOUS_DOSE);
+      event.setEventId(Event.EVENT_ID_RANGE_1_MIIS + 188);
+      testEvent.setEvent(event);
+      testEventList.add(testEvent);
+    }
+    {
+      TestEvent testEvent = new TestEvent();
+      Event event = new Event();
+      event.setEventType(EventType.CONTRAINDICATION_ALERGY_TO_PREVIOUS_DOSE);
+      event.setEventId(Event.EVENT_ID_RANGE_1_MIIS + 148);
+      testEvent.setEvent(event);
+      testEventList.add(testEvent);
+    }
     testCase.setTestEventList(testEventList);
     Software software = new Software();
     software.setServiceUrl("http://69.64.70.10:8080/vfmservice/VFMWebService");
@@ -49,10 +68,23 @@ public class TestConnect extends junit.framework.TestCase {
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
-      System.out.println("--> " + forecastActual.getVaccineGroup().getLabel() + " Dose "
-          + forecastActual.getDoseNumber() + " Due " + sdf.format(forecastActual.getDueDate()) + " Valid " + sdf.format(forecastActual.getValidDate()) + " Overdue " + sdf.format(forecastActual.getOverdueDate()));
+      System.out.print("--> " + forecastActual.getVaccineGroup().getLabel());
+      System.out.print(" " + forecastActual.getAdmin().getLabel());
+      if (forecastActual.getDoseNumber() != null) {
+        System.out.print(" Dose " + forecastActual.getDoseNumber());
+      }
+      if (forecastActual.getDueDate() != null) {
+        System.out.print(" Due " + sdf.format(forecastActual.getDueDate()));
+      }
+      if (forecastActual.getValidDate() != null) {
+        System.out.print(" Valid " + sdf.format(forecastActual.getValidDate()));
+      }
+      if (forecastActual.getOverdueDate() != null) {
+        System.out.print(" Overdue " + sdf.format(forecastActual.getOverdueDate()));
+      }
+      System.out.println();
       if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
-        assertEquals(sdf.parse("04/01/2006"), forecastActual.getDueDate());
+        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
         foundHepB = true;
       }
     }
@@ -87,9 +119,9 @@ public class TestConnect extends junit.framework.TestCase {
       }
     }
     assertTrue("HepB forecast not found", foundHepB);
-    
+
   }
-  
+
   public void testConnectSTC() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
@@ -118,7 +150,7 @@ public class TestConnect extends junit.framework.TestCase {
       }
     }
     assertTrue("HepB forecast not found", foundHepB);
-    
+
   }
 
 }

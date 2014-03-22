@@ -18,6 +18,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.tch.fc.model.Admin;
+import org.tch.fc.model.Event;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
@@ -252,15 +253,29 @@ public class SWPConnector implements ConnectorInterface
           if (groupArray != null) {
             if (logOut != null) {
               logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate()));
-              for (String groupId : groupArray) {
+            }
+            for (String groupId : groupArray) {
+              if (logOut != null) {
                 logOut.println(" sending vaccine " + cvx + " given " + sdf.format(testEvent.getEventDate())
                     + " with group id = " + groupId);
-                sb.append("            <swp:dose cvx=\"" + cvx + "\" ");
-                sb.append("date=\"" + sdf.format(testEvent.getEventDate()) + "\" ");
-                sb.append("groupid=\"" + groupId + "\"/> \n");
               }
+              sb.append("            <swp:dose cvx=\"" + cvx + "\" ");
+              sb.append("date=\"" + sdf.format(testEvent.getEventDate()) + "\" ");
+              sb.append("groupid=\"" + groupId + "\"/> \n");
             }
           }
+        }
+      }
+
+      for (TestEvent testEvent : testCase.getTestEventList()) {
+        Event event = testEvent.getEvent();
+        if (event.getEventType() != EventType.VACCINE && event.getEventId() >= Event.EVENT_ID_RANGE_1_MIIS
+            && event.getEventId() < Event.EVENT_ID_RANGE_2_RESERVED) {
+          int code = event.getEventId() - Event.EVENT_ID_RANGE_1_MIIS;
+          if (logOut != null) {
+            logOut.println(" sending vaccine client condition " + event.getLabel() + " with code " + (code));
+          }
+          sb.append("            <swp:condition code=\"" + (code) + "\"/> \n");
         }
       }
       sb.append("         </swp:patient>  \n");
@@ -300,6 +315,7 @@ public class SWPConnector implements ConnectorInterface
             if (overdueDate != null && !testCase.getEvalDate().before(overdueDate)) {
               forecastActual.setAdmin(Admin.OVERDUE);
             } else {
+              forecastActual.setAdmin(Admin.DUE);
             }
           }
         }
