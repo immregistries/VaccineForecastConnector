@@ -49,6 +49,7 @@ public class TCHConnector implements ConnectorInterface
   private static final String STATUS_DESCRIPTION_CONTRAINDICATED = "contraindicated";
   private static final String STATUS_DESCRIPTION_COMPLETE_FOR_SEASON = "complete for season";
   private static final String STATUS_DESCRIPTION_ASSUMED_COMPLETE_OR_IMMUNIE = "assumed complete or immune";
+  private static final String STATUS_DESCRIPTION_AGED_OUT = "aged out";
 
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
 
@@ -73,6 +74,7 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "HepB", VaccineGroup.ID_HEPB);
     addForcastItem(forecastItemList, "DTaP", VaccineGroup.ID_DTAP);
     addForcastItem(forecastItemList, "DTaP", VaccineGroup.ID_DTAP_TDAP_TD);
+    addForcastItem(forecastItemList, "DTaP/Tdap/Td", VaccineGroup.ID_DTAP_TDAP_TD);
     addForcastItem(forecastItemList, "Td", VaccineGroup.ID_TD_ONLY);
     addForcastItem(forecastItemList, "Td", VaccineGroup.ID_TDAP_TD);
     addForcastItem(forecastItemList, "Td", VaccineGroup.ID_DTAP_TDAP_TD);
@@ -80,12 +82,14 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "Tdap", VaccineGroup.ID_TDAP_TD);
     addForcastItem(forecastItemList, "Tdap", VaccineGroup.ID_DTAP_TDAP_TD);
     addForcastItem(forecastItemList, "IPV", VaccineGroup.ID_POLIO);
+    addForcastItem(forecastItemList, "Polio", VaccineGroup.ID_POLIO);
     addForcastItem(forecastItemList, "HepA", VaccineGroup.ID_HEPA);
     addForcastItem(forecastItemList, "MMR", VaccineGroup.ID_MMR);
     addForcastItem(forecastItemList, "Measles", VaccineGroup.ID_MEASLES_ONLY);
     addForcastItem(forecastItemList, "Mumps", VaccineGroup.ID_MUMPS_ONLY);
     addForcastItem(forecastItemList, "Rubella", VaccineGroup.ID_RUBELLA_ONLY);
     addForcastItem(forecastItemList, "Var", VaccineGroup.ID_VAR);
+    addForcastItem(forecastItemList, "Varicella", VaccineGroup.ID_VAR);
     addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA);
     addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA_IIV);
     addForcastItem(forecastItemList, "Influenza", VaccineGroup.ID_INFLUENZA_LAIV);
@@ -93,8 +97,12 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "Influenza IIV", VaccineGroup.ID_INFLUENZA);
     addForcastItem(forecastItemList, "Influenza LAIV", VaccineGroup.ID_INFLUENZA_LAIV);
     addForcastItem(forecastItemList, "MCV4", VaccineGroup.ID_MENING);
+    addForcastItem(forecastItemList, "MCV", VaccineGroup.ID_MENING);
     addForcastItem(forecastItemList, "HPV", VaccineGroup.ID_HPV);
     addForcastItem(forecastItemList, "Rota", VaccineGroup.ID_ROTA);
+    addForcastItem(forecastItemList, "Rotavirus", VaccineGroup.ID_ROTA);
+    addForcastItem(forecastItemList, "PCV", VaccineGroup.ID_PNEUMO);
+    addForcastItem(forecastItemList, "PCV", VaccineGroup.ID_PCV);
     addForcastItem(forecastItemList, "PCV13", VaccineGroup.ID_PNEUMO);
     addForcastItem(forecastItemList, "PCV13", VaccineGroup.ID_PCV);
     addForcastItem(forecastItemList, "Zoster", VaccineGroup.ID_ZOSTER);
@@ -126,6 +134,7 @@ public class TCHConnector implements ConnectorInterface
     adminStatusMapping.put(STATUS_DESCRIPTION_CONTRAINDICATED, Admin.CONTRAINDICATED);
     adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE_FOR_SEASON, Admin.COMPLETE_FOR_SEASON);
     adminStatusMapping.put(STATUS_DESCRIPTION_ASSUMED_COMPLETE_OR_IMMUNIE, Admin.ASSUMED_COMPLETE_OR_IMMUNE);
+    adminStatusMapping.put(STATUS_DESCRIPTION_AGED_OUT, Admin.FINISHED);
   }
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
