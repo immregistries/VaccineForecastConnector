@@ -25,6 +25,50 @@ public class TestCase implements Serializable
   private String testCaseNumber = "";
   private EvaluationType evaluationType = null;
   private ForecastType forecastType = null;
+  private RelativeRule evalRule = null;
+  private DateSet dateSet = null;
+  private VaccineGroup vaccineGroup = null;
+
+  public VaccineGroup getVaccineGroup() {
+    return vaccineGroup;
+  }
+
+  public void setVaccineGroup(VaccineGroup vaccineGroup) {
+    this.vaccineGroup = vaccineGroup;
+  }
+
+  public void calculateFixedDates(Date targetEvalDate) {
+    if (dateSet == DateSet.RELATIVE) {
+      if (evalRule != null) {
+        evalDate = targetEvalDate;
+        patientDob = evalRule.getTimePeriod().getDateBefore(targetEvalDate);
+      }
+    }
+  }
+
+  public String getDateSetCode() {
+    return dateSet == null ? null : dateSet.getDateSetCode();
+  }
+
+  public void setDateSetCode(String dateSetCode) {
+    this.dateSet = DateSet.getDateSet(dateSetCode);
+  }
+
+  public RelativeRule getEvalRule() {
+    return evalRule;
+  }
+
+  public void setEvalRule(RelativeRule evalRule) {
+    this.evalRule = evalRule;
+  }
+
+  public DateSet getDateSet() {
+    return dateSet;
+  }
+
+  public void setDateSet(DateSet dateSet) {
+    this.dateSet = dateSet;
+  }
 
   public EvaluationType getEvaluationType() {
     return evaluationType;

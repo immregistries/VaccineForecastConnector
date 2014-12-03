@@ -1,0 +1,5 @@
+
+public enum Toy
+{
+  SCOOTER, LEGOS, COSTUMES, STAR_WARS_COSTUMES, BABY_DOLLS
+}

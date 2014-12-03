@@ -18,6 +18,15 @@ public class Software implements Serializable
   private Service service = null;
   private String scheduleName = "";
   private String visibleStatus = "";
+  private boolean supportsFixed = false;
+
+  public boolean isSupportsFixed() {
+    return supportsFixed;
+  }
+
+  public void setSupportsFixed(boolean supportsFixed) {
+    this.supportsFixed = supportsFixed;
+  }
 
   private List<SoftwareSetting> softwareSettingList = null;
 

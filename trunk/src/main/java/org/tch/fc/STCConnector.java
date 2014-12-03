@@ -162,7 +162,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
       // sdf.format(testCase.getEvalDate())
       List<VaccinationType> vaccinationTypeList = new ArrayList<VaccinationType>();
       for (TestEvent testEvent : testCase.getTestEventList()) {
-        if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+        if (testEvent.getEvent().getEventType() == EventType.VACCINATION) {
           VaccinationType vaccinationType = new VaccinationType();
           String cvxCode = testEvent.getEvent().getVaccineCvx();
           if (cvxCode.startsWith("0")) {
@@ -275,7 +275,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
                     }
                   });
                   for (TestEvent testEvent : testCase.getTestEventList()) {
-                    if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+                    if (testEvent.getEvent().getEventType() == EventType.VACCINATION) {
                       String cvxCode = testEvent.getEvent().getVaccineCvx();
                       if (cvxCode.equals(HEPB_CVX)) {
                         break;

@@ -244,7 +244,7 @@ public class SWPConnector implements ConnectorInterface
       sb.append("         <swp:patient dob=\"" + sdf.format(testCase.getPatientDob()) + "\" gender=\""
           + testCase.getPatientSex() + "\">  \n");
       for (TestEvent testEvent : testCase.getTestEventList()) {
-        if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+        if (testEvent.getEvent().getEventType() == EventType.VACCINATION) {
           String cvx = testEvent.getEvent().getVaccineCvx();
           String[] groupArray = groupMapping.get(cvx);
           if (cvxOut.get(cvx) != null) {
@@ -269,7 +269,7 @@ public class SWPConnector implements ConnectorInterface
 
       for (TestEvent testEvent : testCase.getTestEventList()) {
         Event event = testEvent.getEvent();
-        if (event.getEventType() != EventType.VACCINE && event.getEventId() >= Event.EVENT_ID_RANGE_1_MIIS
+        if (event.getEventType() != EventType.VACCINATION && event.getEventId() >= Event.EVENT_ID_RANGE_1_MIIS
             && event.getEventId() < Event.EVENT_ID_RANGE_2_RESERVED) {
           int code = event.getEventId() - Event.EVENT_ID_RANGE_1_MIIS;
           if (logOut != null) {

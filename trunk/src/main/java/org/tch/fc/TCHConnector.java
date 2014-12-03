@@ -283,7 +283,7 @@ public class TCHConnector implements ConnectorInterface
               int i = Integer.parseInt(line.substring(0, pos).trim());
               int count = 0;
               for (TestEvent testEvent : testCase.getTestEventList()) {
-                if (testEvent.getEvent().getEventType() == EventType.VACCINE) {
+                if (testEvent.getEvent().getEventType() == EventType.VACCINATION) {
                   count++;
                   if (count == i) {
                     line = line.substring(pos + 1).trim();
@@ -377,7 +377,7 @@ public class TCHConnector implements ConnectorInterface
     sb.append("&patientSex=" + testCase.getPatientSex() + "");
     int count = 0;
     for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINE) {
+      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINATION) {
         count++;
         sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
         sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());

@@ -20,16 +20,8 @@ public enum Admin implements Serializable {
     return adminStatus;
   }
 
-  public void setAdminStatus(String adminStatus) {
-    this.adminStatus = adminStatus;
-  }
-
   public String getLabel() {
     return label;
-  }
-
-  public void setLabel(String label) {
-    this.label = label;
   }
 
   public static Admin getAdmin(String adminStatus) {
