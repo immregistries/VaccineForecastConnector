@@ -50,7 +50,7 @@ public class TestICEConnector extends junit.framework.TestCase {
     Software software = new Software();
     ICEConnector iceConnector = new ICEConnector(software, VaccineGroup.getForecastItemList());
     List<ForecastActual> forecastActualList = iceConnector.readVMR(exampleReturn);
-    assertEquals(8, forecastActualList.size());
+    assertEquals(9, forecastActualList.size());
   }
 
   private static final String EXAMPLE = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
