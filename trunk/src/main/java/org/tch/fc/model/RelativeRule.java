@@ -2,13 +2,15 @@ package org.tch.fc.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.tch.fc.util.TimePeriod;
 
 public class RelativeRule implements Serializable
 {
   public static enum BeforeOrAfter {
-    BEFORE, AFTER
+    BEFORE, AFTER, ON
   }
 
   /**
@@ -22,6 +24,28 @@ public class RelativeRule implements Serializable
   private TestEvent testEvent = null;
   private RelativeRule andRule = null;
   private BeforeOrAfter beforeOrAfter = BeforeOrAfter.AFTER;
+  transient Set<TestEvent> dependentTestEventSet = new HashSet<TestEvent>();
+
+  public Set<TestEvent> getDependentTestEventSet() {
+    return dependentTestEventSet;
+  }
+  
+  public String getLabelScreen()
+  {
+    if (relativeTo == RelativeTo.BIRTH)
+    {
+      return "birth";
+    }
+    else if (relativeTo == RelativeTo.EVALUATION)
+    {
+      return "evaluation";
+    }
+    else if (testEvent != null)
+    {
+      return testEvent.getLabelScreen();
+    }
+    return "event";
+  }
 
   public Date calculateDate() {
     if (testEvent != null && testEvent.getTestCase() != null) {

@@ -32,7 +32,7 @@ public class TestEvent implements Serializable
   private List<EvaluationActual> evaluationActualList = null;
   private Condition condition = null;
   private RelativeRule eventRule = null;
-  private int temporaryDoseNumber = 0;
+  private int screenId = 0;
 
   public void calculateFixedDates() {
     if (testCase != null && testCase.getDateSet() == DateSet.RELATIVE) {
@@ -42,12 +42,32 @@ public class TestEvent implements Serializable
     }
   }
 
-  public int getTemporaryDoseNumber() {
-    return temporaryDoseNumber;
+  public String getLabelScreen() {
+    if (event.getEventType() == EventType.BIRTH) {
+      return event.getLabelScreen();
+    } else if (event.getEventType() == EventType.EVALUATION) {
+      return event.getLabelScreen();
+    } else if (event.getEventType() == EventType.VACCINATION) {
+      if (screenId > 0) {
+        return "vaccine #" + screenId;
+      } else {
+        return event.getLabelScreen();
+      }
+    } else if (event.getEventType() == EventType.ACIP_DEFINED_CONDITION) {
+      return event.getLabelScreen();
+    } else if (event.getEventType() == EventType.CONDITION_IMPLICATION) {
+      return event.getLabelScreen();
+    } else {
+      return event.getLabelScreen();
+    }
   }
 
-  public void setTemporaryDoseNumber(int temporaryDoseNumber) {
-    this.temporaryDoseNumber = temporaryDoseNumber;
+  public int getScreenId() {
+    return screenId;
+  }
+
+  public void setScreenId(int temporaryDoseNumber) {
+    this.screenId = temporaryDoseNumber;
   }
 
   public RelativeRule getEventRule() {
@@ -115,15 +135,18 @@ public class TestEvent implements Serializable
   }
 
   public String getAgeAlmost(TestCase testCase) {
-    int monthsBetween = monthsYearsBetween(eventDate, testCase.getPatientDob());
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(eventDate);
-    calendar.add(Calendar.DAY_OF_MONTH, 4);
-    int almostMonthsBetween = monthsYearsBetween(calendar.getTime(), testCase.getPatientDob());
-    if (almostMonthsBetween > monthsBetween) {
-      return "Almost " + createAge(calendar.getTime(), testCase.getPatientDob());
+    if (eventDate != null) {
+      int monthsBetween = monthsYearsBetween(eventDate, testCase.getPatientDob());
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(eventDate);
+      calendar.add(Calendar.DAY_OF_MONTH, 4);
+      int almostMonthsBetween = monthsYearsBetween(calendar.getTime(), testCase.getPatientDob());
+      if (almostMonthsBetween > monthsBetween) {
+        return "Almost " + createAge(calendar.getTime(), testCase.getPatientDob());
+      }
+      return createAge(eventDate, testCase.getPatientDob());
     }
-    return createAge(eventDate, testCase.getPatientDob());
+    return "";
   }
 
   private static int monthsYearsBetween(Date eventDate, Date referenceDate) {

@@ -22,7 +22,7 @@ public class Event implements Serializable {
     BIRTH_EVENT.setEventType(EventType.BIRTH);
     BIRTH_EVENT.setLabel("Patient born");
     EVALUATION_EVENT.setEventType(EventType.EVALUATION);
-    EVALUATION_EVENT.setLabel("Evaluation performed");
+    EVALUATION_EVENT.setLabel("Evaluation should be performed");
   }
   
   public Event()
@@ -66,6 +66,23 @@ public class Event implements Serializable {
 
   public String getLabel() {
     return label;
+  }
+  
+  public String getLabelScreen()
+  {
+    if (getEventType() == EventType.BIRTH) {
+      return "Birth";
+    } else if (getEventType() == EventType.EVALUATION) {
+      return "Evaluation";
+    } else if (getEventType() == EventType.VACCINATION) {
+      return getLabel();
+    } else if (getEventType() == EventType.ACIP_DEFINED_CONDITION) {
+      return "ACIP-Defined Condition '" + getLabel();
+    } else if (getEventType() == EventType.CONDITION_IMPLICATION) {
+      return "Condition Implication '" + getLabel();
+    } else {
+      return getEventType().getLabel() + " '" + getLabel() + "'";
+    }
   }
 
   public void setLabel(String label) {

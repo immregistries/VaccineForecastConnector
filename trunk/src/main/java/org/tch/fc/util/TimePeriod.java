@@ -146,6 +146,19 @@ public class TimePeriod
   public String toString() {
     return printString(true);
   }
+  
+  public String toStringNoSign()
+  {
+    if (isNegative())
+    {
+      return printString(false) + " before";
+    }
+    else if (isZero())
+    {
+      return "on";
+    }
+    return printString(false) + " after";
+  }
 
   private String printString(boolean showSign) {
     String s;
