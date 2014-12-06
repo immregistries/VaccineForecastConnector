@@ -205,5 +205,19 @@ public class TestEvent implements Serializable
     }
     return "Over 100 Years";
   }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof TestEvent)
+    {
+      return ((TestEvent) obj).getTestEventId() == getTestEventId();
+    }
+    return super.equals(obj);
+  }
+  
+  @Override
+  public int hashCode() {
+    return testEventId;
+  }
 
 }

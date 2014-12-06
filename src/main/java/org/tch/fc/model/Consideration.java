@@ -41,4 +41,12 @@ public class Consideration implements Serializable
   public void setConsiderationTypeCode(String considerationTypeCode) {
     this.considerationType = ConsiderationType.getConsiderationType(considerationTypeCode);
   }
+
+  @Override
+  public String toString() {
+    if (getConsiderationType() != null) {
+      return getConsiderationText() + " [" + getConsiderationType().getLabel() + "]";
+    }
+    return getConsiderationText();
+  }
 }
