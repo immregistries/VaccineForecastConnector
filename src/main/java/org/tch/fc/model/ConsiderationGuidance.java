@@ -7,16 +7,16 @@ public class ConsiderationGuidance implements Serializable
 
   private static final long serialVersionUID = 1L;
 
-  private static int considerationGuidanceId = 0;
+  private int considerationGuidanceId = 0;
   private Consideration consideration = null;
   private Guidance guidance = null;
 
-  public static int getConsiderationGuidanceId() {
+  public int getConsiderationGuidanceId() {
     return considerationGuidanceId;
   }
 
-  public static void setConsiderationGuidanceId(int considerationGuidanceId) {
-    ConsiderationGuidance.considerationGuidanceId = considerationGuidanceId;
+  public void setConsiderationGuidanceId(int considerationGuidanceId) {
+    this.considerationGuidanceId = considerationGuidanceId;
   }
 
   public Consideration getConsideration() {

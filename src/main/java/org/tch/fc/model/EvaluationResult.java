@@ -89,7 +89,7 @@ public class EvaluationResult implements Serializable
   }
 
   public String getEvaluationStatus() {
-    return evaluation.getEvaluationStatus();
+    return evaluation == null ? null : evaluation.getEvaluationStatus();
   }
 
   public void setEvaluationStatus(String evaluationStatus) {
