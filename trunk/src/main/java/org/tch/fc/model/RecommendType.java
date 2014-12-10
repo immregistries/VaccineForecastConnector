@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public enum RecommendType implements Serializable {
 
-  CONTRAINIDATION("C", "Contraindication"), PRECAUTION("P", "Precaution"), DISEASE("D", "Disease"), INDICATION("I",
-      "Indication");
+  CONTRAINIDATION("C", "Do Not Administer"), PRECAUTION("P", "Precaution"), DISEASE("D", "Disease"), INDICATION("I",
+      "Administer"), CONDITIONALLY_ADMINISTER("A", "Conditionally Administer");
 
   private String recommendTypeCode = "";
   private String label = "";
