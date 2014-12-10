@@ -62,9 +62,6 @@ public class Recommend implements Serializable
 
   @Override
   public String toString() {
-    return (getRecommendType() == null ? "" : getRecommendType().getLabel() + ": ")
-        + getRecommendText()
-        + (getRecommendRange() == null ? "" : getRecommendRange() == RecommendRange.TEMPORAL ? " [temporary]"
-            : " [permament]");
+    return (getRecommendType() == null ? "" : getRecommendType().getLabel() + ": ") + getRecommendText();
   }
 }

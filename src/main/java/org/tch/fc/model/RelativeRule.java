@@ -25,6 +25,15 @@ public class RelativeRule implements Serializable
   private RelativeRule andRule = null;
   private BeforeOrAfter beforeOrAfter = BeforeOrAfter.AFTER;
   transient Set<TestEvent> dependentTestEventSet = new HashSet<TestEvent>();
+  
+  public RelativeRule makeCopy()
+  {
+    RelativeRule copy = new RelativeRule();
+    copy.setTimePeriod(timePeriod);
+    
+    
+    return copy;
+  }
 
   public Set<TestEvent> getDependentTestEventSet() {
     return dependentTestEventSet;
@@ -57,6 +66,10 @@ public class RelativeRule implements Serializable
         refDate = testCase.getEvalDate();
       } else {
         refDate = testEvent.getEventDate();
+      }
+      if (refDate == null)
+      {
+        return null; 
       }
       Date date = timePeriod.getDateFrom(refDate);
       if (andRule != null)
