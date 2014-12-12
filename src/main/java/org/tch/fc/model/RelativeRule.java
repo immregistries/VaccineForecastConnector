@@ -25,64 +25,51 @@ public class RelativeRule implements Serializable
   private RelativeRule andRule = null;
   private BeforeOrAfter beforeOrAfter = BeforeOrAfter.AFTER;
   transient Set<TestEvent> dependentTestEventSet = new HashSet<TestEvent>();
-  
-  public RelativeRule makeCopy()
-  {
+
+  public RelativeRule makeCopy() {
     RelativeRule copy = new RelativeRule();
     copy.setTimePeriod(timePeriod);
-    
-    
+
     return copy;
   }
 
   public Set<TestEvent> getDependentTestEventSet() {
     return dependentTestEventSet;
   }
-  
-  public String getLabelScreen()
-  {
-    if (relativeTo == RelativeTo.BIRTH)
-    {
+
+  public String getLabelScreen() {
+    if (relativeTo == RelativeTo.BIRTH) {
       return "birth";
-    }
-    else if (relativeTo == RelativeTo.EVALUATION)
-    {
+    } else if (relativeTo == RelativeTo.EVALUATION) {
       return "evaluation";
-    }
-    else if (testEvent != null)
-    {
+    } else if (testEvent != null) {
       return testEvent.getLabelScreen();
     }
     return "event";
   }
 
-  public Date calculateDate() {
-    if (testEvent != null && testEvent.getTestCase() != null) {
-      TestCase testCase = testEvent.getTestCase();
-      Date refDate;
+  public Date calculateDate(TestCase testCase) {
+    
+      Date refDate = null;
       if (relativeTo == RelativeTo.BIRTH) {
         refDate = testCase.getPatientDob();
       } else if (relativeTo == RelativeTo.EVALUATION) {
         refDate = testCase.getEvalDate();
-      } else {
+      } else if (testEvent != null) {
         refDate = testEvent.getEventDate();
-      }
-      if (refDate == null)
-      {
-        return null; 
+      }  
+      if (refDate == null) {
+        return null;
       }
       Date date = timePeriod.getDateFrom(refDate);
-      if (andRule != null)
-      {
-        Date altDate = andRule.calculateDate();
-        if (altDate.after(date))
-        {
+      if (andRule != null) {
+        Date altDate = andRule.calculateDate(testCase);
+        if (altDate != null && altDate.after(date)) {
           return altDate;
         }
       }
       return date;
-    }
-    return null;
+    
   }
 
   public boolean isZero() {

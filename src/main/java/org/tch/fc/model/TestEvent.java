@@ -37,7 +37,7 @@ public class TestEvent implements Serializable
   public void calculateFixedDates() {
     if (testCase != null && testCase.getDateSet() == DateSet.RELATIVE) {
       if (eventRule != null) {
-        eventDate = eventRule.calculateDate();
+        eventDate = eventRule.calculateDate(testCase);
       }
     }
   }
@@ -186,7 +186,11 @@ public class TestEvent implements Serializable
         calendar.setTime(referenceDate);
         calendar.add(Calendar.MONTH, months + 1);
         if (calendar.getTime().after(eventDate)) {
-          if (months == 1) {
+          if (months == 0)
+          {
+            return "newborn";
+          }
+          else if (months == 1) {
             return "1 Month";
           }
           return months + " Months";

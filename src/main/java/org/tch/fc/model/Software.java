@@ -11,6 +11,8 @@ public class Software implements Serializable
   public static final String VISIBLE_STATUS_VISIBLE = "V";
   public static final String VISIBLE_STATUS_RESTRICTED = "R";
   public static final String VISIBLE_STATUS_CLOSED = "X";
+  
+  public static final int TCH_SOFTWARE_ID = 2;
 
   private int softwareId = 0;
   private String label = "";
