@@ -377,7 +377,7 @@ public class TCHConnector implements ConnectorInterface
     sb.append("&patientSex=" + testCase.getPatientSex() + "");
     int count = 0;
     for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINATION) {
+      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINATION && testEvent.getEventDate() != null) {
         count++;
         sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
         sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());
