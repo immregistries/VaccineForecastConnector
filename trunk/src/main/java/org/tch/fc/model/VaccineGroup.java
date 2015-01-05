@@ -23,7 +23,16 @@ public class VaccineGroup implements Serializable {
   private int vaccineGroupId = 0;
   private String label = "";
   private String vaccineCvx = "";
+  private String mapToCdsiCode = null;
   private List<EvaluationActual> evaluationActualList = null;
+  
+  public String getMapToCdsiCode() {
+    return mapToCdsiCode;
+  }
+  
+  public void setMapToCdsiCode(String mapToCdsiCode) {
+    this.mapToCdsiCode = mapToCdsiCode;
+  }
   
   public List<EvaluationActual> getEvaluationActualList() {
     return evaluationActualList;
