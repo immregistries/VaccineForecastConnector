@@ -46,6 +46,7 @@ public class TCHConnector implements ConnectorInterface
   private static final String STATUS_DESCRIPTION_OVERDUE = "overdue";
   private static final String STATUS_DESCRIPTION_FINISHED = "finished";
   private static final String STATUS_DESCRIPTION_COMPLETE = "complete";
+  private static final String STATUS_DESCRIPTION_NOT_COMPLETE = "not complete";
   private static final String STATUS_DESCRIPTION_CONTRAINDICATED = "contraindicated";
   private static final String STATUS_DESCRIPTION_COMPLETE_FOR_SEASON = "complete for season";
   private static final String STATUS_DESCRIPTION_ASSUMED_COMPLETE_OR_IMMUNIE = "assumed complete or immune";
@@ -135,6 +136,7 @@ public class TCHConnector implements ConnectorInterface
     adminStatusMapping.put(STATUS_DESCRIPTION_COMPLETE_FOR_SEASON, Admin.COMPLETE_FOR_SEASON);
     adminStatusMapping.put(STATUS_DESCRIPTION_ASSUMED_COMPLETE_OR_IMMUNIE, Admin.ASSUMED_COMPLETE_OR_IMMUNE);
     adminStatusMapping.put(STATUS_DESCRIPTION_AGED_OUT, Admin.FINISHED);
+    adminStatusMapping.put(STATUS_DESCRIPTION_NOT_COMPLETE, Admin.NOT_COMPLETE);
   }
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
