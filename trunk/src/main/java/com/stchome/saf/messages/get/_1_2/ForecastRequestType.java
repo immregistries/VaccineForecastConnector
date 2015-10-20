@@ -1,6 +1,6 @@
 
 /**
- * ContraindicationType.java
+ * ForecastRequestType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:34:40 IST)
@@ -11,79 +11,87 @@
             
 
             /**
-            *  ContraindicationType bean class
+            *  ForecastRequestType bean class
             */
             @SuppressWarnings({"unchecked","unused"})
         
-        public  class ContraindicationType
+        public  class ForecastRequestType
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = ContraindicationType
+                name = ForecastRequestType
                 Namespace URI = http://saf.stchome.com/messages/get/1.2
                 Namespace Prefix = ns2
                 */
             
 
                         /**
-                        * field for VaccCode
+                        * field for PersonDetails
+                        * This was an Array!
                         */
 
                         
-                                    protected com.stchome.saf.common.VaccCodeStringType localVaccCode ;
+                                    protected com.stchome.saf.messages.get._1_2.PersonDetailsType[] localPersonDetails ;
                                 
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.common.VaccCodeStringType
+                           * @return com.stchome.saf.messages.get._1_2.PersonDetailsType[]
                            */
-                           public  com.stchome.saf.common.VaccCodeStringType getVaccCode(){
-                               return localVaccCode;
+                           public  com.stchome.saf.messages.get._1_2.PersonDetailsType[] getPersonDetails(){
+                               return localPersonDetails;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param VaccCode
+
+
+                               
+                              /**
+                               * validate the array for PersonDetails
                                */
-                               public void setVaccCode(com.stchome.saf.common.VaccCodeStringType param){
+                              protected void validatePersonDetails(com.stchome.saf.messages.get._1_2.PersonDetailsType[] param){
+                             
+                              if ((param != null) && (param.length < 1)){
+                                throw new java.lang.RuntimeException();
+                              }
+                              
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param PersonDetails
+                              */
+                              public void setPersonDetails(com.stchome.saf.messages.get._1_2.PersonDetailsType[] param){
+                              
+                                   validatePersonDetails(param);
+
+                               
+                                      this.localPersonDetails=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param com.stchome.saf.messages.get._1_2.PersonDetailsType
+                             */
+                             public void addPersonDetails(com.stchome.saf.messages.get._1_2.PersonDetailsType param){
+                                   if (localPersonDetails == null){
+                                   localPersonDetails = new com.stchome.saf.messages.get._1_2.PersonDetailsType[]{};
+                                   }
+
                             
-                                            this.localVaccCode=param;
-                                    
 
-                               }
-                            
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localPersonDetails);
+                               list.add(param);
+                               this.localPersonDetails =
+                             (com.stchome.saf.messages.get._1_2.PersonDetailsType[])list.toArray(
+                            new com.stchome.saf.messages.get._1_2.PersonDetailsType[list.size()]);
 
-                        /**
-                        * field for CodeType
-                        * This was an Attribute!
-                        */
-
-                        
-                                    protected com.stchome.saf.common.VaccineCodeType localCodeType ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.stchome.saf.common.VaccineCodeType
-                           */
-                           public  com.stchome.saf.common.VaccineCodeType getCodeType(){
-                               return localCodeType;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param CodeType
-                               */
-                               public void setCodeType(com.stchome.saf.common.VaccineCodeType param){
-                            
-                                            this.localCodeType=param;
-                                    
-
-                               }
-                            
+                             }
+                             
 
      
      
@@ -133,34 +141,35 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.2");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":ContraindicationType",
+                           namespacePrefix+":ForecastRequestType",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "ContraindicationType",
+                           "ForecastRequestType",
                            xmlWriter);
                    }
 
                
                    }
                
-                                    
-                                    if (localCodeType != null){
-                                        writeAttribute("",
-                                           "codeType",
-                                           localCodeType.toString(), xmlWriter);
-                                    }
-                                    
-                                      else {
-                                          throw new org.apache.axis2.databinding.ADBException("required attribute localCodeType is null");
-                                      }
-                                    
-                                            if (localVaccCode==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("vaccCode cannot be null!!");
+                                       if (localPersonDetails!=null){
+                                            for (int i = 0;i < localPersonDetails.length;i++){
+                                                if (localPersonDetails[i] != null){
+                                                 localPersonDetails[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","personDetails"),
+                                                           xmlWriter);
+                                                } else {
+                                                   
+                                                           throw new org.apache.axis2.databinding.ADBException("personDetails cannot be null!!");
+                                                    
+                                                }
+
                                             }
-                                           localVaccCode.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccCode"),
-                                               xmlWriter);
+                                     } else {
                                         
+                                               throw new org.apache.axis2.databinding.ADBException("personDetails cannot be null!!");
+                                        
+                                    }
+                                 
                     xmlWriter.writeEndElement();
                
 
@@ -346,20 +355,27 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
-                                                                      "vaccCode"));
-                            
-                            
-                                    if (localVaccCode==null){
-                                         throw new org.apache.axis2.databinding.ADBException("vaccCode cannot be null!!");
+                             if (localPersonDetails!=null) {
+                                 for (int i = 0;i < localPersonDetails.length;i++){
+
+                                    if (localPersonDetails[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                                                          "personDetails"));
+                                         elementList.add(localPersonDetails[i]);
+                                    } else {
+                                        
+                                               throw new org.apache.axis2.databinding.ADBException("personDetails cannot be null !!");
+                                            
                                     }
-                                    elementList.add(localVaccCode);
-                                
-                            attribList.add(
-                            new javax.xml.namespace.QName("","codeType"));
-                            
-                                      attribList.add(localCodeType.toString());
-                                
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("personDetails cannot be null!!");
+                                    
+                             }
+
+                        
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -384,9 +400,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static ContraindicationType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            ContraindicationType object =
-                new ContraindicationType();
+        public static ForecastRequestType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            ForecastRequestType object =
+                new ForecastRequestType();
 
             int event;
             java.lang.String nillableValue = null;
@@ -410,10 +426,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"ContraindicationType".equals(type)){
+                            if (!"ForecastRequestType".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (ContraindicationType)com.stchome.saf.messages.get._1_2.ExtensionMapper.getTypeObject(
+                                return (ForecastRequestType)com.stchome.saf.messages.get._1_2.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -432,36 +448,51 @@
                 
 
                 
-                    // handle attribute "codeType"
-                    java.lang.String tempAttribCodeType =
-                        
-                                reader.getAttributeValue(null,"codeType");
-                            
-                   if (tempAttribCodeType!=null){
-                         java.lang.String content = tempAttribCodeType;
-                        
-                                                  object.setCodeType(
-                                                        com.stchome.saf.common.VaccineCodeType.Factory.fromString(reader,tempAttribCodeType));
-                                            
-                    } else {
-                       
-                               throw new org.apache.axis2.databinding.ADBException("Required attribute codeType is missing");
-                           
-                    }
-                    handledAttributes.add("codeType");
-                    
                     
                     reader.next();
                 
+                        java.util.ArrayList list1 = new java.util.ArrayList();
+                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccCode").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","personDetails").equals(reader.getName())){
                                 
-                                                object.setVaccCode(com.stchome.saf.common.VaccCodeStringType.Factory.parse(reader));
-                                              
-                                        reader.next();
                                     
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list1.add(com.stchome.saf.messages.get._1_2.PersonDetailsType.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone1 = false;
+                                                        while(!loopDone1){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone1 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","personDetails").equals(reader.getName())){
+                                                                    list1.add(com.stchome.saf.messages.get._1_2.PersonDetailsType.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone1 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
+                                                        object.setPersonDetails((com.stchome.saf.messages.get._1_2.PersonDetailsType[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.stchome.saf.messages.get._1_2.PersonDetailsType.class,
+                                                                list1));
+                                                            
                               }  // End of if for expected property start element
                                 
                                 else{

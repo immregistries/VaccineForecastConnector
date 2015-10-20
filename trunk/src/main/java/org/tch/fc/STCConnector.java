@@ -1,9 +1,34 @@
 package org.tch.fc;
 
+import static org.tch.fc.model.VaccineGroup.ID_ANTHRAX;
+import static org.tch.fc.model.VaccineGroup.ID_DTAP;
+import static org.tch.fc.model.VaccineGroup.ID_DTAP_TDAP_TD;
+import static org.tch.fc.model.VaccineGroup.ID_HEPA;
+import static org.tch.fc.model.VaccineGroup.ID_HEPB;
+import static org.tch.fc.model.VaccineGroup.ID_HEPB_2_ONLY;
+import static org.tch.fc.model.VaccineGroup.ID_HEPB_3_ONLY;
+import static org.tch.fc.model.VaccineGroup.ID_HIB;
+import static org.tch.fc.model.VaccineGroup.ID_HPV;
+import static org.tch.fc.model.VaccineGroup.ID_INFLUENZA;
+import static org.tch.fc.model.VaccineGroup.ID_MEASLES_ONLY;
+import static org.tch.fc.model.VaccineGroup.ID_MENING;
+import static org.tch.fc.model.VaccineGroup.ID_MMR;
+import static org.tch.fc.model.VaccineGroup.ID_MUMPS_ONLY;
+import static org.tch.fc.model.VaccineGroup.ID_NOVEL_H1N1;
+import static org.tch.fc.model.VaccineGroup.ID_PCV;
+import static org.tch.fc.model.VaccineGroup.ID_PNEUMO;
+import static org.tch.fc.model.VaccineGroup.ID_POLIO;
+import static org.tch.fc.model.VaccineGroup.ID_PPSV;
+import static org.tch.fc.model.VaccineGroup.ID_ROTA;
+import static org.tch.fc.model.VaccineGroup.ID_RUBELLA_ONLY;
+import static org.tch.fc.model.VaccineGroup.ID_SMALLPOX_SHOT_OR_READING;
+import static org.tch.fc.model.VaccineGroup.ID_TDAP_TD;
+import static org.tch.fc.model.VaccineGroup.ID_VAR;
+import static org.tch.fc.model.VaccineGroup.ID_ZOSTER;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,24 +43,28 @@ import java.util.Map;
 import org.tch.fc.model.Admin;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
-import org.tch.fc.model.SoftwareResult;
-import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
+import org.tch.fc.model.VaccineGroup;
 
+import com.stchome.saf.common.DateYYYYMMDDType;
 import com.stchome.saf.common.GenderType;
+import com.stchome.saf.common.Len20StringType;
+import com.stchome.saf.common.VaccCodeStringType;
 import com.stchome.saf.common.VaccMessageType;
 import com.stchome.saf.common.VaccineCodeType;
-import com.stchome.saf.messages.get._1_2.ForecastDetailsType;
-import com.stchome.saf.messages.get._1_2.GetForecastRequestSoap11Stub;
-import com.stchome.saf.messages.get._1_2.PersonDetailsType;
-import com.stchome.saf.messages.get._1_2.ResponseDetailType;
-import com.stchome.saf.messages.get._1_2.VaccinationType;
+import com.stchome.saf.messages.get._1_2.GetForecastRequestServiceStub;
+import com.stchome.saf.messages.get._1_3.ForecastDetailsType;
+import com.stchome.saf.messages.get._1_3.ForecastRequestType;
+import com.stchome.saf.messages.get._1_3.GetForecastRequest;
+import com.stchome.saf.messages.get._1_3.GetForecastResponse;
+import com.stchome.saf.messages.get._1_3.PersonDetailsType;
+import com.stchome.saf.messages.get._1_3.ResponseDetailType;
+import com.stchome.saf.messages.get._1_3.VaccinationType;
 
-import static org.tch.fc.model.VaccineGroup.*;
-
-public class STCConnector extends GetForecastRequestSoap11Stub implements ConnectorInterface
+public class STCConnector extends GetForecastRequestServiceStub implements ConnectorInterface
 {
 
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
@@ -58,7 +87,7 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
   private static String STC_HEP_2_DOSE = "12";
 
   public STCConnector(Software software, List<VaccineGroup> forecastItemList) throws Exception {
-    super(new URL(software.getServiceUrl()), null);
+    super(software.getServiceUrl());
     this.software = software;
     this.forecastItemList = forecastItemList;
     map("1", ID_DTAP_TDAP_TD); // DTaP
@@ -156,20 +185,41 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
         logOut.println("Connecting to " + software.getServiceUrl());
       }
       PersonDetailsType personDetailsType = new PersonDetailsType();
-      personDetailsType.setDateOfBirth(sdf.format(testCase.getPatientDob()));
+      {
+        DateYYYYMMDDType dateOfBirth = new DateYYYYMMDDType();
+        dateOfBirth.setDateYYYYMMDDType(sdf.format(testCase.getPatientDob()));
+        personDetailsType.setDateOfBirth(dateOfBirth);
+      }
       personDetailsType.setGender("M".equals(testCase.getPatientSex()) ? GenderType.M : GenderType.F);
-      personDetailsType.setPersonId(testCase.getTestCaseNumber());
-      // sdf.format(testCase.getEvalDate())
+      {
+        Len20StringType personId = new Len20StringType();
+        personId.setLen20StringType(testCase.getTestCaseNumber());
+        personDetailsType.setPersonId(personId);
+      }
+      {
+        DateYYYYMMDDType evaluationDate = new DateYYYYMMDDType();
+        evaluationDate.setDateYYYYMMDDType(sdf.format(testCase.getEvalDate()));
+        personDetailsType.setEvaluationDate(evaluationDate);
+      }
       List<VaccinationType> vaccinationTypeList = new ArrayList<VaccinationType>();
       for (TestEvent testEvent : testCase.getTestEventList()) {
         if (testEvent.getEvent().getEventType() == EventType.VACCINATION) {
           VaccinationType vaccinationType = new VaccinationType();
+          vaccinationType.setCompromisedCode("");
           String cvxCode = testEvent.getEvent().getVaccineCvx();
           if (cvxCode.startsWith("0")) {
             cvxCode = cvxCode.substring(1);
           }
-          vaccinationType.setVaccCode(cvxCode);
-          vaccinationType.setVaccDate(sdf.format(testEvent.getEventDate()));
+          {
+            VaccCodeStringType vaccCodeStringType = new VaccCodeStringType();
+            vaccCodeStringType.setVaccCodeStringType(cvxCode);
+            vaccinationType.setVaccCode(vaccCodeStringType);
+          }
+          {
+            DateYYYYMMDDType vaccDate = new DateYYYYMMDDType();
+            vaccDate.setDateYYYYMMDDType(sdf.format(testEvent.getEventDate()));
+            vaccinationType.setVaccDate(vaccDate);
+          }
           vaccinationType.setDoseSize(new BigDecimal(1.0));
           vaccinationType.setCodeType(VaccineCodeType.CVX);
           vaccinationTypeList.add(vaccinationType);
@@ -177,7 +227,13 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
       }
       personDetailsType.setVaccination(vaccinationTypeList.toArray(new VaccinationType[] {}));
 
-      ResponseDetailType[] responseDetailTypes = getForecast(new PersonDetailsType[] { personDetailsType });
+      GetForecastRequest getForecastRequest = new GetForecastRequest();
+      ForecastRequestType forecastRequestType = new ForecastRequestType();
+      forecastRequestType.setPersonDetails(new PersonDetailsType[] { personDetailsType });
+      getForecastRequest.setGetForecastRequest(forecastRequestType);
+
+      GetForecastResponse getForecastResponse = getForecast(getForecastRequest);
+      ResponseDetailType[] responseDetailTypes = getForecastResponse.getGetForecastResponse().getResponses();
       if (responseDetailTypes.length == 0) {
         if (logOut != null) {
           logOut.println("No results returned!");
@@ -311,10 +367,10 @@ public class STCConnector extends GetForecastRequestSoap11Stub implements Connec
                 forecastActual.setAdmin(Admin.UNKNOWN);
                 forecastActual.setVaccineGroup(forecastItem);
                 forecastActual.setDoseNumber("" + forecastDetailsType.getDoseNumber());
-                forecastActual.setDueDate(parseDate(forecastDetailsType.getRecommendedDate()));
-                forecastActual.setValidDate(parseDate(forecastDetailsType.getMinAllowableDate()));
-                forecastActual.setOverdueDate(parseDate(forecastDetailsType.getPastDueDate()));
-                forecastActual.setFinishedDate(parseDate(forecastDetailsType.getMaxAllowableDate()));
+                forecastActual.setDueDate(parseDate(forecastDetailsType.getRecommendedDate().getDateYYYYMMDDType()));
+                forecastActual.setValidDate(parseDate(forecastDetailsType.getMinAllowableDate().getDateYYYYMMDDType()));
+                forecastActual.setOverdueDate(parseDate(forecastDetailsType.getPastDueDate().getDateYYYYMMDDType()));
+                forecastActual.setFinishedDate(parseDate(forecastDetailsType.getMaxAllowableDate().getDateYYYYMMDDType()));
                 list.add(forecastActual);
               }
             }

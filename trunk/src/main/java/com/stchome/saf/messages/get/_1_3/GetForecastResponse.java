@@ -1,76 +1,59 @@
 
 /**
- * MessageTypes.java
+ * GetForecastResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
             
-                package com.stchome.saf.common;
+                package com.stchome.saf.messages.get._1_3;
             
 
             /**
-            *  MessageTypes bean class
+            *  GetForecastResponse bean class
             */
             @SuppressWarnings({"unchecked","unused"})
         
-        public  class MessageTypes
+        public  class GetForecastResponse
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
-                "http://saf.stchome.com/common",
-                "MessageTypes",
-                "ns1");
+                "http://saf.stchome.com/messages/get/1.3",
+                "GetForecastResponse",
+                "ns3");
 
             
 
                         /**
-                        * field for MessageTypes
+                        * field for GetForecastResponse
                         */
 
                         
-                                    protected java.lang.String localMessageTypes ;
+                                    protected com.stchome.saf.messages.get._1_3.ForecastResponseType localGetForecastResponse ;
                                 
-                            private static java.util.HashMap _table_ = new java.util.HashMap();
 
-                            // Constructor
-                            
-                                protected MessageTypes(java.lang.String value, boolean isRegisterValue) {
-                                    localMessageTypes = value;
-                                    if (isRegisterValue){
-                                        
-                                               _table_.put(localMessageTypes, this);
-                                           
-                                    }
+                           /**
+                           * Auto generated getter method
+                           * @return com.stchome.saf.messages.get._1_3.ForecastResponseType
+                           */
+                           public  com.stchome.saf.messages.get._1_3.ForecastResponseType getGetForecastResponse(){
+                               return localGetForecastResponse;
+                           }
 
-                                }
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param GetForecastResponse
+                               */
+                               public void setGetForecastResponse(com.stchome.saf.messages.get._1_3.ForecastResponseType param){
                             
-                                    public static final java.lang.String _value1 =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("WARNING");
-                                
-                                    public static final java.lang.String _value2 =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("INVALID-VACC");
-                                
-                                public static final MessageTypes value1 =
-                                    new MessageTypes(_value1,true);
-                            
-                                public static final MessageTypes value2 =
-                                    new MessageTypes(_value2,true);
-                            
-
-                                public java.lang.String getValue() { return localMessageTypes;}
-
-                                public boolean equals(java.lang.Object obj) {return (obj == this);}
-                                public int hashCode() { return toString().hashCode();}
-                                public java.lang.String toString() {
-                                
-                                        return localMessageTypes.toString();
+                                            this.localGetForecastResponse=param;
                                     
 
-                                }
-
-                        
+                               }
+                            
 
      
      
@@ -106,43 +89,17 @@
                 
                 //We can safely assume an element has only one type associated with it
                 
-                            java.lang.String namespace = parentQName.getNamespaceURI();
-                            java.lang.String _localName = parentQName.getLocalPart();
-                        
-                            writeStartElement(null, namespace, _localName, xmlWriter);
-
-                            // add the type details if this is used in a simple type
-                               if (serializeType){
-                                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/common");
-                                   if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
-                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           namespacePrefix+":MessageTypes",
-                                           xmlWriter);
-                                   } else {
-                                       writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           "MessageTypes",
-                                           xmlWriter);
-                                   }
-                               }
+                                 if (localGetForecastResponse==null){
+                                   throw new org.apache.axis2.databinding.ADBException("GetForecastResponse cannot be null!");
+                                 }
+                                 localGetForecastResponse.serialize(MY_QNAME,xmlWriter);
                             
-                                          if (localMessageTypes==null){
-                                            
-                                                     throw new org.apache.axis2.databinding.ADBException("MessageTypes cannot be null !!");
-                                                
-                                         }else{
-                                        
-                                                       xmlWriter.writeCharacters(localMessageTypes);
-                                            
-                                         }
-                                    
-                            xmlWriter.writeEndElement();
-                    
 
         }
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://saf.stchome.com/common")){
-                return "ns1";
+            if(namespace.equals("http://saf.stchome.com/messages/get/1.3")){
+                return "ns3";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
@@ -318,12 +275,7 @@
         
                 
                 //We can safely assume an element has only one type associated with it
-                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(MY_QNAME,
-                            new java.lang.Object[]{
-                            org.apache.axis2.databinding.utils.reader.ADBXMLStreamReader.ELEMENT_TEXT,
-                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageTypes)
-                            },
-                            null);
+                return localGetForecastResponse.getPullParser(MY_QNAME);
 
         }
 
@@ -336,41 +288,6 @@
 
         
         
-                public static MessageTypes fromValue(java.lang.String value)
-                      throws java.lang.IllegalArgumentException {
-                    MessageTypes enumeration = (MessageTypes)
-                       
-                               _table_.get(value);
-                           
-
-                    if ((enumeration == null) && !((value == null) || (value.equals("")))) {
-                        throw new java.lang.IllegalArgumentException();
-                    }
-                    return enumeration;
-                }
-                public static MessageTypes fromString(java.lang.String value,java.lang.String namespaceURI)
-                      throws java.lang.IllegalArgumentException {
-                    try {
-                       
-                                       return fromValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(value));
-                                   
-
-                    } catch (java.lang.Exception e) {
-                        throw new java.lang.IllegalArgumentException();
-                    }
-                }
-
-                public static MessageTypes fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
-                                                                    java.lang.String content) {
-                    if (content.indexOf(":") > -1){
-                        java.lang.String prefix = content.substring(0,content.indexOf(":"));
-                        java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext().getNamespaceURI(prefix);
-                        return MessageTypes.Factory.fromString(content,namespaceUri);
-                    } else {
-                       return MessageTypes.Factory.fromString(content,"");
-                    }
-                }
-            
 
         /**
         * static method to create the object
@@ -379,12 +296,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static MessageTypes parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            MessageTypes object = null;
-                // initialize a hash map to keep values
-                java.util.Map attributeMap = new java.util.HashMap();
-                java.util.List extraAttributeList = new java.util.ArrayList<org.apache.axiom.om.OMAttribute>();
-            
+        public static GetForecastResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            GetForecastResponse object =
+                new GetForecastResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -405,28 +319,19 @@
 
                    
                 while(!reader.isEndElement()) {
-                    if (reader.isStartElement()  || reader.hasText()){
+                    if (reader.isStartElement() ){
                 
-                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
-                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"MessageTypes" +"  cannot be null");
-                                    }
-                                    
-
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                        if (content.indexOf(":") > 0) {
-                                            // this seems to be a Qname so find the namespace and send
-                                            prefix = content.substring(0, content.indexOf(":"));
-                                            namespaceuri = reader.getNamespaceURI(prefix);
-                                            object = MessageTypes.Factory.fromString(content,namespaceuri);
-                                        } else {
-                                            // this seems to be not a qname send and empty namespace incase of it is
-                                            // check is done in fromString method
-                                            object = MessageTypes.Factory.fromString(content,"");
-                                        }
-                                        
-                                        
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","GetForecastResponse").equals(reader.getName())){
+                                
+                                                object.setGetForecastResponse(com.stchome.saf.messages.get._1_3.ForecastResponseType.Factory.parse(reader));
+                                            
+                              }  // End of if for expected property start element
+                                
+                             else{
+                                        // A start element we are not expecting indicates an invalid parameter was passed
+                                        throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                             }
+                          
                              } else {
                                 reader.next();
                              }  
