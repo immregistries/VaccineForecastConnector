@@ -1,6 +1,6 @@
 
 /**
- * MessageTypes.java
+ * Len500StringType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:34:40 IST)
@@ -11,65 +11,60 @@
             
 
             /**
-            *  MessageTypes bean class
+            *  Len500StringType bean class
             */
             @SuppressWarnings({"unchecked","unused"})
         
-        public  class MessageTypes
+        public  class Len500StringType
         implements org.apache.axis2.databinding.ADBBean{
         
                 public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
                 "http://saf.stchome.com/common",
-                "MessageTypes",
+                "Len500StringType",
                 "ns1");
 
             
 
                         /**
-                        * field for MessageTypes
+                        * field for Len500StringType
                         */
 
                         
-                                    protected java.lang.String localMessageTypes ;
+                                    protected java.lang.String localLen500StringType ;
                                 
-                            private static java.util.HashMap _table_ = new java.util.HashMap();
 
-                            // Constructor
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLen500StringType(){
+                               return localLen500StringType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Len500StringType
+                               */
+                               public void setLen500StringType(java.lang.String param){
                             
-                                protected MessageTypes(java.lang.String value, boolean isRegisterValue) {
-                                    localMessageTypes = value;
-                                    if (isRegisterValue){
+                                            if (  (java.lang.String.valueOf(param).length() <= 500)  ) {
+                                                this.localLen500StringType=param;
+                                            }
+                                            else {
+                                                throw new java.lang.RuntimeException();
+                                            }
                                         
-                                               _table_.put(localMessageTypes, this);
-                                           
-                                    }
 
-                                }
-                            
-                                    public static final java.lang.String _value1 =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("WARNING");
-                                
-                                    public static final java.lang.String _value2 =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("INVALID-VACC");
-                                
-                                public static final MessageTypes value1 =
-                                    new MessageTypes(_value1,true);
-                            
-                                public static final MessageTypes value2 =
-                                    new MessageTypes(_value2,true);
+                               }
                             
 
-                                public java.lang.String getValue() { return localMessageTypes;}
-
-                                public boolean equals(java.lang.Object obj) {return (obj == this);}
-                                public int hashCode() { return toString().hashCode();}
-                                public java.lang.String toString() {
+                            public java.lang.String toString(){
                                 
-                                        return localMessageTypes.toString();
+                                        return localLen500StringType.toString();
                                     
-
-                                }
-
+                            }
                         
 
      
@@ -116,22 +111,22 @@
                                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/common");
                                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           namespacePrefix+":MessageTypes",
+                                           namespacePrefix+":Len500StringType",
                                            xmlWriter);
                                    } else {
                                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                                           "MessageTypes",
+                                           "Len500StringType",
                                            xmlWriter);
                                    }
                                }
                             
-                                          if (localMessageTypes==null){
+                                          if (localLen500StringType==null){
                                             
-                                                     throw new org.apache.axis2.databinding.ADBException("MessageTypes cannot be null !!");
+                                                     throw new org.apache.axis2.databinding.ADBException("Len500StringType cannot be null !!");
                                                 
                                          }else{
                                         
-                                                       xmlWriter.writeCharacters(localMessageTypes);
+                                                       xmlWriter.writeCharacters(localLen500StringType);
                                             
                                          }
                                     
@@ -321,7 +316,7 @@
                  return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(MY_QNAME,
                             new java.lang.Object[]{
                             org.apache.axis2.databinding.utils.reader.ADBXMLStreamReader.ELEMENT_TEXT,
-                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMessageTypes)
+                            org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLen500StringType)
                             },
                             null);
 
@@ -336,40 +331,28 @@
 
         
         
-                public static MessageTypes fromValue(java.lang.String value)
-                      throws java.lang.IllegalArgumentException {
-                    MessageTypes enumeration = (MessageTypes)
-                       
-                               _table_.get(value);
-                           
+                public static Len500StringType fromString(java.lang.String value,
+                                                    java.lang.String namespaceURI){
+                    Len500StringType returnValue = new  Len500StringType();
+                    
+                            returnValue.setLen500StringType(
+                                org.apache.axis2.databinding.utils.ConverterUtil.convertToString(value));
+                        
 
-                    if ((enumeration == null) && !((value == null) || (value.equals("")))) {
-                        throw new java.lang.IllegalArgumentException();
-                    }
-                    return enumeration;
-                }
-                public static MessageTypes fromString(java.lang.String value,java.lang.String namespaceURI)
-                      throws java.lang.IllegalArgumentException {
-                    try {
-                       
-                                       return fromValue(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(value));
-                                   
-
-                    } catch (java.lang.Exception e) {
-                        throw new java.lang.IllegalArgumentException();
-                    }
+                    return returnValue;
                 }
 
-                public static MessageTypes fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
+                public static Len500StringType fromString(javax.xml.stream.XMLStreamReader xmlStreamReader,
                                                                     java.lang.String content) {
                     if (content.indexOf(":") > -1){
                         java.lang.String prefix = content.substring(0,content.indexOf(":"));
                         java.lang.String namespaceUri = xmlStreamReader.getNamespaceContext().getNamespaceURI(prefix);
-                        return MessageTypes.Factory.fromString(content,namespaceUri);
+                        return Len500StringType.Factory.fromString(content,namespaceUri);
                     } else {
-                       return MessageTypes.Factory.fromString(content,"");
+                       return Len500StringType.Factory.fromString(content,"");
                     }
                 }
+
             
 
         /**
@@ -379,12 +362,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static MessageTypes parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            MessageTypes object = null;
-                // initialize a hash map to keep values
-                java.util.Map attributeMap = new java.util.HashMap();
-                java.util.List extraAttributeList = new java.util.ArrayList<org.apache.axiom.om.OMAttribute>();
-            
+        public static Len500StringType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            Len500StringType object =
+                new Len500StringType();
 
             int event;
             java.lang.String nillableValue = null;
@@ -407,26 +387,26 @@
                 while(!reader.isEndElement()) {
                     if (reader.isStartElement()  || reader.hasText()){
                 
+                                    if (reader.isStartElement()  || reader.hasText()){
+                                
                                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                     if ("true".equals(nillableValue) || "1".equals(nillableValue)){
-                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"MessageTypes" +"  cannot be null");
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"Len500StringType" +"  cannot be null");
                                     }
                                     
 
                                     java.lang.String content = reader.getElementText();
                                     
-                                        if (content.indexOf(":") > 0) {
-                                            // this seems to be a Qname so find the namespace and send
-                                            prefix = content.substring(0, content.indexOf(":"));
-                                            namespaceuri = reader.getNamespaceURI(prefix);
-                                            object = MessageTypes.Factory.fromString(content,namespaceuri);
-                                        } else {
-                                            // this seems to be not a qname send and empty namespace incase of it is
-                                            // check is done in fromString method
-                                            object = MessageTypes.Factory.fromString(content,"");
-                                        }
-                                        
-                                        
+                                              object.setLen500StringType(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                            
+                              }  // End of if for expected property start element
+                                
+                             else{
+                                        // A start element we are not expecting indicates an invalid parameter was passed
+                                        throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                             }
+                          
                              } else {
                                 reader.next();
                              }  

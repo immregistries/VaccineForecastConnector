@@ -1,127 +1,146 @@
 
 /**
- * PersonDetailsType.java
+ * VaccinationType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.6.2  Built on : Apr 17, 2012 (05:34:40 IST)
  */
 
             
-                package com.stchome.saf.messages.get._1_2;
+                package com.stchome.saf.messages.get._1_3;
             
 
             /**
-            *  PersonDetailsType bean class
+            *  VaccinationType bean class
             */
             @SuppressWarnings({"unchecked","unused"})
         
-        public  class PersonDetailsType
+        public  class VaccinationType
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = PersonDetailsType
-                Namespace URI = http://saf.stchome.com/messages/get/1.2
-                Namespace Prefix = ns2
+                name = VaccinationType
+                Namespace URI = http://saf.stchome.com/messages/get/1.3
+                Namespace Prefix = ns3
                 */
             
 
                         /**
-                        * field for DateOfBirth
+                        * field for VaccCode
                         */
 
                         
-                                    protected com.stchome.saf.common.DateYYYYMMDDType localDateOfBirth ;
+                                    protected com.stchome.saf.common.VaccCodeStringType localVaccCode ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.stchome.saf.common.VaccCodeStringType
+                           */
+                           public  com.stchome.saf.common.VaccCodeStringType getVaccCode(){
+                               return localVaccCode;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param VaccCode
+                               */
+                               public void setVaccCode(com.stchome.saf.common.VaccCodeStringType param){
+                            
+                                            this.localVaccCode=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for VaccDate
+                        */
+
+                        
+                                    protected com.stchome.saf.common.DateYYYYMMDDType localVaccDate ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return com.stchome.saf.common.DateYYYYMMDDType
                            */
-                           public  com.stchome.saf.common.DateYYYYMMDDType getDateOfBirth(){
-                               return localDateOfBirth;
+                           public  com.stchome.saf.common.DateYYYYMMDDType getVaccDate(){
+                               return localVaccDate;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param DateOfBirth
+                               * @param param VaccDate
                                */
-                               public void setDateOfBirth(com.stchome.saf.common.DateYYYYMMDDType param){
+                               public void setVaccDate(com.stchome.saf.common.DateYYYYMMDDType param){
                             
-                                            this.localDateOfBirth=param;
+                                            this.localVaccDate=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for Gender
+                        * field for DoseSize
                         */
 
                         
-                                    protected com.stchome.saf.common.GenderType localGender ;
+                                    protected java.math.BigDecimal localDoseSize =
+                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDecimal("1.0");
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localGenderTracker = false ;
-
-                           public boolean isGenderSpecified(){
-                               return localGenderTracker;
-                           }
-
-                           
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.common.GenderType
+                           * @return java.math.BigDecimal
                            */
-                           public  com.stchome.saf.common.GenderType getGender(){
-                               return localGender;
+                           public  java.math.BigDecimal getDoseSize(){
+                               return localDoseSize;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Gender
+                               * @param param DoseSize
                                */
-                               public void setGender(com.stchome.saf.common.GenderType param){
-                            localGenderTracker = param != null;
-                                   
-                                            this.localGender=param;
+                               public void setDoseSize(java.math.BigDecimal param){
+                            
+                                            this.localDoseSize=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for Vaccination
+                        * field for Message
                         * This was an Array!
                         */
 
                         
-                                    protected com.stchome.saf.messages.get._1_2.VaccinationType[] localVaccination ;
+                                    protected com.stchome.saf.common.VaccMessageType[] localMessage ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localVaccinationTracker = false ;
+                           protected boolean localMessageTracker = false ;
 
-                           public boolean isVaccinationSpecified(){
-                               return localVaccinationTracker;
+                           public boolean isMessageSpecified(){
+                               return localMessageTracker;
                            }
 
                            
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.messages.get._1_2.VaccinationType[]
+                           * @return com.stchome.saf.common.VaccMessageType[]
                            */
-                           public  com.stchome.saf.messages.get._1_2.VaccinationType[] getVaccination(){
-                               return localVaccination;
+                           public  com.stchome.saf.common.VaccMessageType[] getMessage(){
+                               return localMessage;
                            }
 
                            
@@ -130,189 +149,165 @@
 
                                
                               /**
-                               * validate the array for Vaccination
+                               * validate the array for Message
                                */
-                              protected void validateVaccination(com.stchome.saf.messages.get._1_2.VaccinationType[] param){
+                              protected void validateMessage(com.stchome.saf.common.VaccMessageType[] param){
                              
                               }
 
 
                              /**
                               * Auto generated setter method
-                              * @param param Vaccination
+                              * @param param Message
                               */
-                              public void setVaccination(com.stchome.saf.messages.get._1_2.VaccinationType[] param){
+                              public void setMessage(com.stchome.saf.common.VaccMessageType[] param){
                               
-                                   validateVaccination(param);
+                                   validateMessage(param);
 
-                               localVaccinationTracker = param != null;
+                               localMessageTracker = param != null;
                                       
-                                      this.localVaccination=param;
+                                      this.localMessage=param;
                               }
 
                                
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.stchome.saf.messages.get._1_2.VaccinationType
+                             * @param param com.stchome.saf.common.VaccMessageType
                              */
-                             public void addVaccination(com.stchome.saf.messages.get._1_2.VaccinationType param){
-                                   if (localVaccination == null){
-                                   localVaccination = new com.stchome.saf.messages.get._1_2.VaccinationType[]{};
+                             public void addMessage(com.stchome.saf.common.VaccMessageType param){
+                                   if (localMessage == null){
+                                   localMessage = new com.stchome.saf.common.VaccMessageType[]{};
                                    }
 
                             
                                  //update the setting tracker
-                                localVaccinationTracker = true;
+                                localMessageTracker = true;
                             
 
                                java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localVaccination);
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localMessage);
                                list.add(param);
-                               this.localVaccination =
-                             (com.stchome.saf.messages.get._1_2.VaccinationType[])list.toArray(
-                            new com.stchome.saf.messages.get._1_2.VaccinationType[list.size()]);
+                               this.localMessage =
+                             (com.stchome.saf.common.VaccMessageType[])list.toArray(
+                            new com.stchome.saf.common.VaccMessageType[list.size()]);
 
                              }
                              
 
                         /**
-                        * field for Contraindication
-                        * This was an Array!
+                        * field for CompromisedCode
                         */
 
                         
-                                    protected com.stchome.saf.messages.get._1_2.ContraindicationType[] localContraindication ;
+                                    protected java.lang.String localCompromisedCode ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
                            *   in the serialized XML
                            */
-                           protected boolean localContraindicationTracker = false ;
+                           protected boolean localCompromisedCodeTracker = false ;
 
-                           public boolean isContraindicationSpecified(){
-                               return localContraindicationTracker;
+                           public boolean isCompromisedCodeSpecified(){
+                               return localCompromisedCodeTracker;
                            }
 
                            
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.stchome.saf.messages.get._1_2.ContraindicationType[]
-                           */
-                           public  com.stchome.saf.messages.get._1_2.ContraindicationType[] getContraindication(){
-                               return localContraindication;
-                           }
-
-                           
-                        
-
-
-                               
-                              /**
-                               * validate the array for Contraindication
-                               */
-                              protected void validateContraindication(com.stchome.saf.messages.get._1_2.ContraindicationType[] param){
-                             
-                              }
-
-
-                             /**
-                              * Auto generated setter method
-                              * @param param Contraindication
-                              */
-                              public void setContraindication(com.stchome.saf.messages.get._1_2.ContraindicationType[] param){
-                              
-                                   validateContraindication(param);
-
-                               localContraindicationTracker = param != null;
-                                      
-                                      this.localContraindication=param;
-                              }
-
-                               
-                             
-                             /**
-                             * Auto generated add method for the array for convenience
-                             * @param param com.stchome.saf.messages.get._1_2.ContraindicationType
-                             */
-                             public void addContraindication(com.stchome.saf.messages.get._1_2.ContraindicationType param){
-                                   if (localContraindication == null){
-                                   localContraindication = new com.stchome.saf.messages.get._1_2.ContraindicationType[]{};
-                                   }
-
-                            
-                                 //update the setting tracker
-                                localContraindicationTracker = true;
-                            
-
-                               java.util.List list =
-                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localContraindication);
-                               list.add(param);
-                               this.localContraindication =
-                             (com.stchome.saf.messages.get._1_2.ContraindicationType[])list.toArray(
-                            new com.stchome.saf.messages.get._1_2.ContraindicationType[list.size()]);
-
-                             }
-                             
-
-                        /**
-                        * field for PersonId
-                        * This was an Attribute!
-                        */
-
-                        
-                                    protected com.stchome.saf.common.Len20StringType localPersonId ;
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return com.stchome.saf.common.Len20StringType
-                           */
-                           public  com.stchome.saf.common.Len20StringType getPersonId(){
-                               return localPersonId;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param PersonId
-                               */
-                               public void setPersonId(com.stchome.saf.common.Len20StringType param){
-                            
-                                            this.localPersonId=param;
-                                    
-
-                               }
-                            
-
-                        /**
-                        * field for FullForecast
-                        * This was an Attribute!
-                        */
-
-                        
-                                    protected java.lang.String localFullForecast ;
-                                
 
                            /**
                            * Auto generated getter method
                            * @return java.lang.String
                            */
-                           public  java.lang.String getFullForecast(){
-                               return localFullForecast;
+                           public  java.lang.String getCompromisedCode(){
+                               return localCompromisedCode;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param FullForecast
+                               * @param param CompromisedCode
                                */
-                               public void setFullForecast(java.lang.String param){
+                               public void setCompromisedCode(java.lang.String param){
+                            localCompromisedCodeTracker = param != null;
+                                   
+                                            this.localCompromisedCode=param;
+                                    
+
+                               }
                             
-                                            this.localFullForecast=param;
+
+                        /**
+                        * field for Booster
+                        */
+
+                        
+                                    protected boolean localBooster ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localBoosterTracker = false ;
+
+                           public boolean isBoosterSpecified(){
+                               return localBoosterTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getBooster(){
+                               return localBooster;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Booster
+                               */
+                               public void setBooster(boolean param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       localBoosterTracker =
+                                       true;
+                                   
+                                            this.localBooster=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for CodeType
+                        * This was an Attribute!
+                        */
+
+                        
+                                    protected com.stchome.saf.common.VaccineCodeType localCodeType ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.stchome.saf.common.VaccineCodeType
+                           */
+                           public  com.stchome.saf.common.VaccineCodeType getCodeType(){
+                               return localCodeType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param CodeType
+                               */
+                               public void setCodeType(com.stchome.saf.common.VaccineCodeType param){
+                            
+                                            this.localCodeType=param;
                                     
 
                                }
@@ -363,14 +358,14 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.2");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.3");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":PersonDetailsType",
+                           namespacePrefix+":VaccinationType",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "PersonDetailsType",
+                           "VaccinationType",
                            xmlWriter);
                    }
 
@@ -378,37 +373,50 @@
                    }
                
                                     
-                                    if (localPersonId != null){
+                                    if (localCodeType != null){
                                         writeAttribute("",
-                                           "personId",
-                                           localPersonId.toString(), xmlWriter);
+                                           "codeType",
+                                           localCodeType.toString(), xmlWriter);
                                     }
                                     
-                                            if (localFullForecast != null){
-                                        
-                                                writeAttribute("",
-                                                         "fullForecast",
-                                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFullForecast), xmlWriter);
-
-                                            
+                                      else {
+                                          throw new org.apache.axis2.databinding.ADBException("required attribute localCodeType is null");
                                       }
                                     
-                                            if (localDateOfBirth==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("dateOfBirth cannot be null!!");
+                                            if (localVaccCode==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("vaccCode cannot be null!!");
                                             }
-                                           localDateOfBirth.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","dateOfBirth"),
+                                           localVaccCode.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccCode"),
                                                xmlWriter);
-                                         if (localGenderTracker){
-                                            if (localGender==null){
-                                                 throw new org.apache.axis2.databinding.ADBException("gender cannot be null!!");
+                                        
+                                            if (localVaccDate==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("vaccDate cannot be null!!");
                                             }
-                                           localGender.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","gender"),
+                                           localVaccDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccDate"),
                                                xmlWriter);
-                                        } if (localVaccinationTracker){
-                                       if (localVaccination!=null){
-                                            for (int i = 0;i < localVaccination.length;i++){
-                                                if (localVaccination[i] != null){
-                                                 localVaccination[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccination"),
+                                        
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "doseSize", xmlWriter);
+                             
+
+                                          if (localDoseSize==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("doseSize cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseSize));
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                              if (localMessageTracker){
+                                       if (localMessage!=null){
+                                            for (int i = 0;i < localMessage.length;i++){
+                                                if (localMessage[i] != null){
+                                                 localMessage[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","message"),
                                                            xmlWriter);
                                                 } else {
                                                    
@@ -419,36 +427,49 @@
                                             }
                                      } else {
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("vaccination cannot be null!!");
+                                               throw new org.apache.axis2.databinding.ADBException("message cannot be null!!");
                                         
                                     }
-                                 } if (localContraindicationTracker){
-                                       if (localContraindication!=null){
-                                            for (int i = 0;i < localContraindication.length;i++){
-                                                if (localContraindication[i] != null){
-                                                 localContraindication[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","contraindication"),
-                                                           xmlWriter);
-                                                } else {
-                                                   
-                                                        // we don't have to do any thing since minOccures is zero
-                                                    
-                                                }
+                                 } if (localCompromisedCodeTracker){
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "compromisedCode", xmlWriter);
+                             
 
-                                            }
-                                     } else {
+                                          if (localCompromisedCode==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("compromisedCode cannot be null!!");
+                                                  
+                                          }else{
+
                                         
-                                               throw new org.apache.axis2.databinding.ADBException("contraindication cannot be null!!");
-                                        
-                                    }
-                                 }
+                                                   xmlWriter.writeCharacters(localCompromisedCode);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localBoosterTracker){
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "booster", xmlWriter);
+                             
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("booster cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBooster));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             }
                     xmlWriter.writeEndElement();
                
 
         }
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://saf.stchome.com/messages/get/1.2")){
-                return "ns2";
+            if(namespace.equals("http://saf.stchome.com/messages/get/1.3")){
+                return "ns3";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
@@ -626,75 +647,73 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
-                                                                      "dateOfBirth"));
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "vaccCode"));
                             
                             
-                                    if (localDateOfBirth==null){
-                                         throw new org.apache.axis2.databinding.ADBException("dateOfBirth cannot be null!!");
+                                    if (localVaccCode==null){
+                                         throw new org.apache.axis2.databinding.ADBException("vaccCode cannot be null!!");
                                     }
-                                    elementList.add(localDateOfBirth);
-                                 if (localGenderTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
-                                                                      "gender"));
-                            
-                            
-                                    if (localGender==null){
-                                         throw new org.apache.axis2.databinding.ADBException("gender cannot be null!!");
-                                    }
-                                    elementList.add(localGender);
-                                } if (localVaccinationTracker){
-                             if (localVaccination!=null) {
-                                 for (int i = 0;i < localVaccination.length;i++){
-
-                                    if (localVaccination[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
-                                                                          "vaccination"));
-                                         elementList.add(localVaccination[i]);
-                                    } else {
-                                        
-                                                // nothing to do
-                                            
-                                    }
-
-                                 }
-                             } else {
-                                 
-                                        throw new org.apache.axis2.databinding.ADBException("vaccination cannot be null!!");
-                                    
-                             }
-
-                        } if (localContraindicationTracker){
-                             if (localContraindication!=null) {
-                                 for (int i = 0;i < localContraindication.length;i++){
-
-                                    if (localContraindication[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
-                                                                          "contraindication"));
-                                         elementList.add(localContraindication[i]);
-                                    } else {
-                                        
-                                                // nothing to do
-                                            
-                                    }
-
-                                 }
-                             } else {
-                                 
-                                        throw new org.apache.axis2.databinding.ADBException("contraindication cannot be null!!");
-                                    
-                             }
-
-                        }
-                            attribList.add(
-                            new javax.xml.namespace.QName("","personId"));
-                            
-                                      attribList.add(localPersonId.toString());
+                                    elementList.add(localVaccCode);
                                 
-                            attribList.add(
-                            new javax.xml.namespace.QName("","fullForecast"));
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "vaccDate"));
                             
-                                      attribList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFullForecast));
+                            
+                                    if (localVaccDate==null){
+                                         throw new org.apache.axis2.databinding.ADBException("vaccDate cannot be null!!");
+                                    }
+                                    elementList.add(localVaccDate);
+                                
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "doseSize"));
+                                 
+                                        if (localDoseSize != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseSize));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("doseSize cannot be null!!");
+                                        }
+                                     if (localMessageTracker){
+                             if (localMessage!=null) {
+                                 for (int i = 0;i < localMessage.length;i++){
+
+                                    if (localMessage[i] != null){
+                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                          "message"));
+                                         elementList.add(localMessage[i]);
+                                    } else {
+                                        
+                                                // nothing to do
+                                            
+                                    }
+
+                                 }
+                             } else {
+                                 
+                                        throw new org.apache.axis2.databinding.ADBException("message cannot be null!!");
+                                    
+                             }
+
+                        } if (localCompromisedCodeTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "compromisedCode"));
+                                 
+                                        if (localCompromisedCode != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localCompromisedCode));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("compromisedCode cannot be null!!");
+                                        }
+                                    } if (localBoosterTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "booster"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBooster));
+                            }
+                            attribList.add(
+                            new javax.xml.namespace.QName("","codeType"));
+                            
+                                      attribList.add(localCodeType.toString());
                                 
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -720,9 +739,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static PersonDetailsType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            PersonDetailsType object =
-                new PersonDetailsType();
+        public static VaccinationType parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            VaccinationType object =
+                new VaccinationType();
 
             int event;
             java.lang.String nillableValue = null;
@@ -746,10 +765,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"PersonDetailsType".equals(type)){
+                            if (!"VaccinationType".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (PersonDetailsType)com.stchome.saf.messages.get._1_2.ExtensionMapper.getTypeObject(
+                                return (VaccinationType)com.stchome.saf.messages.get._1_2.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -768,51 +787,35 @@
                 
 
                 
-                    // handle attribute "personId"
-                    java.lang.String tempAttribPersonId =
+                    // handle attribute "codeType"
+                    java.lang.String tempAttribCodeType =
                         
-                                reader.getAttributeValue(null,"personId");
+                                reader.getAttributeValue(null,"codeType");
                             
-                   if (tempAttribPersonId!=null){
-                         java.lang.String content = tempAttribPersonId;
+                   if (tempAttribCodeType!=null){
+                         java.lang.String content = tempAttribCodeType;
                         
-                                                  object.setPersonId(
-                                                        com.stchome.saf.common.Len20StringType.Factory.fromString(reader,tempAttribPersonId));
+                                                  object.setCodeType(
+                                                        com.stchome.saf.common.VaccineCodeType.Factory.fromString(reader,tempAttribCodeType));
                                             
                     } else {
                        
+                               throw new org.apache.axis2.databinding.ADBException("Required attribute codeType is missing");
+                           
                     }
-                    handledAttributes.add("personId");
-                    
-                    // handle attribute "fullForecast"
-                    java.lang.String tempAttribFullForecast =
-                        
-                                reader.getAttributeValue(null,"fullForecast");
-                            
-                   if (tempAttribFullForecast!=null){
-                         java.lang.String content = tempAttribFullForecast;
-                        
-                                                 object.setFullForecast(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(tempAttribFullForecast));
-                                            
-                    } else {
-                       
-                    }
-                    handledAttributes.add("fullForecast");
+                    handledAttributes.add("codeType");
                     
                     
                     reader.next();
                 
-                        java.util.ArrayList list3 = new java.util.ArrayList();
-                    
                         java.util.ArrayList list4 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","dateOfBirth").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccCode").equals(reader.getName())){
                                 
-                                                object.setDateOfBirth(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
+                                                object.setVaccCode(com.stchome.saf.common.VaccCodeStringType.Factory.parse(reader));
                                               
                                         reader.next();
                                     
@@ -826,73 +829,53 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","gender").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccDate").equals(reader.getName())){
                                 
-                                                object.setGender(com.stchome.saf.common.GenderType.Factory.parse(reader));
+                                                object.setVaccDate(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
                                               
                                         reader.next();
                                     
                               }  // End of if for expected property start element
                                 
-                                    else {
-                                        
-                                    }
-                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccination").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","doseSize").equals(reader.getName())){
                                 
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"doseSize" +"  cannot be null");
+                                    }
                                     
+
+                                    java.lang.String content = reader.getElementText();
                                     
-                                    // Process the array and step past its final element's end.
-                                    list3.add(com.stchome.saf.messages.get._1_2.VaccinationType.Factory.parse(reader));
-                                                                
-                                                        //loop until we find a start element that is not part of this array
-                                                        boolean loopDone3 = false;
-                                                        while(!loopDone3){
-                                                            // We should be at the end element, but make sure
-                                                            while (!reader.isEndElement())
-                                                                reader.next();
-                                                            // Step out of this element
-                                                            reader.next();
-                                                            // Step to next element event.
-                                                            while (!reader.isStartElement() && !reader.isEndElement())
-                                                                reader.next();
-                                                            if (reader.isEndElement()){
-                                                                //two continuous end elements means we are exiting the xml structure
-                                                                loopDone3 = true;
-                                                            } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccination").equals(reader.getName())){
-                                                                    list3.add(com.stchome.saf.messages.get._1_2.VaccinationType.Factory.parse(reader));
-                                                                        
-                                                                }else{
-                                                                    loopDone3 = true;
-                                                                }
-                                                            }
-                                                        }
-                                                        // call the converter utility  to convert and set the array
-                                                        
-                                                        object.setVaccination((com.stchome.saf.messages.get._1_2.VaccinationType[])
-                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.stchome.saf.messages.get._1_2.VaccinationType.class,
-                                                                list3));
-                                                            
+                                              object.setDoseSize(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToDecimal(content));
+                                              
+                                        reader.next();
+                                    
                               }  // End of if for expected property start element
                                 
-                                    else {
-                                        
-                                    }
-                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                            
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","contraindication").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","message").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list4.add(com.stchome.saf.messages.get._1_2.ContraindicationType.Factory.parse(reader));
+                                    list4.add(com.stchome.saf.common.VaccMessageType.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone4 = false;
@@ -909,8 +892,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone4 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","contraindication").equals(reader.getName())){
-                                                                    list4.add(com.stchome.saf.messages.get._1_2.ContraindicationType.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","message").equals(reader.getName())){
+                                                                    list4.add(com.stchome.saf.common.VaccMessageType.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone4 = true;
@@ -919,11 +902,59 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setContraindication((com.stchome.saf.messages.get._1_2.ContraindicationType[])
+                                                        object.setMessage((com.stchome.saf.common.VaccMessageType[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.stchome.saf.messages.get._1_2.ContraindicationType.class,
+                                                                com.stchome.saf.common.VaccMessageType.class,
                                                                 list4));
                                                             
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","compromisedCode").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"compromisedCode" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setCompromisedCode(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","booster").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"booster" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setBooster(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
                               }  // End of if for expected property start element
                                 
                                     else {

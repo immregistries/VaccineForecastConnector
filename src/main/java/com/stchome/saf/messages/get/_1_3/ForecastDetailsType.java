@@ -7,7 +7,7 @@
  */
 
             
-                package com.stchome.saf.messages.get._1_2;
+                package com.stchome.saf.messages.get._1_3;
             
 
             /**
@@ -19,8 +19,8 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = ForecastDetailsType
-                Namespace URI = http://saf.stchome.com/messages/get/1.2
-                Namespace Prefix = ns2
+                Namespace URI = http://saf.stchome.com/messages/get/1.3
+                Namespace Prefix = ns3
                 */
             
 
@@ -234,6 +234,66 @@
                                }
                             
 
+                        /**
+                        * field for DoseCount
+                        */
+
+                        
+                                    protected int localDoseCount ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getDoseCount(){
+                               return localDoseCount;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DoseCount
+                               */
+                               public void setDoseCount(int param){
+                            
+                                            this.localDoseCount=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Booster
+                        */
+
+                        
+                                    protected boolean localBooster ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getBooster(){
+                               return localBooster;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Booster
+                               */
+                               public void setBooster(boolean param){
+                            
+                                            this.localBooster=param;
+                                    
+
+                               }
+                            
+
      
      
         /**
@@ -279,7 +339,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.2");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.3");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":ForecastDetailsType",
@@ -293,7 +353,7 @@
                
                    }
                
-                                    namespace = "http://saf.stchome.com/messages/get/1.2";
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
                                     writeStartElement(null, namespace, "familyCode", xmlWriter);
                              
 
@@ -311,7 +371,7 @@
                                     
                                    xmlWriter.writeEndElement();
                              
-                                    namespace = "http://saf.stchome.com/messages/get/1.2";
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
                                     writeStartElement(null, namespace, "doseNumber", xmlWriter);
                              
                                                if (localDoseNumber==java.lang.Integer.MIN_VALUE) {
@@ -327,28 +387,28 @@
                                             if (localMaxAllowableDate==null){
                                                  throw new org.apache.axis2.databinding.ADBException("maxAllowableDate cannot be null!!");
                                             }
-                                           localMaxAllowableDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","maxAllowableDate"),
+                                           localMaxAllowableDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","maxAllowableDate"),
                                                xmlWriter);
                                         
                                             if (localMinAllowableDate==null){
                                                  throw new org.apache.axis2.databinding.ADBException("minAllowableDate cannot be null!!");
                                             }
-                                           localMinAllowableDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","minAllowableDate"),
+                                           localMinAllowableDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","minAllowableDate"),
                                                xmlWriter);
                                         
                                             if (localRecommendedDate==null){
                                                  throw new org.apache.axis2.databinding.ADBException("recommendedDate cannot be null!!");
                                             }
-                                           localRecommendedDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","recommendedDate"),
+                                           localRecommendedDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","recommendedDate"),
                                                xmlWriter);
                                         
                                             if (localPastDueDate==null){
                                                  throw new org.apache.axis2.databinding.ADBException("pastDueDate cannot be null!!");
                                             }
-                                           localPastDueDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","pastDueDate"),
+                                           localPastDueDate.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","pastDueDate"),
                                                xmlWriter);
                                         
-                                    namespace = "http://saf.stchome.com/messages/get/1.2";
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
                                     writeStartElement(null, namespace, "forecastCVXCode", xmlWriter);
                              
                                                if (localForecastCVXCode==java.lang.Integer.MIN_VALUE) {
@@ -361,14 +421,40 @@
                                     
                                    xmlWriter.writeEndElement();
                              
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "doseCount", xmlWriter);
+                             
+                                               if (localDoseCount==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("doseCount cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseCount));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "booster", xmlWriter);
+                             
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("booster cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBooster));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                     xmlWriter.writeEndElement();
                
 
         }
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://saf.stchome.com/messages/get/1.2")){
-                return "ns2";
+            if(namespace.equals("http://saf.stchome.com/messages/get/1.3")){
+                return "ns3";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
@@ -546,7 +632,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "familyCode"));
                                  
                                         if (localFamilyCode != null){
@@ -555,13 +641,13 @@
                                            throw new org.apache.axis2.databinding.ADBException("familyCode cannot be null!!");
                                         }
                                     
-                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "doseNumber"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseNumber));
                             
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "maxAllowableDate"));
                             
                             
@@ -570,7 +656,7 @@
                                     }
                                     elementList.add(localMaxAllowableDate);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "minAllowableDate"));
                             
                             
@@ -579,7 +665,7 @@
                                     }
                                     elementList.add(localMinAllowableDate);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "recommendedDate"));
                             
                             
@@ -588,7 +674,7 @@
                                     }
                                     elementList.add(localRecommendedDate);
                                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "pastDueDate"));
                             
                             
@@ -597,11 +683,23 @@
                                     }
                                     elementList.add(localPastDueDate);
                                 
-                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "forecastCVXCode"));
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localForecastCVXCode));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "doseCount"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseCount));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "booster"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBooster));
                             
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -681,7 +779,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","familyCode").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","familyCode").equals(reader.getName())){
                                 
                                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                     if ("true".equals(nillableValue) || "1".equals(nillableValue)){
@@ -706,7 +804,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","doseNumber").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","doseNumber").equals(reader.getName())){
                                 
                                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                     if ("true".equals(nillableValue) || "1".equals(nillableValue)){
@@ -731,7 +829,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","maxAllowableDate").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","maxAllowableDate").equals(reader.getName())){
                                 
                                                 object.setMaxAllowableDate(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
                                               
@@ -747,7 +845,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","minAllowableDate").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","minAllowableDate").equals(reader.getName())){
                                 
                                                 object.setMinAllowableDate(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
                                               
@@ -763,7 +861,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","recommendedDate").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","recommendedDate").equals(reader.getName())){
                                 
                                                 object.setRecommendedDate(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
                                               
@@ -779,7 +877,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","pastDueDate").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","pastDueDate").equals(reader.getName())){
                                 
                                                 object.setPastDueDate(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
                                               
@@ -795,7 +893,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","forecastCVXCode").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","forecastCVXCode").equals(reader.getName())){
                                 
                                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                     if ("true".equals(nillableValue) || "1".equals(nillableValue)){
@@ -807,6 +905,56 @@
                                     
                                               object.setForecastCVXCode(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","doseCount").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"doseCount" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDoseCount(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","booster").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"booster" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setBooster(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
                                     

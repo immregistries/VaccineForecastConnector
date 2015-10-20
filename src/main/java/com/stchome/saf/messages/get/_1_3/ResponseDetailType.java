@@ -7,7 +7,7 @@
  */
 
             
-                package com.stchome.saf.messages.get._1_2;
+                package com.stchome.saf.messages.get._1_3;
             
 
             /**
@@ -19,8 +19,8 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = ResponseDetailType
-                Namespace URI = http://saf.stchome.com/messages/get/1.2
-                Namespace Prefix = ns2
+                Namespace URI = http://saf.stchome.com/messages/get/1.3
+                Namespace Prefix = ns3
                 */
             
 
@@ -29,14 +29,14 @@
                         */
 
                         
-                                    protected com.stchome.saf.messages.get._1_2.PersonDetailsType localPersonDetails ;
+                                    protected com.stchome.saf.messages.get._1_3.PersonDetailsType localPersonDetails ;
                                 
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.messages.get._1_2.PersonDetailsType
+                           * @return com.stchome.saf.messages.get._1_3.PersonDetailsType
                            */
-                           public  com.stchome.saf.messages.get._1_2.PersonDetailsType getPersonDetails(){
+                           public  com.stchome.saf.messages.get._1_3.PersonDetailsType getPersonDetails(){
                                return localPersonDetails;
                            }
 
@@ -46,7 +46,7 @@
                                * Auto generated setter method
                                * @param param PersonDetails
                                */
-                               public void setPersonDetails(com.stchome.saf.messages.get._1_2.PersonDetailsType param){
+                               public void setPersonDetails(com.stchome.saf.messages.get._1_3.PersonDetailsType param){
                             
                                             this.localPersonDetails=param;
                                     
@@ -60,7 +60,7 @@
                         */
 
                         
-                                    protected com.stchome.saf.messages.get._1_2.ForecastDetailsType[] localForecastDetails ;
+                                    protected com.stchome.saf.messages.get._1_3.ForecastDetailsType[] localForecastDetails ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
@@ -76,9 +76,9 @@
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.messages.get._1_2.ForecastDetailsType[]
+                           * @return com.stchome.saf.messages.get._1_3.ForecastDetailsType[]
                            */
-                           public  com.stchome.saf.messages.get._1_2.ForecastDetailsType[] getForecastDetails(){
+                           public  com.stchome.saf.messages.get._1_3.ForecastDetailsType[] getForecastDetails(){
                                return localForecastDetails;
                            }
 
@@ -90,7 +90,7 @@
                               /**
                                * validate the array for ForecastDetails
                                */
-                              protected void validateForecastDetails(com.stchome.saf.messages.get._1_2.ForecastDetailsType[] param){
+                              protected void validateForecastDetails(com.stchome.saf.messages.get._1_3.ForecastDetailsType[] param){
                              
                               }
 
@@ -99,7 +99,7 @@
                               * Auto generated setter method
                               * @param param ForecastDetails
                               */
-                              public void setForecastDetails(com.stchome.saf.messages.get._1_2.ForecastDetailsType[] param){
+                              public void setForecastDetails(com.stchome.saf.messages.get._1_3.ForecastDetailsType[] param){
                               
                                    validateForecastDetails(param);
 
@@ -112,11 +112,11 @@
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.stchome.saf.messages.get._1_2.ForecastDetailsType
+                             * @param param com.stchome.saf.messages.get._1_3.ForecastDetailsType
                              */
-                             public void addForecastDetails(com.stchome.saf.messages.get._1_2.ForecastDetailsType param){
+                             public void addForecastDetails(com.stchome.saf.messages.get._1_3.ForecastDetailsType param){
                                    if (localForecastDetails == null){
-                                   localForecastDetails = new com.stchome.saf.messages.get._1_2.ForecastDetailsType[]{};
+                                   localForecastDetails = new com.stchome.saf.messages.get._1_3.ForecastDetailsType[]{};
                                    }
 
                             
@@ -128,8 +128,8 @@
                             org.apache.axis2.databinding.utils.ConverterUtil.toList(localForecastDetails);
                                list.add(param);
                                this.localForecastDetails =
-                             (com.stchome.saf.messages.get._1_2.ForecastDetailsType[])list.toArray(
-                            new com.stchome.saf.messages.get._1_2.ForecastDetailsType[list.size()]);
+                             (com.stchome.saf.messages.get._1_3.ForecastDetailsType[])list.toArray(
+                            new com.stchome.saf.messages.get._1_3.ForecastDetailsType[list.size()]);
 
                              }
                              
@@ -263,7 +263,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.2");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.3");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":ResponseDetailType",
@@ -280,13 +280,13 @@
                                             if (localPersonDetails==null){
                                                  throw new org.apache.axis2.databinding.ADBException("personDetails cannot be null!!");
                                             }
-                                           localPersonDetails.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","personDetails"),
+                                           localPersonDetails.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","personDetails"),
                                                xmlWriter);
                                          if (localForecastDetailsTracker){
                                        if (localForecastDetails!=null){
                                             for (int i = 0;i < localForecastDetails.length;i++){
                                                 if (localForecastDetails[i] != null){
-                                                 localForecastDetails[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","forecastDetails"),
+                                                 localForecastDetails[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","forecastDetails"),
                                                            xmlWriter);
                                                 } else {
                                                    
@@ -301,7 +301,7 @@
                                         
                                     }
                                  } if (localInformationTracker){
-                                    namespace = "http://saf.stchome.com/messages/get/1.2";
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
                                     writeStartElement(null, namespace, "information", xmlWriter);
                              
 
@@ -319,7 +319,7 @@
                                     
                                    xmlWriter.writeEndElement();
                              } if (localReleaseVersionTracker){
-                                    namespace = "http://saf.stchome.com/messages/get/1.2";
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
                                     writeStartElement(null, namespace, "releaseVersion", xmlWriter);
                              
 
@@ -343,8 +343,8 @@
         }
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://saf.stchome.com/messages/get/1.2")){
-                return "ns2";
+            if(namespace.equals("http://saf.stchome.com/messages/get/1.3")){
+                return "ns3";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
@@ -522,7 +522,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "personDetails"));
                             
                             
@@ -535,7 +535,7 @@
                                  for (int i = 0;i < localForecastDetails.length;i++){
 
                                     if (localForecastDetails[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                           "forecastDetails"));
                                          elementList.add(localForecastDetails[i]);
                                     } else {
@@ -552,7 +552,7 @@
                              }
 
                         } if (localInformationTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "information"));
                                  
                                         if (localInformation != null){
@@ -561,7 +561,7 @@
                                            throw new org.apache.axis2.databinding.ADBException("information cannot be null!!");
                                         }
                                     } if (localReleaseVersionTracker){
-                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "releaseVersion"));
                                  
                                         if (localReleaseVersion != null){
@@ -650,9 +650,9 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","personDetails").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","personDetails").equals(reader.getName())){
                                 
-                                                object.setPersonDetails(com.stchome.saf.messages.get._1_2.PersonDetailsType.Factory.parse(reader));
+                                                object.setPersonDetails(com.stchome.saf.messages.get._1_3.PersonDetailsType.Factory.parse(reader));
                                               
                                         reader.next();
                                     
@@ -666,12 +666,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","forecastDetails").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","forecastDetails").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list2.add(com.stchome.saf.messages.get._1_2.ForecastDetailsType.Factory.parse(reader));
+                                    list2.add(com.stchome.saf.messages.get._1_3.ForecastDetailsType.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone2 = false;
@@ -688,8 +688,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone2 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","forecastDetails").equals(reader.getName())){
-                                                                    list2.add(com.stchome.saf.messages.get._1_2.ForecastDetailsType.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","forecastDetails").equals(reader.getName())){
+                                                                    list2.add(com.stchome.saf.messages.get._1_3.ForecastDetailsType.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone2 = true;
@@ -698,9 +698,9 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setForecastDetails((com.stchome.saf.messages.get._1_2.ForecastDetailsType[])
+                                                        object.setForecastDetails((com.stchome.saf.messages.get._1_3.ForecastDetailsType[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.stchome.saf.messages.get._1_2.ForecastDetailsType.class,
+                                                                com.stchome.saf.messages.get._1_3.ForecastDetailsType.class,
                                                                 list2));
                                                             
                               }  // End of if for expected property start element
@@ -712,7 +712,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","information").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","information").equals(reader.getName())){
                                 
                                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                     if ("true".equals(nillableValue) || "1".equals(nillableValue)){
@@ -736,7 +736,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","releaseVersion").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","releaseVersion").equals(reader.getName())){
                                 
                                     nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
                                     if ("true".equals(nillableValue) || "1".equals(nillableValue)){

@@ -7,7 +7,7 @@
  */
 
             
-                package com.stchome.saf.messages.get._1_2;
+                package com.stchome.saf.messages.get._1_3;
             
 
             /**
@@ -19,8 +19,8 @@
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
                 name = PersonDetailsType
-                Namespace URI = http://saf.stchome.com/messages/get/1.2
-                Namespace Prefix = ns2
+                Namespace URI = http://saf.stchome.com/messages/get/1.3
+                Namespace Prefix = ns3
                 */
             
 
@@ -102,7 +102,7 @@
                         */
 
                         
-                                    protected com.stchome.saf.messages.get._1_2.VaccinationType[] localVaccination ;
+                                    protected com.stchome.saf.messages.get._1_3.VaccinationType[] localVaccination ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
@@ -118,9 +118,9 @@
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.messages.get._1_2.VaccinationType[]
+                           * @return com.stchome.saf.messages.get._1_3.VaccinationType[]
                            */
-                           public  com.stchome.saf.messages.get._1_2.VaccinationType[] getVaccination(){
+                           public  com.stchome.saf.messages.get._1_3.VaccinationType[] getVaccination(){
                                return localVaccination;
                            }
 
@@ -132,7 +132,7 @@
                               /**
                                * validate the array for Vaccination
                                */
-                              protected void validateVaccination(com.stchome.saf.messages.get._1_2.VaccinationType[] param){
+                              protected void validateVaccination(com.stchome.saf.messages.get._1_3.VaccinationType[] param){
                              
                               }
 
@@ -141,7 +141,7 @@
                               * Auto generated setter method
                               * @param param Vaccination
                               */
-                              public void setVaccination(com.stchome.saf.messages.get._1_2.VaccinationType[] param){
+                              public void setVaccination(com.stchome.saf.messages.get._1_3.VaccinationType[] param){
                               
                                    validateVaccination(param);
 
@@ -154,11 +154,11 @@
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.stchome.saf.messages.get._1_2.VaccinationType
+                             * @param param com.stchome.saf.messages.get._1_3.VaccinationType
                              */
-                             public void addVaccination(com.stchome.saf.messages.get._1_2.VaccinationType param){
+                             public void addVaccination(com.stchome.saf.messages.get._1_3.VaccinationType param){
                                    if (localVaccination == null){
-                                   localVaccination = new com.stchome.saf.messages.get._1_2.VaccinationType[]{};
+                                   localVaccination = new com.stchome.saf.messages.get._1_3.VaccinationType[]{};
                                    }
 
                             
@@ -170,8 +170,8 @@
                             org.apache.axis2.databinding.utils.ConverterUtil.toList(localVaccination);
                                list.add(param);
                                this.localVaccination =
-                             (com.stchome.saf.messages.get._1_2.VaccinationType[])list.toArray(
-                            new com.stchome.saf.messages.get._1_2.VaccinationType[list.size()]);
+                             (com.stchome.saf.messages.get._1_3.VaccinationType[])list.toArray(
+                            new com.stchome.saf.messages.get._1_3.VaccinationType[list.size()]);
 
                              }
                              
@@ -182,7 +182,7 @@
                         */
 
                         
-                                    protected com.stchome.saf.messages.get._1_2.ContraindicationType[] localContraindication ;
+                                    protected com.stchome.saf.messages.get._1_3.ContraindicationType[] localContraindication ;
                                 
                            /*  This tracker boolean wil be used to detect whether the user called the set method
                           *   for this attribute. It will be used to determine whether to include this field
@@ -198,9 +198,9 @@
 
                            /**
                            * Auto generated getter method
-                           * @return com.stchome.saf.messages.get._1_2.ContraindicationType[]
+                           * @return com.stchome.saf.messages.get._1_3.ContraindicationType[]
                            */
-                           public  com.stchome.saf.messages.get._1_2.ContraindicationType[] getContraindication(){
+                           public  com.stchome.saf.messages.get._1_3.ContraindicationType[] getContraindication(){
                                return localContraindication;
                            }
 
@@ -212,7 +212,7 @@
                               /**
                                * validate the array for Contraindication
                                */
-                              protected void validateContraindication(com.stchome.saf.messages.get._1_2.ContraindicationType[] param){
+                              protected void validateContraindication(com.stchome.saf.messages.get._1_3.ContraindicationType[] param){
                              
                               }
 
@@ -221,7 +221,7 @@
                               * Auto generated setter method
                               * @param param Contraindication
                               */
-                              public void setContraindication(com.stchome.saf.messages.get._1_2.ContraindicationType[] param){
+                              public void setContraindication(com.stchome.saf.messages.get._1_3.ContraindicationType[] param){
                               
                                    validateContraindication(param);
 
@@ -234,11 +234,11 @@
                              
                              /**
                              * Auto generated add method for the array for convenience
-                             * @param param com.stchome.saf.messages.get._1_2.ContraindicationType
+                             * @param param com.stchome.saf.messages.get._1_3.ContraindicationType
                              */
-                             public void addContraindication(com.stchome.saf.messages.get._1_2.ContraindicationType param){
+                             public void addContraindication(com.stchome.saf.messages.get._1_3.ContraindicationType param){
                                    if (localContraindication == null){
-                                   localContraindication = new com.stchome.saf.messages.get._1_2.ContraindicationType[]{};
+                                   localContraindication = new com.stchome.saf.messages.get._1_3.ContraindicationType[]{};
                                    }
 
                             
@@ -250,8 +250,8 @@
                             org.apache.axis2.databinding.utils.ConverterUtil.toList(localContraindication);
                                list.add(param);
                                this.localContraindication =
-                             (com.stchome.saf.messages.get._1_2.ContraindicationType[])list.toArray(
-                            new com.stchome.saf.messages.get._1_2.ContraindicationType[list.size()]);
+                             (com.stchome.saf.messages.get._1_3.ContraindicationType[])list.toArray(
+                            new com.stchome.saf.messages.get._1_3.ContraindicationType[list.size()]);
 
                              }
                              
@@ -318,6 +318,37 @@
                                }
                             
 
+                        /**
+                        * field for EvaluationDate
+                        * This was an Attribute!
+                        */
+
+                        
+                                    protected com.stchome.saf.common.DateYYYYMMDDType localEvaluationDate ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.stchome.saf.common.DateYYYYMMDDType
+                           */
+                           public  com.stchome.saf.common.DateYYYYMMDDType getEvaluationDate(){
+                               return localEvaluationDate;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param EvaluationDate
+                               */
+                               public void setEvaluationDate(com.stchome.saf.common.DateYYYYMMDDType param){
+                            
+                                            this.localEvaluationDate=param;
+                                    
+
+                               }
+                            
+
      
      
         /**
@@ -363,7 +394,7 @@
                   if (serializeType){
                
 
-                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.2");
+                   java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://saf.stchome.com/messages/get/1.3");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
                            namespacePrefix+":PersonDetailsType",
@@ -393,22 +424,29 @@
                                             
                                       }
                                     
+                                    
+                                    if (localEvaluationDate != null){
+                                        writeAttribute("",
+                                           "evaluationDate",
+                                           localEvaluationDate.toString(), xmlWriter);
+                                    }
+                                    
                                             if (localDateOfBirth==null){
                                                  throw new org.apache.axis2.databinding.ADBException("dateOfBirth cannot be null!!");
                                             }
-                                           localDateOfBirth.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","dateOfBirth"),
+                                           localDateOfBirth.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","dateOfBirth"),
                                                xmlWriter);
                                          if (localGenderTracker){
                                             if (localGender==null){
                                                  throw new org.apache.axis2.databinding.ADBException("gender cannot be null!!");
                                             }
-                                           localGender.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","gender"),
+                                           localGender.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","gender"),
                                                xmlWriter);
                                         } if (localVaccinationTracker){
                                        if (localVaccination!=null){
                                             for (int i = 0;i < localVaccination.length;i++){
                                                 if (localVaccination[i] != null){
-                                                 localVaccination[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccination"),
+                                                 localVaccination[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccination"),
                                                            xmlWriter);
                                                 } else {
                                                    
@@ -426,7 +464,7 @@
                                        if (localContraindication!=null){
                                             for (int i = 0;i < localContraindication.length;i++){
                                                 if (localContraindication[i] != null){
-                                                 localContraindication[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","contraindication"),
+                                                 localContraindication[i].serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication"),
                                                            xmlWriter);
                                                 } else {
                                                    
@@ -447,8 +485,8 @@
         }
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
-            if(namespace.equals("http://saf.stchome.com/messages/get/1.2")){
-                return "ns2";
+            if(namespace.equals("http://saf.stchome.com/messages/get/1.3")){
+                return "ns3";
             }
             return org.apache.axis2.databinding.utils.BeanUtil.getUniquePrefix();
         }
@@ -626,7 +664,7 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "dateOfBirth"));
                             
                             
@@ -635,7 +673,7 @@
                                     }
                                     elementList.add(localDateOfBirth);
                                  if (localGenderTracker){
-                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "gender"));
                             
                             
@@ -648,7 +686,7 @@
                                  for (int i = 0;i < localVaccination.length;i++){
 
                                     if (localVaccination[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                           "vaccination"));
                                          elementList.add(localVaccination[i]);
                                     } else {
@@ -669,7 +707,7 @@
                                  for (int i = 0;i < localContraindication.length;i++){
 
                                     if (localContraindication[i] != null){
-                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2",
+                                         elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                           "contraindication"));
                                          elementList.add(localContraindication[i]);
                                     } else {
@@ -695,6 +733,11 @@
                             new javax.xml.namespace.QName("","fullForecast"));
                             
                                       attribList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFullForecast));
+                                
+                            attribList.add(
+                            new javax.xml.namespace.QName("","evaluationDate"));
+                            
+                                      attribList.add(localEvaluationDate.toString());
                                 
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -800,6 +843,22 @@
                     }
                     handledAttributes.add("fullForecast");
                     
+                    // handle attribute "evaluationDate"
+                    java.lang.String tempAttribEvaluationDate =
+                        
+                                reader.getAttributeValue(null,"evaluationDate");
+                            
+                   if (tempAttribEvaluationDate!=null){
+                         java.lang.String content = tempAttribEvaluationDate;
+                        
+                                                  object.setEvaluationDate(
+                                                        com.stchome.saf.common.DateYYYYMMDDType.Factory.fromString(reader,tempAttribEvaluationDate));
+                                            
+                    } else {
+                       
+                    }
+                    handledAttributes.add("evaluationDate");
+                    
                     
                     reader.next();
                 
@@ -810,7 +869,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","dateOfBirth").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","dateOfBirth").equals(reader.getName())){
                                 
                                                 object.setDateOfBirth(com.stchome.saf.common.DateYYYYMMDDType.Factory.parse(reader));
                                               
@@ -826,7 +885,7 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","gender").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","gender").equals(reader.getName())){
                                 
                                                 object.setGender(com.stchome.saf.common.GenderType.Factory.parse(reader));
                                               
@@ -841,12 +900,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccination").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccination").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list3.add(com.stchome.saf.messages.get._1_2.VaccinationType.Factory.parse(reader));
+                                    list3.add(com.stchome.saf.messages.get._1_3.VaccinationType.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone3 = false;
@@ -863,8 +922,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone3 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","vaccination").equals(reader.getName())){
-                                                                    list3.add(com.stchome.saf.messages.get._1_2.VaccinationType.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccination").equals(reader.getName())){
+                                                                    list3.add(com.stchome.saf.messages.get._1_3.VaccinationType.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone3 = true;
@@ -873,9 +932,9 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setVaccination((com.stchome.saf.messages.get._1_2.VaccinationType[])
+                                                        object.setVaccination((com.stchome.saf.messages.get._1_3.VaccinationType[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.stchome.saf.messages.get._1_2.VaccinationType.class,
+                                                                com.stchome.saf.messages.get._1_3.VaccinationType.class,
                                                                 list3));
                                                             
                               }  // End of if for expected property start element
@@ -887,12 +946,12 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","contraindication").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list4.add(com.stchome.saf.messages.get._1_2.ContraindicationType.Factory.parse(reader));
+                                    list4.add(com.stchome.saf.messages.get._1_3.ContraindicationType.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone4 = false;
@@ -909,8 +968,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone4 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.2","contraindication").equals(reader.getName())){
-                                                                    list4.add(com.stchome.saf.messages.get._1_2.ContraindicationType.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication").equals(reader.getName())){
+                                                                    list4.add(com.stchome.saf.messages.get._1_3.ContraindicationType.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone4 = true;
@@ -919,9 +978,9 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
-                                                        object.setContraindication((com.stchome.saf.messages.get._1_2.ContraindicationType[])
+                                                        object.setContraindication((com.stchome.saf.messages.get._1_3.ContraindicationType[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.stchome.saf.messages.get._1_2.ContraindicationType.class,
+                                                                com.stchome.saf.messages.get._1_3.ContraindicationType.class,
                                                                 list4));
                                                             
                               }  // End of if for expected property start element
