@@ -4,7 +4,7 @@
 	<groupId>org.tch.fc</groupId>
 	<artifactId>ForecastConnector</artifactId>
 	<packaging>jar</packaging>
-	<version>3.08</version>
+	<version>3.09</version>
 	<name>Forecast Connector</name>
 	<description></description>
 	<!-- TODO <organization> <name>company name</name> <url>company url</url> 
@@ -63,6 +63,16 @@
 		<dependency>
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-adb</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-transport-local</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-transport-http</artifactId>
 			<version>1.6.2</version>
 		</dependency>
 		<dependency>
