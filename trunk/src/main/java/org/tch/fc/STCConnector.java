@@ -351,6 +351,7 @@ public class STCConnector extends GetForecastRequestServiceStub implements Conne
                     }
                   } else {
                     if (forecastDetailsType.getFamilyCode().equals(STC_HEP_3_DOSE)) {
+                      if (logOut != null)
                       {
                         logOut.println("The first dose was for 2-dose series, "
                             + "not saving 3 dose series under Hep B forecast item.");
