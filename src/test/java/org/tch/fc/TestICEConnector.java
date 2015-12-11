@@ -25,14 +25,14 @@ public class TestICEConnector extends junit.framework.TestCase {
     TestCase testCase = createTestCase(sdf);
 
     Software software = new Software();
-    software.setServiceUrl("http://tchforecasttester.org/ice/evaluate");
+    software.setServiceUrl("http://localhost:8008/ice/evaluate");
     ICEConnector iceConnector = new ICEConnector(software, VaccineGroup.getForecastItemList());
     iceConnector.setLogText(true);
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase, new SoftwareResult());
-    assertEquals(24, forecastActualList.size());
+    assertEquals(22, forecastActualList.size());
     for (ForecastActual forecastActual : forecastActualList) {
-      System.out.println("--> Forecasting for " + forecastActual.getVaccineGroup().getLabel());
-      System.out.println(forecastActual.getSoftwareResult().getLogText());
+      System.out.println("--> Forecasting for " + forecastActual.getVaccineGroup().getLabel() + " " + forecastActual.getDoseNumber());
+      // System.out.println(forecastActual.getSoftwareResult().getLogText());
     }
   }
 
@@ -49,7 +49,8 @@ public class TestICEConnector extends junit.framework.TestCase {
 
     Software software = new Software();
     ICEConnector iceConnector = new ICEConnector(software, VaccineGroup.getForecastItemList());
-    List<ForecastActual> forecastActualList = iceConnector.readVMR(exampleReturn);
+    SoftwareResult softwareResult = new SoftwareResult();
+    List<ForecastActual> forecastActualList = iceConnector.readVMR(exampleReturn, softwareResult);
     assertEquals(9, forecastActualList.size());
   }
 

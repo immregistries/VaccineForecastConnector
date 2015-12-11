@@ -65,8 +65,16 @@ public class ICEConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "100", new int[] { VaccineGroup.ID_HEPB });
     // 810 Hep A Vaccine Group
     addForcastItem(forecastItemList, "810", new int[] { VaccineGroup.ID_HEPA });
+    // 200_107 DTaP NOS Vaccine Group
+    addForcastItem(forecastItemList, "107", new int[] { VaccineGroup.ID_DTAP, VaccineGroup.ID_DTAP_TDAP_TD });
+    // 200_09 TD Vaccine Group
+    addForcastItem(forecastItemList, "09",
+        new int[] { VaccineGroup.ID_TD_ONLY, VaccineGroup.ID_DTAP_TDAP_TD, VaccineGroup.ID_TDAP_TD });
+    // 200_115 DTP Vaccine Group
+    addForcastItem(forecastItemList, "115",
+        new int[] { VaccineGroup.ID_TDAP_ONLY, VaccineGroup.ID_DTAP_TDAP_TD, VaccineGroup.ID_TDAP_TD });
     // 200 DTP Vaccine Group
-    addForcastItem(forecastItemList, "200", new int[] { VaccineGroup.ID_DTAP });
+    addForcastItem(forecastItemList, "200", new int[] { VaccineGroup.ID_DTAP_TDAP_TD });
     // 300 Hib Vaccine Group
     addForcastItem(forecastItemList, "300", new int[] { VaccineGroup.ID_HIB });
     // 400 Polio Vaccine Group
@@ -92,15 +100,14 @@ public class ICEConnector implements ConnectorInterface
 
   }
 
-  private static int[] supportedItems = new int[] { VaccineGroup.ID_HEPB, VaccineGroup.ID_HEPA, VaccineGroup.ID_MMR,
-      VaccineGroup.ID_VAR, VaccineGroup.ID_ROTA, VaccineGroup.ID_HIB, VaccineGroup.ID_HPV, VaccineGroup.ID_PCV,
-      VaccineGroup.ID_PPSV, VaccineGroup.ID_PNEUMO };
-  private static int[] notSupportedItems = new int[] { VaccineGroup.ID_DTAP, VaccineGroup.ID_INFLUENZA,
-      VaccineGroup.ID_MENING, VaccineGroup.ID_POLIO, VaccineGroup.ID_ZOSTER, VaccineGroup.ID_TDAP_TD,
-      VaccineGroup.ID_TD_ONLY, VaccineGroup.ID_DTAP_TDAP_TD, VaccineGroup.ID_HEPB_2_ONLY, VaccineGroup.ID_HEPB_3_ONLY,
-      VaccineGroup.ID_MEASLES_ONLY, VaccineGroup.ID_MUMPS_ONLY, VaccineGroup.ID_RUBELLA_ONLY,
-      VaccineGroup.ID_TDAP_ONLY, VaccineGroup.ID_ANTHRAX, VaccineGroup.ID_SMALLPOX_SHOT_OR_READING,
-      VaccineGroup.ID_NOVEL_H1N1, VaccineGroup.ID_TYPHOID };
+  private static int[] supportedItems = new int[] { VaccineGroup.ID_NOVEL_H1N1,
+      VaccineGroup.ID_HEPA, VaccineGroup.ID_HEPB, VaccineGroup.ID_HIB, VaccineGroup.ID_HPV, VaccineGroup.ID_INFLUENZA,
+      VaccineGroup.ID_MENING, VaccineGroup.ID_MMR, VaccineGroup.ID_PNEUMO, VaccineGroup.ID_PCV, VaccineGroup.ID_PPSV,
+      VaccineGroup.ID_POLIO, VaccineGroup.ID_ROTA, VaccineGroup.ID_VAR };
+  private static int[] notSupportedItems = new int[] { VaccineGroup.ID_ZOSTER, VaccineGroup.ID_HEPB_2_ONLY,
+      VaccineGroup.ID_HEPB_3_ONLY, VaccineGroup.ID_MEASLES_ONLY, VaccineGroup.ID_MUMPS_ONLY,
+      VaccineGroup.ID_RUBELLA_ONLY, VaccineGroup.ID_ANTHRAX, VaccineGroup.ID_SMALLPOX_SHOT_OR_READING,
+      VaccineGroup.ID_TYPHOID };
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int[] forecastItemIds) {
     VaccineGroup[] forecastItems = new VaccineGroup[forecastItemIds.length];
@@ -168,7 +175,7 @@ public class ICEConnector implements ConnectorInterface
         if (logOut != null) {
           logOut.print(line);
         }
-        list = readVMR(line);
+        list = readVMR(line, softwareResult);
         for (int forecastItemId : notSupportedItems) {
           boolean found = false;
           for (ForecastActual forecastActual : list) {
@@ -181,6 +188,8 @@ public class ICEConnector implements ConnectorInterface
             VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
             if (forecastItem != null) {
               ForecastActual forecastActual = new ForecastActual();
+              forecastActual.setSoftwareResult(softwareResult);
+              forecastActual.setAdmin(Admin.NO_RESULTS);
               forecastActual.setDoseNumber("NS");
               forecastActual.setVaccineGroup(forecastItem);
               if (logOut != null) {
@@ -202,6 +211,7 @@ public class ICEConnector implements ConnectorInterface
             VaccineGroup forecastItem = VaccineGroup.getForecastItem(forecastItemId);
             if (forecastItem != null) {
               ForecastActual forecastActual = new ForecastActual();
+              forecastActual.setSoftwareResult(softwareResult);
               forecastActual.setAdmin(Admin.NO_RESULTS);
               forecastActual.setVaccineGroup(forecastItem);
               if (logOut != null) {
@@ -232,7 +242,7 @@ public class ICEConnector implements ConnectorInterface
 
   private Map<String, String> xmlLogMap = new HashMap<String, String>();
 
-  protected List<ForecastActual> readVMR(String s) throws Exception {
+  protected List<ForecastActual> readVMR(String s, SoftwareResult softwareResult) throws Exception {
 
     {
       BufferedReader in = new BufferedReader(new StringReader(s));
@@ -281,68 +291,72 @@ public class ICEConnector implements ConnectorInterface
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
         Element eElement = (Element) nNode;
-        readVmrOutput(forecastActualList, eElement);
+        readVmrOutput(forecastActualList, eElement, softwareResult);
       }
     }
     return forecastActualList;
   }
 
-  private void readVmrOutput(List<ForecastActual> forecastActualList, Element pElement) {
+  private void readVmrOutput(List<ForecastActual> forecastActualList, Element pElement, SoftwareResult softwareResult) {
     NodeList nList = pElement.getElementsByTagName("vmrOutput");
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
         Element eElement = (Element) nNode;
-        readPatient(forecastActualList, eElement);
+        readPatient(forecastActualList, eElement, softwareResult);
       }
     }
   }
 
-  private void readPatient(List<ForecastActual> forecastActualList, Element pElement) {
+  private void readPatient(List<ForecastActual> forecastActualList, Element pElement, SoftwareResult softwareResult) {
     NodeList nList = pElement.getElementsByTagName("patient");
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
         Element eElement = (Element) nNode;
-        readClinicalStatements(forecastActualList, eElement);
+        readClinicalStatements(forecastActualList, eElement, softwareResult);
       }
     }
   }
 
-  private void readClinicalStatements(List<ForecastActual> forecastActualList, Element pElement) {
+  private void readClinicalStatements(List<ForecastActual> forecastActualList, Element pElement,
+      SoftwareResult softwareResult) {
     NodeList nList = pElement.getElementsByTagName("clinicalStatements");
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
         Element eElement = (Element) nNode;
-        readSubstanceAdministrationProposals(forecastActualList, eElement);
+        readSubstanceAdministrationProposals(forecastActualList, eElement, softwareResult);
       }
     }
   }
 
-  private void readSubstanceAdministrationProposals(List<ForecastActual> forecastActualList, Element pElement) {
+  private void readSubstanceAdministrationProposals(List<ForecastActual> forecastActualList, Element pElement,
+      SoftwareResult softwareResult) {
     NodeList nList = pElement.getElementsByTagName("substanceAdministrationProposals");
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
         Element eElement = (Element) nNode;
-        readSubstanceAdministrationProposal(forecastActualList, eElement);
+        readSubstanceAdministrationProposal(forecastActualList, eElement, softwareResult);
       }
     }
   }
 
-  private void readSubstanceAdministrationProposal(List<ForecastActual> forecastActualList, Element pElement) {
+  private void readSubstanceAdministrationProposal(List<ForecastActual> forecastActualList, Element pElement,
+      SoftwareResult softwareResult) {
     NodeList nList = pElement.getElementsByTagName("substanceAdministrationProposal");
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
         Element eElement = (Element) nNode;
-        processSubstanceAdministrationProposal(forecastActualList, eElement);
+        processSubstanceAdministrationProposal(forecastActualList, eElement, softwareResult);
       }
     }
   }
 
-  private void processSubstanceAdministrationProposal(List<ForecastActual> forecastActualList, Element pElement) {
+  private void processSubstanceAdministrationProposal(List<ForecastActual> forecastActualList, Element pElement,
+      SoftwareResult softwareResult) {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     String substanceCode = readSubstanceCode(pElement);
     VaccineGroup[] forecastItems = familyMapping.get(substanceCode);
@@ -369,6 +383,7 @@ public class ICEConnector implements ConnectorInterface
           }
           for (VaccineGroup forecastItem : forecastItems) {
             ForecastActual forecastActual = new ForecastActual();
+            forecastActual.setSoftwareResult(softwareResult);
             forecastActual.setVaccineGroup(forecastItem);
             forecastActual.setValidDate(recommendDate);
             forecastActual.setDueDate(recommendDate);
@@ -602,10 +617,12 @@ public class ICEConnector implements ConnectorInterface
     sb.append("                </kmEvaluationRequest>\n");
     sb.append("                <dataRequirementItemData>\n");
     sb.append("                    <driId itemId=\"cdsPayload\">\n");
-    sb.append("                        <containingEntityId scopingEntityId=\"gov.nyc.health\" businessId=\"ICEData\" version=\"1.0.0.0\"/>\n");
+    sb.append(
+        "                        <containingEntityId scopingEntityId=\"gov.nyc.health\" businessId=\"ICEData\" version=\"1.0.0.0\"/>\n");
     sb.append("                    </driId>\n");
     sb.append("                    <data>\n");
-    sb.append("                        <informationModelSSId scopingEntityId=\"org.opencds.vmr\" businessId=\"VMR\" version=\"1.0\"/>\n");
+    sb.append(
+        "                        <informationModelSSId scopingEntityId=\"org.opencds.vmr\" businessId=\"VMR\" version=\"1.0\"/>\n");
     sb.append("                        <base64EncodedPayload>" + contentEncoded + "</base64EncodedPayload>\n");
     sb.append("                    </data>\n");
     sb.append("                </dataRequirementItemData>\n");
@@ -624,13 +641,15 @@ public class ICEConnector implements ConnectorInterface
     sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
     // CDSInput Section Begins (mandatory)
     {
-      sb.append("<ns4:cdsInput xmlns:ns2=\"org.opencds\" xmlns:ns3=\"org.opencds.vmr.v1_0.schema.vmr\" xmlns:ns4=\"org.opencds.vmr.v1_0.schema.cdsinput\" xmlns:ns5=\"org.opencds.vmr.v1_0.schema.cdsoutput\">\n");
+      sb.append(
+          "<ns4:cdsInput xmlns:ns2=\"org.opencds\" xmlns:ns3=\"org.opencds.vmr.v1_0.schema.vmr\" xmlns:ns4=\"org.opencds.vmr.v1_0.schema.cdsinput\" xmlns:ns5=\"org.opencds.vmr.v1_0.schema.cdsoutput\">\n");
       sb.append("    <templateId root=\"2.16.840.1.113883.3.795.11.1.1\"/>\n");
       // CDSContext Section Begins (mandatory)
       {
         sb.append("    <cdsContext>\n");
         // Specify user Preferred Language
-        sb.append("        <cdsSystemUserPreferredLanguage code=\"en\" codeSystem=\"2.16.840.1.113883.6.99\" displayName=\"English\"/>\n");
+        sb.append(
+            "        <cdsSystemUserPreferredLanguage code=\"en\" codeSystem=\"2.16.840.1.113883.6.99\" displayName=\"English\"/>\n");
         sb.append("    </cdsContext>\n");
         // CDSContext Section Ends
       }
@@ -675,14 +694,18 @@ public class ICEConnector implements ConnectorInterface
             // Suggestion: Use Globally Unique Identifier algorithm (GUID)
             String observationResultUniqueId = "617478b8-b6eb-4988-853a-b5f5c2441eb8";
             sb.append("                        <id root=\"" + observationResultUniqueId + "\"/>\n");
-            sb.append("                        <observationFocus code=\"{DISEASE_IMMUNITY_FOCUS_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.7\" displayName=\"..\" originalText=\"..\"/>\n");
+            sb.append(
+                "                        <observationFocus code=\"{DISEASE_IMMUNITY_FOCUS_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.7\" displayName=\"..\" originalText=\"..\"/>\n");
             sb.append("                 \n");
-            sb.append("                        <!-- ObservationEventTime low and high attributes are dates in YYYYMMDD format, and they must be the same value -->\n");
+            sb.append(
+                "                        <!-- ObservationEventTime low and high attributes are dates in YYYYMMDD format, and they must be the same value -->\n");
             sb.append("                        <observationEventTime low=\"{YYYYMMDD}\" high=\"{YYYYMMDD}\"/>\n");
             sb.append("                        <observationValue>                             \n");
-            sb.append("                            <concept code=\"{DISEASE_DOCUMENTATION_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.8\" displayName=\"..\" originalText=\"..\"/>\n");
+            sb.append(
+                "                            <concept code=\"{DISEASE_DOCUMENTATION_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.8\" displayName=\"..\" originalText=\"..\"/>\n");
             sb.append("                        </observationValue>\n");
-            sb.append("                        <interpretation code=\"{DISEASE_IMMUNITY_INTERPRETATION_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.9\" displayName=\"..\" originalText=\"..\"/>\n");
+            sb.append(
+                "                        <interpretation code=\"{DISEASE_IMMUNITY_INTERPRETATION_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.9\" displayName=\"..\" originalText=\"..\"/>\n");
             sb.append("                    </observationResult>\n");
             sb.append("                    <observationResult>\n");
             sb.append("                        [Record another disease immunity information here if necessary …]\n");
@@ -706,9 +729,10 @@ public class ICEConnector implements ConnectorInterface
               pos++;
               sb.append("                    <substanceAdministrationEvent>\n");
               sb.append("                        <templateId root=\"2.16.840.1.113883.3.795.11.9.1.1\"/>\n");
-              sb.append("                        <id root=\"" + substanceAdministrationUniqueId + "\" extension=\""
-                  + id + "\"/>\n");
-              sb.append("                        <substanceAdministrationGeneralPurpose code=\"384810002\" codeSystem=\"2.16.840.1.113883.6.5\"/>\n");
+              sb.append("                        <id root=\"" + substanceAdministrationUniqueId + "\" extension=\"" + id
+                  + "\"/>\n");
+              sb.append(
+                  "                        <substanceAdministrationGeneralPurpose code=\"384810002\" codeSystem=\"2.16.840.1.113883.6.5\"/>\n");
               sb.append("                        <substance>\n");
               String guid;
               if (pos < guids.length) {
@@ -722,9 +746,9 @@ public class ICEConnector implements ConnectorInterface
                   + "\" codeSystem=\"2.16.840.1.113883.12.292\" displayName=\"" + fix(testEvent.getEvent().getLabel())
                   + "\" originalText=\"" + testEvent.getEvent().getVaccineCvx() + "\"/>\n");
               sb.append("                        </substance>\n");
-              sb.append("                        <administrationTimeInterval low=\""
-                  + sdf.format(testEvent.getEventDate()) + "\" high=\"" + sdf.format(testEvent.getEventDate())
-                  + "\"/>\n");
+              sb.append(
+                  "                        <administrationTimeInterval low=\"" + sdf.format(testEvent.getEventDate())
+                      + "\" high=\"" + sdf.format(testEvent.getEventDate()) + "\"/>\n");
               sb.append("                    </substanceAdministrationEvent>\n");
             }
             sb.append("                </substanceAdministrationEvents>\n");
