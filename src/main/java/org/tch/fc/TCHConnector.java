@@ -101,6 +101,7 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "MCV", VaccineGroup.ID_MENING);
     addForcastItem(forecastItemList, "MeningBexsero", VaccineGroup.ID_MENING_BEXSERO);
     addForcastItem(forecastItemList, "MeningTrumenba", VaccineGroup.ID_MENING_TRUMENBA);
+    addForcastItem(forecastItemList, "MeningococcalB", VaccineGroup.ID_MENINGB);
     addForcastItem(forecastItemList, "HPV", VaccineGroup.ID_HPV);
     addForcastItem(forecastItemList, "Rota", VaccineGroup.ID_ROTA);
     addForcastItem(forecastItemList, "Rotavirus", VaccineGroup.ID_ROTA);

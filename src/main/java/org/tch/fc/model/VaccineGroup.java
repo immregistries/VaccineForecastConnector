@@ -61,6 +61,7 @@ public class VaccineGroup implements Serializable {
   public static final int ID_MENING = 8;
   public static final int ID_MENING_BEXSERO = 35;
   public static final int ID_MENING_TRUMENBA = 36;
+  public static final int ID_MENINGB = 37;
   public static final int ID_MMR = 9;
   public static final int ID_PNEUMO = 10;
   public static final int ID_POLIO = 11;
