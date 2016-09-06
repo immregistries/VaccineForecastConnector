@@ -196,4 +196,45 @@ public class TimePeriod
     }
     return s;
   }
+  
+  public String toStringForEpic()
+  {
+    return printStringForEpic(true);
+  } 
+  private String printStringForEpic(boolean showSign) {
+    String s;
+    String sign = "";
+    int v = value;
+    if (v < 0) {
+      v = -value;
+      if (showSign) {
+        sign = "-";
+      }
+    }
+    if (isMonth) {
+      int monthsLeftOver = v % 12;
+      if (v > 0 && monthsLeftOver == 0) {
+        int years = v / 12;
+        s = sign + years + (years == 1 ? " year" : " years");
+      } else {
+        s = sign + v + (v == 1 ? " month" : " months");
+      }
+    } else {
+      int daysLeftOver = v % 7;
+      if (v > 0 && daysLeftOver == 0) {
+        int weeks = v / 7;
+        s = sign + weeks + (weeks == 1 ? " week" : " weeks");
+      } else {
+        s = sign + v + (v == 1 ? " day" : " days");
+      }
+    }
+    if (nextTimePeriod != null) {
+      if (nextTimePeriod.value > 0) {
+        s = s + " + " + nextTimePeriod.printStringForEpic(false);
+      } else {
+        s = s + " - " + nextTimePeriod.printStringForEpic(false);
+      }
+    }
+    return s;
+  }
 }
