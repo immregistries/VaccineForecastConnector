@@ -25,6 +25,48 @@
             
 
                         /**
+                        * field for ScheduleType
+                        */
+
+                        
+                                    protected com.stchome.saf.common.ScheduleType localScheduleType ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localScheduleTypeTracker = false ;
+
+                           public boolean isScheduleTypeSpecified(){
+                               return localScheduleTypeTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.stchome.saf.common.ScheduleType
+                           */
+                           public  com.stchome.saf.common.ScheduleType getScheduleType(){
+                               return localScheduleType;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ScheduleType
+                               */
+                               public void setScheduleType(com.stchome.saf.common.ScheduleType param){
+                            localScheduleTypeTracker = param != null;
+                                   
+                                            this.localScheduleType=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for DateOfBirth
                         */
 
@@ -430,7 +472,13 @@
                                            "evaluationDate",
                                            localEvaluationDate.toString(), xmlWriter);
                                     }
-                                    
+                                     if (localScheduleTypeTracker){
+                                            if (localScheduleType==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("scheduleType cannot be null!!");
+                                            }
+                                           localScheduleType.serialize(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","scheduleType"),
+                                               xmlWriter);
+                                        }
                                             if (localDateOfBirth==null){
                                                  throw new org.apache.axis2.databinding.ADBException("dateOfBirth cannot be null!!");
                                             }
@@ -663,7 +711,16 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localScheduleTypeTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "scheduleType"));
+                            
+                            
+                                    if (localScheduleType==null){
+                                         throw new org.apache.axis2.databinding.ADBException("scheduleType cannot be null!!");
+                                    }
+                                    elementList.add(localScheduleType);
+                                }
                             elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "dateOfBirth"));
                             
@@ -862,10 +919,25 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list3 = new java.util.ArrayList();
-                    
                         java.util.ArrayList list4 = new java.util.ArrayList();
                     
+                        java.util.ArrayList list5 = new java.util.ArrayList();
+                    
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","scheduleType").equals(reader.getName())){
+                                
+                                                object.setScheduleType(com.stchome.saf.common.ScheduleType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -905,53 +977,7 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list3.add(com.stchome.saf.messages.get._1_3.VaccinationType.Factory.parse(reader));
-                                                                
-                                                        //loop until we find a start element that is not part of this array
-                                                        boolean loopDone3 = false;
-                                                        while(!loopDone3){
-                                                            // We should be at the end element, but make sure
-                                                            while (!reader.isEndElement())
-                                                                reader.next();
-                                                            // Step out of this element
-                                                            reader.next();
-                                                            // Step to next element event.
-                                                            while (!reader.isStartElement() && !reader.isEndElement())
-                                                                reader.next();
-                                                            if (reader.isEndElement()){
-                                                                //two continuous end elements means we are exiting the xml structure
-                                                                loopDone3 = true;
-                                                            } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccination").equals(reader.getName())){
-                                                                    list3.add(com.stchome.saf.messages.get._1_3.VaccinationType.Factory.parse(reader));
-                                                                        
-                                                                }else{
-                                                                    loopDone3 = true;
-                                                                }
-                                                            }
-                                                        }
-                                                        // call the converter utility  to convert and set the array
-                                                        
-                                                        object.setVaccination((com.stchome.saf.messages.get._1_3.VaccinationType[])
-                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
-                                                                com.stchome.saf.messages.get._1_3.VaccinationType.class,
-                                                                list3));
-                                                            
-                              }  // End of if for expected property start element
-                                
-                                    else {
-                                        
-                                    }
-                                
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication").equals(reader.getName())){
-                                
-                                    
-                                    
-                                    // Process the array and step past its final element's end.
-                                    list4.add(com.stchome.saf.messages.get._1_3.ContraindicationType.Factory.parse(reader));
+                                    list4.add(com.stchome.saf.messages.get._1_3.VaccinationType.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
                                                         boolean loopDone4 = false;
@@ -968,8 +994,8 @@
                                                                 //two continuous end elements means we are exiting the xml structure
                                                                 loopDone4 = true;
                                                             } else {
-                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication").equals(reader.getName())){
-                                                                    list4.add(com.stchome.saf.messages.get._1_3.ContraindicationType.Factory.parse(reader));
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","vaccination").equals(reader.getName())){
+                                                                    list4.add(com.stchome.saf.messages.get._1_3.VaccinationType.Factory.parse(reader));
                                                                         
                                                                 }else{
                                                                     loopDone4 = true;
@@ -978,10 +1004,56 @@
                                                         }
                                                         // call the converter utility  to convert and set the array
                                                         
+                                                        object.setVaccination((com.stchome.saf.messages.get._1_3.VaccinationType[])
+                                                            org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
+                                                                com.stchome.saf.messages.get._1_3.VaccinationType.class,
+                                                                list4));
+                                                            
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication").equals(reader.getName())){
+                                
+                                    
+                                    
+                                    // Process the array and step past its final element's end.
+                                    list5.add(com.stchome.saf.messages.get._1_3.ContraindicationType.Factory.parse(reader));
+                                                                
+                                                        //loop until we find a start element that is not part of this array
+                                                        boolean loopDone5 = false;
+                                                        while(!loopDone5){
+                                                            // We should be at the end element, but make sure
+                                                            while (!reader.isEndElement())
+                                                                reader.next();
+                                                            // Step out of this element
+                                                            reader.next();
+                                                            // Step to next element event.
+                                                            while (!reader.isStartElement() && !reader.isEndElement())
+                                                                reader.next();
+                                                            if (reader.isEndElement()){
+                                                                //two continuous end elements means we are exiting the xml structure
+                                                                loopDone5 = true;
+                                                            } else {
+                                                                if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","contraindication").equals(reader.getName())){
+                                                                    list5.add(com.stchome.saf.messages.get._1_3.ContraindicationType.Factory.parse(reader));
+                                                                        
+                                                                }else{
+                                                                    loopDone5 = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        // call the converter utility  to convert and set the array
+                                                        
                                                         object.setContraindication((com.stchome.saf.messages.get._1_3.ContraindicationType[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.stchome.saf.messages.get._1_3.ContraindicationType.class,
-                                                                list4));
+                                                                list5));
                                                             
                               }  // End of if for expected property start element
                                 

@@ -25,6 +25,51 @@
             
 
                         /**
+                        * field for Id
+                        */
+
+                        
+                                    protected long localId ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localIdTracker = false ;
+
+                           public boolean isIdSpecified(){
+                               return localIdTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return long
+                           */
+                           public  long getId(){
+                               return localId;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Id
+                               */
+                               public void setId(long param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       localIdTracker =
+                                       param != java.lang.Long.MIN_VALUE;
+                                   
+                                            this.localId=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for VaccCode
                         */
 
@@ -283,6 +328,51 @@
                             
 
                         /**
+                        * field for IsTDAP
+                        */
+
+                        
+                                    protected boolean localIsTDAP ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localIsTDAPTracker = false ;
+
+                           public boolean isIsTDAPSpecified(){
+                               return localIsTDAPTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getIsTDAP(){
+                               return localIsTDAP;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param IsTDAP
+                               */
+                               public void setIsTDAP(boolean param){
+                            
+                                       // setting primitive attribute tracker to true
+                                       localIsTDAPTracker =
+                                       true;
+                                   
+                                            this.localIsTDAP=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for CodeType
                         * This was an Attribute!
                         */
@@ -382,7 +472,20 @@
                                       else {
                                           throw new org.apache.axis2.databinding.ADBException("required attribute localCodeType is null");
                                       }
+                                     if (localIdTracker){
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "id", xmlWriter);
+                             
+                                               if (localId==java.lang.Long.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("id cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localId));
+                                               }
                                     
+                                   xmlWriter.writeEndElement();
+                             }
                                             if (localVaccCode==null){
                                                  throw new org.apache.axis2.databinding.ADBException("vaccCode cannot be null!!");
                                             }
@@ -458,6 +561,19 @@
                                                       
                                                } else {
                                                     xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBooster));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localIsTDAPTracker){
+                                    namespace = "http://saf.stchome.com/messages/get/1.3";
+                                    writeStartElement(null, namespace, "isTDAP", xmlWriter);
+                             
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("isTDAP cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsTDAP));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -646,7 +762,13 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localIdTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "id"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localId));
+                            }
                             elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
                                                                       "vaccCode"));
                             
@@ -709,6 +831,12 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localBooster));
+                            } if (localIsTDAPTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3",
+                                                                      "isTDAP"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIsTDAP));
                             }
                             attribList.add(
                             new javax.xml.namespace.QName("","codeType"));
@@ -808,8 +936,34 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list4 = new java.util.ArrayList();
+                        java.util.ArrayList list5 = new java.util.ArrayList();
                     
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","id").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"id" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setId(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToLong(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                               object.setId(java.lang.Long.MIN_VALUE);
+                                           
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -875,11 +1029,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list4.add(com.stchome.saf.common.VaccMessageType.Factory.parse(reader));
+                                    list5.add(com.stchome.saf.common.VaccMessageType.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone4 = false;
-                                                        while(!loopDone4){
+                                                        boolean loopDone5 = false;
+                                                        while(!loopDone5){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -890,13 +1044,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone4 = true;
+                                                                loopDone5 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","message").equals(reader.getName())){
-                                                                    list4.add(com.stchome.saf.common.VaccMessageType.Factory.parse(reader));
+                                                                    list5.add(com.stchome.saf.common.VaccMessageType.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone4 = true;
+                                                                    loopDone5 = true;
                                                                 }
                                                             }
                                                         }
@@ -905,7 +1059,7 @@
                                                         object.setMessage((com.stchome.saf.common.VaccMessageType[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.stchome.saf.common.VaccMessageType.class,
-                                                                list4));
+                                                                list5));
                                                             
                               }  // End of if for expected property start element
                                 
@@ -951,6 +1105,30 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setBooster(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://saf.stchome.com/messages/get/1.3","isTDAP").equals(reader.getName())){
+                                
+                                    nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                    if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                        throw new org.apache.axis2.databinding.ADBException("The element: "+"isTDAP" +"  cannot be null");
+                                    }
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIsTDAP(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
