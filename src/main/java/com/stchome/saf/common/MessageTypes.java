@@ -52,11 +52,17 @@
                                     public static final java.lang.String _value2 =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("INVALID-VACC");
                                 
+                                    public static final java.lang.String _value3 =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("VALID-VACC");
+                                
                                 public static final MessageTypes value1 =
                                     new MessageTypes(_value1,true);
                             
                                 public static final MessageTypes value2 =
                                     new MessageTypes(_value2,true);
+                            
+                                public static final MessageTypes value3 =
+                                    new MessageTypes(_value3,true);
                             
 
                                 public java.lang.String getValue() { return localMessageTypes;}

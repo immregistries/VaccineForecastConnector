@@ -103,7 +103,7 @@
      */
     public GetForecastRequestServiceStub(org.apache.axis2.context.ConfigurationContext configurationContext) throws org.apache.axis2.AxisFault {
         
-                    this(configurationContext,"http://10.0.5.70:8082/safqa/soa/forecast" );
+                    this(configurationContext,"http://10.0.5.70:8084/safdemo/soa/forecast" );
                 
     }
 
@@ -112,7 +112,7 @@
      */
     public GetForecastRequestServiceStub() throws org.apache.axis2.AxisFault {
         
-                    this("http://10.0.5.70:8082/safqa/soa/forecast" );
+                    this("http://10.0.5.70:8084/safdemo/soa/forecast" );
                 
     }
 
@@ -426,7 +426,7 @@
         }
         return false;
     }
-     //http://10.0.5.70:8082/safqa/soa/forecast
+     //http://10.0.5.70:8084/safdemo/soa/forecast
             private  org.apache.axiom.om.OMElement  toOM(com.stchome.saf.messages.get._1_3.GetForecastRequest param, boolean optimizeContent)
             throws org.apache.axis2.AxisFault {
 

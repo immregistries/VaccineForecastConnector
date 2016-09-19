@@ -163,6 +163,16 @@
               
                   if (
                   "http://saf.stchome.com/common".equals(namespaceURI) &&
+                  "ScheduleType".equals(typeName)){
+                   
+                            return  com.stchome.saf.common.ScheduleType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://saf.stchome.com/common".equals(namespaceURI) &&
                   "Len500StringType".equals(typeName)){
                    
                             return  com.stchome.saf.common.Len500StringType.Factory.parse(reader);

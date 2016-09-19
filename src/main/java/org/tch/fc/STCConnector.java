@@ -52,6 +52,7 @@ import org.tch.fc.model.VaccineGroup;
 import com.stchome.saf.common.DateYYYYMMDDType;
 import com.stchome.saf.common.GenderType;
 import com.stchome.saf.common.Len20StringType;
+import com.stchome.saf.common.ScheduleType;
 import com.stchome.saf.common.VaccCodeStringType;
 import com.stchome.saf.common.VaccMessageType;
 import com.stchome.saf.common.VaccineCodeType;
@@ -185,6 +186,9 @@ public class STCConnector extends GetForecastRequestServiceStub implements Conne
         logOut.println("Connecting to " + software.getServiceUrl());
       }
       PersonDetailsType personDetailsType = new PersonDetailsType();
+      {
+        personDetailsType.setScheduleType(ScheduleType.CDSI);
+      }
       {
         DateYYYYMMDDType dateOfBirth = new DateYYYYMMDDType();
         dateOfBirth.setDateYYYYMMDDType(sdf.format(testCase.getPatientDob()));

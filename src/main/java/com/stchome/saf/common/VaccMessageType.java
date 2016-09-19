@@ -116,6 +116,68 @@
                                }
                             
 
+                        /**
+                        * field for DoseNumber
+                        * This was an Attribute!
+                        */
+
+                        
+                                    protected java.math.BigInteger localDoseNumber ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.math.BigInteger
+                           */
+                           public  java.math.BigInteger getDoseNumber(){
+                               return localDoseNumber;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DoseNumber
+                               */
+                               public void setDoseNumber(java.math.BigInteger param){
+                            
+                                            this.localDoseNumber=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for SeriesComplete
+                        * This was an Attribute!
+                        */
+
+                        
+                                    protected java.lang.String localSeriesComplete ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getSeriesComplete(){
+                               return localSeriesComplete;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param SeriesComplete
+                               */
+                               public void setSeriesComplete(java.lang.String param){
+                            
+                                            this.localSeriesComplete=param;
+                                    
+
+                               }
+                            
+
      
      
         /**
@@ -191,6 +253,24 @@
                                                 writeAttribute("",
                                                          "familyCode",
                                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFamilyCode), xmlWriter);
+
+                                            
+                                      }
+                                    
+                                            if (localDoseNumber != null){
+                                        
+                                                writeAttribute("",
+                                                         "doseNumber",
+                                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseNumber), xmlWriter);
+
+                                            
+                                      }
+                                    
+                                            if (localSeriesComplete != null){
+                                        
+                                                writeAttribute("",
+                                                         "seriesComplete",
+                                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSeriesComplete), xmlWriter);
 
                                             
                                       }
@@ -405,6 +485,16 @@
                             
                                       attribList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localFamilyCode));
                                 
+                            attribList.add(
+                            new javax.xml.namespace.QName("","doseNumber"));
+                            
+                                      attribList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDoseNumber));
+                                
+                            attribList.add(
+                            new javax.xml.namespace.QName("","seriesComplete"));
+                            
+                                      attribList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localSeriesComplete));
+                                
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -510,6 +600,38 @@
                        
                     }
                     handledAttributes.add("familyCode");
+                    
+                    // handle attribute "doseNumber"
+                    java.lang.String tempAttribDoseNumber =
+                        
+                                reader.getAttributeValue(null,"doseNumber");
+                            
+                   if (tempAttribDoseNumber!=null){
+                         java.lang.String content = tempAttribDoseNumber;
+                        
+                                                 object.setDoseNumber(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInteger(tempAttribDoseNumber));
+                                            
+                    } else {
+                       
+                    }
+                    handledAttributes.add("doseNumber");
+                    
+                    // handle attribute "seriesComplete"
+                    java.lang.String tempAttribSeriesComplete =
+                        
+                                reader.getAttributeValue(null,"seriesComplete");
+                            
+                   if (tempAttribSeriesComplete!=null){
+                         java.lang.String content = tempAttribSeriesComplete;
+                        
+                                                 object.setSeriesComplete(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(tempAttribSeriesComplete));
+                                            
+                    } else {
+                       
+                    }
+                    handledAttributes.add("seriesComplete");
                     
                     
                     reader.next();
