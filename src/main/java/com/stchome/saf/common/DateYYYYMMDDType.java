@@ -49,10 +49,11 @@
                                */
                                public void setDateYYYYMMDDType(java.lang.String param){
                             
-                                            if (org.apache.axis2.databinding.utils.ConverterUtil.convertToString(param).matches("(19|20)\\d\\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])")) {
+                                            if (org.apache.axis2.databinding.utils.ConverterUtil.convertToString(param).matches("(19|20|21)\\d\\d(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])")) {
                                                 this.localDateYYYYMMDDType=param;
                                             }
                                             else {
+                                              System.out.println("-->   bad! ");
                                                 throw new java.lang.RuntimeException();
                                             }
                                         
