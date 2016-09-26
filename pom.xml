@@ -19,7 +19,6 @@
 	<properties>
 		<forecaster.version>1.0</forecaster.version>
 		<wicket.version>1.5.7</wicket.version>
-		<jetty.version>7.5.0.v20110901</jetty.version>
 	</properties>
 	<dependencies>
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
@@ -40,14 +39,6 @@
 			<artifactId>junit</artifactId>
 			<version>4.8.1</version>
 			<scope>test</scope>
-		</dependency>
-
-		<!-- JETTY DEPENDENCIES FOR TESTING -->
-		<dependency>
-			<groupId>org.eclipse.jetty.aggregate</groupId>
-			<artifactId>jetty-all-server</artifactId>
-			<version>${jetty.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -135,26 +126,6 @@
 					<target>1.5</target>
 					<optimize>true</optimize>
 					<debug>true</debug>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>${jetty.version}</version>
-				<configuration>
-					<connectors>
-						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-							<port>8080</port>
-							<maxIdleTime>3600000</maxIdleTime>
-						</connector>
-						<connector implementation="org.eclipse.jetty.server.ssl.SslSocketConnector">
-							<port>8443</port>
-							<maxIdleTime>3600000</maxIdleTime>
-							<keystore>${project.build.directory}/test-classes/keystore</keystore>
-							<password>wicket</password>
-							<keyPassword>wicket</keyPassword>
-						</connector>
-					</connectors>
 				</configuration>
 			</plugin>
 			<plugin>
