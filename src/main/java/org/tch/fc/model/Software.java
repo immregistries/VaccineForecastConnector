@@ -21,6 +21,33 @@ public class Software implements Serializable
   private String scheduleName = "";
   private String visibleStatus = "";
   private boolean supportsFixed = false;
+  private String serviceUserid = "";
+  private String servicePassword = "";
+  private String serviceFacilityid = "";
+
+  public String getServiceUserid() {
+    return serviceUserid;
+  }
+
+  public void setServiceUserid(String serviceUserid) {
+    this.serviceUserid = serviceUserid;
+  }
+
+  public String getServicePassword() {
+    return servicePassword;
+  }
+
+  public void setServicePassword(String servicePassword) {
+    this.servicePassword = servicePassword;
+  }
+
+  public String getServiceFacilityid() {
+    return serviceFacilityid;
+  }
+
+  public void setServiceFacilityid(String serviceFacilityid) {
+    this.serviceFacilityid = serviceFacilityid;
+  }
 
   public boolean isSupportsFixed() {
     return supportsFixed;
