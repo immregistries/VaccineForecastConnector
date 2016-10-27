@@ -19,18 +19,46 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.Event;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
-import org.tch.fc.model.SoftwareResult;
-import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
+import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
+import org.tch.fc.model.VaccineGroup;
 
 public class TestConnect extends junit.framework.TestCase
 {
+
+  public void testTCHDoseNumberProblem() throws Exception {
+
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    TestCase testCase = new TestCase();
+    testCase.setEvalDate(sdf.parse("03/11/2011"));
+    testCase.setPatientSex("M");
+    testCase.setPatientDob(sdf.parse("01/01/2012"));
+    List<TestEvent> testEventList = new ArrayList<TestEvent>();
+    TestEvent testEvent1 = new TestEvent(8, sdf.parse("01/02/2011"));
+    TestEvent testEvent2 = new TestEvent(42, sdf.parse("01/02/2011"));
+    TestEvent testEvent3 = new TestEvent(53, sdf.parse("01/03/2011"));
+    testEventList.add(testEvent1);
+    testEventList.add(testEvent2);
+    testEventList.add(testEvent3);
+    testCase.setTestEventList(testEventList);
+    Software software = new Software();
+    software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
+    software.setService(Service.TCH);
+
+    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    connector.setLogText(true);
+    connector.queryForForecast(testCase, new SoftwareResult());
+    assertNotNull(testEvent1.getEvaluationActualList());
+    assertEquals(1, testEvent1.getEvaluationActualList().size());
+    assertEquals("1", testEvent1.getEvaluationActualList().get(0).getDoseNumber());
+  }
 
   public void testConnectSWP() throws Exception {
 
