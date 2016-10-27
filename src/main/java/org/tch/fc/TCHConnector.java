@@ -306,6 +306,7 @@ public class TCHConnector implements ConnectorInterface
                       String doseName = "";
                       String vaccineCvx = "";
                       String doseNumber = "";
+                      String evaluationReason = "";
                       if (startPos > 0) {
                         doseName = line.substring(pos, startPos).trim();
                         vaccineCvx = evaluationToCvxMapping.get(doseName);
@@ -315,7 +316,13 @@ public class TCHConnector implements ConnectorInterface
                         startPos += 6;
                         int endPos = line.indexOf(".", startPos);
                         if (endPos > 0) {
-                          doseNumber = line.substring(startPos, endPos);
+                          doseNumber = line.substring(startPos, endPos).trim();
+                          int firstSpace = doseNumber.indexOf(" ");
+                          if (firstSpace > 0)
+                          {
+                            evaluationReason = doseNumber.substring(firstSpace).trim();
+                            doseNumber = doseNumber.substring(0, firstSpace).trim();
+                          }
                         }
                       }
                       EvaluationActual evaluationActual = new EvaluationActual();
@@ -324,6 +331,7 @@ public class TCHConnector implements ConnectorInterface
                       evaluationActual.setTestEvent(testEvent);
                       evaluationActual.setDoseNumber(doseNumber);
                       evaluationActual.setDoseValid(isValid ? "Y" : "N");
+                      evaluationActual.setEvaluationReason(evaluationReason);
                       //evaluationActual.setReasonCode(reasonCode);
                       evaluationActual.setReasonText(line);
                       evaluationActual.setSeriesUsedCode(vaccineCvx);
