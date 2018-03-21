@@ -361,6 +361,7 @@ public class ICEConnector implements ConnectorInterface
     String substanceCode = readSubstanceCode(pElement);
     VaccineGroup[] forecastItems = familyMapping.get(substanceCode);
     if (forecastItems != null && forecastItems.length > 0) {
+      Date earliestDate = readValidTimeLow(pElement);
       Date recommendDate = readProposedTimeLow(pElement);
       Date overdueDate = readProposedTimeHigh(pElement);
       String id = readId(pElement);
@@ -378,6 +379,10 @@ public class ICEConnector implements ConnectorInterface
           if (recommendDate != null) {
             sb.append(" + Recommended Date = " + sdf.format(recommendDate) + "\n");
           }
+          if (earliestDate != null)
+          {
+            sb.append(" + Earliest Date = " + sdf.format(earliestDate) + "\n");
+          }
           if (overdueDate != null) {
             sb.append(" + Overdue Date = " + sdf.format(overdueDate) + "\n");
           }
@@ -385,10 +390,9 @@ public class ICEConnector implements ConnectorInterface
             ForecastActual forecastActual = new ForecastActual();
             forecastActual.setSoftwareResult(softwareResult);
             forecastActual.setVaccineGroup(forecastItem);
-            forecastActual.setValidDate(recommendDate);
             forecastActual.setDueDate(recommendDate);
             forecastActual.setOverdueDate(overdueDate);
-
+            forecastActual.setValidDate(earliestDate);
             forecastActual.setDoseNumber("*");
 
             switch (recommendationReason) {
@@ -559,6 +563,29 @@ public class ICEConnector implements ConnectorInterface
   private static Date readProposedTimeLow(Element pElement) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     NodeList nList = pElement.getElementsByTagName("proposedAdministrationTimeInterval");
+    for (int i = 0; i < nList.getLength(); i++) {
+      Node nNode = nList.item(i);
+      if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+        Element eElement = (Element) nNode;
+        String dateStringLow = eElement.getAttribute("low");
+        if (dateStringLow != null) {
+          if (dateStringLow.length() > 8) {
+            dateStringLow = dateStringLow.substring(0, 8);
+          }
+          try {
+            return sdf.parse(dateStringLow);
+          } catch (ParseException pe) {
+            return null;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  private static Date readValidTimeLow(Element pElement) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+    NodeList nList = pElement.getElementsByTagName("validAdministrationTimeInterval");
     for (int i = 0; i < nList.getLength(); i++) {
       Node nNode = nList.item(i);
       if (nNode.getNodeType() == Node.ELEMENT_NODE) {
