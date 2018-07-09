@@ -113,6 +113,8 @@ public class TCHConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "PCV13", VaccineGroup.ID_PNEUMO);
     addForcastItem(forecastItemList, "PCV13", VaccineGroup.ID_PCV);
     addForcastItem(forecastItemList, "Zoster", VaccineGroup.ID_ZOSTER);
+    addForcastItem(forecastItemList, "RZV (Shingrix)", VaccineGroup.ID_ZOSTER);
+    addForcastItem(forecastItemList, "RZV (Shingrix)", VaccineGroup.ID_SHINGRIX_ZOSTER);
     addForcastItem(forecastItemList, "PPSV", VaccineGroup.ID_PPSV);
 
     evaluationToCvxMapping.put("Varicella", "21");
@@ -207,6 +209,7 @@ public class TCHConnector implements ConnectorInterface
           int statusPos = line.indexOf(STATUS);
           if (statusPos > 0) {
             String vaccineType = line.substring(0, statusPos);
+
             List<VaccineGroup> forecastItemListFromMap = familyMapping.get(vaccineType);
 
             int dosePos = line.indexOf(DOSE);

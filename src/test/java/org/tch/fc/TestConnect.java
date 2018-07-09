@@ -32,6 +32,40 @@ import org.tch.fc.model.VaccineGroup;
 
 public class TestConnect extends junit.framework.TestCase
 {
+  
+  public void testTCHShingrix() throws Exception {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    TestCase testCase = new TestCase();
+    testCase.setEvalDate(sdf.parse("01/01/1999"));
+    testCase.setPatientSex("M");
+    testCase.setPatientDob(sdf.parse("01/01/1950"));
+    List<TestEvent> testEventList = new ArrayList<TestEvent>();
+    testEventList.add(new TestEvent(187, sdf.parse("12/09/1999") ));
+    testEventList.add(new TestEvent(187, sdf.parse("12/15/1999") ));
+    testCase.setTestEventList(testEventList);
+    Software software = new Software();
+    software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
+    software.setService(Service.TCH);
+
+    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    connector.setLogText(true);
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    assertForecasts(VaccineGroup.ID_HEPB, forecastActualList);
+    assertForecasts(VaccineGroup.ID_SHINGRIX_ZOSTER, forecastActualList);
+    assertForecasts(VaccineGroup.ID_ZOSTER, forecastActualList);
+   }
+
+  private void assertForecasts(int id, List<ForecastActual> forecastActualList) {
+    boolean found = false;
+    for (ForecastActual forecastActual: forecastActualList)
+    {
+      if (forecastActual.getVaccineGroup().getVaccineGroupId() == id)
+      {
+        found = true;
+      }
+    }
+    assertTrue(found);
+  }
 
   public void testTCHDoseNumberProblem() throws Exception {
 

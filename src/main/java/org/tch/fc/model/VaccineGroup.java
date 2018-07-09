@@ -68,6 +68,7 @@ public class VaccineGroup implements Serializable {
   public static final int ID_ROTA = 12;
   public static final int ID_VAR = 13;
   public static final int ID_ZOSTER = 14;
+  public static final int ID_SHINGRIX_ZOSTER = 38;
   public static final int ID_TDAP_TD = 15;
   public static final int ID_PPSV = 16;
   public static final int ID_PCV = 17;
@@ -86,6 +87,7 @@ public class VaccineGroup implements Serializable {
   public static final int ID_JAPENESE_ENCEPHALITIS = 30;
   public static final int ID_RABIES = 31;
   public static final int ID_YELLOW_FEVER = 32;
+  
 
   private static List<VaccineGroup> forecastItemList = null;
   private static Map<Integer, VaccineGroup> forecastItemMap = null;
@@ -112,6 +114,7 @@ public class VaccineGroup implements Serializable {
       forecastItemList.add(new VaccineGroup(ID_ROTA, "Rotavirus", "122"));
       forecastItemList.add(new VaccineGroup(ID_VAR, "Varicella", "21"));
       forecastItemList.add(new VaccineGroup(ID_ZOSTER, "HerpesZoster", "121"));
+      forecastItemList.add(new VaccineGroup(ID_SHINGRIX_ZOSTER, "RZV (Shingrix)", "187"));
       forecastItemList.add(new VaccineGroup(ID_TDAP_TD, "Td or Tdap", "139"));
       forecastItemList.add(new VaccineGroup(ID_PPSV, "PPSV", "33"));
       forecastItemList.add(new VaccineGroup(ID_PCV, "PCV", "152"));
