@@ -37,6 +37,10 @@ public class ConnectFactory {
     {
       return new ICEConnector(software, forecastItemList);
     }
+    if (software.getService() == Service.IIS)
+    {
+      return new IISConnector(software, forecastItemList);
+    }
     return null;
   }
   
