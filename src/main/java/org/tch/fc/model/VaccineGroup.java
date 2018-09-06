@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VaccineGroup implements Serializable {
+public class VaccineGroup implements Serializable
+{
 
   public VaccineGroup() {
     // default;
@@ -25,15 +26,15 @@ public class VaccineGroup implements Serializable {
   private String vaccineCvx = "";
   private String mapToCdsiCode = null;
   private List<EvaluationActual> evaluationActualList = null;
-  
+
   public String getMapToCdsiCode() {
     return mapToCdsiCode;
   }
-  
+
   public void setMapToCdsiCode(String mapToCdsiCode) {
     this.mapToCdsiCode = mapToCdsiCode;
   }
-  
+
   public List<EvaluationActual> getEvaluationActualList() {
     return evaluationActualList;
   }
@@ -87,13 +88,11 @@ public class VaccineGroup implements Serializable {
   public static final int ID_JAPENESE_ENCEPHALITIS = 30;
   public static final int ID_RABIES = 31;
   public static final int ID_YELLOW_FEVER = 32;
-  
 
   private static List<VaccineGroup> forecastItemList = null;
   private static Map<Integer, VaccineGroup> forecastItemMap = null;
-  
-  public static final VaccineGroup getForecastItem(int id)
-  {
+
+  public static final VaccineGroup getForecastItem(int id) {
     getForecastItemList();
     return forecastItemMap.get(id);
   }
@@ -127,9 +126,10 @@ public class VaccineGroup implements Serializable {
       forecastItemList.add(new VaccineGroup(ID_RUBELLA_ONLY, "Rubella Only", "06"));
       forecastItemList.add(new VaccineGroup(ID_TDAP_ONLY, "Tdap Only", "115"));
       forecastItemMap = new HashMap<Integer, VaccineGroup>();
-      for (VaccineGroup forecastItem : forecastItemList)
-      {
-        forecastItemMap.put(forecastItem.getVaccineGroupId(), forecastItem);
+      for (VaccineGroup forecastItem : forecastItemList) {
+        if (forecastItem != null) {
+          forecastItemMap.put(forecastItem.getVaccineGroupId(), forecastItem);
+        }
       }
     }
     return forecastItemList;

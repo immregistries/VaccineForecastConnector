@@ -149,14 +149,16 @@ public class TCHConnector implements ConnectorInterface
 
   private void addForcastItem(List<VaccineGroup> forecastItemList, String familyName, int forecastItemId) {
     for (VaccineGroup forecastItem : forecastItemList) {
-      if (forecastItem.getVaccineGroupId() == forecastItemId) {
-        List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
-        if (forecastItemListFromMap == null) {
-          forecastItemListFromMap = new ArrayList<VaccineGroup>();
-          familyMapping.put(familyName, forecastItemListFromMap);
+      if (forecastItem != null) {
+        if (forecastItem.getVaccineGroupId() == forecastItemId) {
+          List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
+          if (forecastItemListFromMap == null) {
+            forecastItemListFromMap = new ArrayList<VaccineGroup>();
+            familyMapping.put(familyName, forecastItemListFromMap);
+          }
+          forecastItemListFromMap.add(forecastItem);
+          return;
         }
-        forecastItemListFromMap.add(forecastItem);
-        return;
       }
     }
   }
@@ -322,8 +324,7 @@ public class TCHConnector implements ConnectorInterface
                         if (endPos > 0) {
                           doseNumber = line.substring(startPos, endPos).trim();
                           int firstSpace = doseNumber.indexOf(" ");
-                          if (firstSpace > 0)
-                          {
+                          if (firstSpace > 0) {
                             evaluationReason = doseNumber.substring(firstSpace).trim();
                             doseNumber = doseNumber.substring(0, firstSpace).trim();
                           }
@@ -396,7 +397,8 @@ public class TCHConnector implements ConnectorInterface
     sb.append("&patientSex=" + testCase.getPatientSex() + "");
     int count = 0;
     for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINATION && testEvent.getEventDate() != null) {
+      if (testEvent.getEvent() != null && testEvent.getEvent().getEventType() == EventType.VACCINATION
+          && testEvent.getEventDate() != null) {
         count++;
         sb.append("&vaccineDate" + count + "=" + sdf.format(testEvent.getEventDate()));
         sb.append("&vaccineCvx" + count + "=" + testEvent.getEvent().getVaccineCvx());

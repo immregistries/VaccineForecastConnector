@@ -6,32 +6,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Event implements Serializable {
-  
+public class Event implements Serializable
+{
+
   // All event ids from 0 to 99,000 are reserved for CVX codes
   public static final int EVENT_ID_RANGE_CVX = 0;
   // All event ids from 100,000 to 199,999 are reserved for MIIS specified ids
   public static final int EVENT_ID_RANGE_1_MIIS = 100000;
-  
+
   public static final int EVENT_ID_RANGE_2_RESERVED = 200000;
-  
+
   public static final Event BIRTH_EVENT = new Event();
   public static final Event EVALUATION_EVENT = new Event();
-  
+
   static {
     BIRTH_EVENT.setEventType(EventType.BIRTH);
     BIRTH_EVENT.setLabel("Patient born");
     EVALUATION_EVENT.setEventType(EventType.EVALUATION);
     EVALUATION_EVENT.setLabel("Evaluation should be performed");
   }
-  
-  public Event()
-  {
+
+  public Event() {
     // default;
   }
-  
-  private Event(int eventId, String label, EventType eventType, String vaccineCvx, String vaccineMvx)
-  {
+
+  private Event(int eventId, String label, EventType eventType, String vaccineCvx, String vaccineMvx) {
     this.eventId = eventId;
     this.label = label;
     this.eventType = eventType;
@@ -67,9 +66,8 @@ public class Event implements Serializable {
   public String getLabel() {
     return label;
   }
-  
-  public String getLabelScreen()
-  {
+
+  public String getLabelScreen() {
     if (getEventType() == EventType.BIRTH) {
       return "Birth";
     } else if (getEventType() == EventType.EVALUATION) {
@@ -125,25 +123,22 @@ public class Event implements Serializable {
   public String toString() {
     return (eventType == null ? "" : eventType.getLabel()) + ": " + label;
   }
-  
+
   private static List<Event> eventList = null;
   private static Map<Integer, Event> eventMap = null;
-  
-  public static List<Event> getEventList()
-  {
+
+  public static List<Event> getEventList() {
     initEventListAndMap();
     return eventList;
   }
-  
-  public static Event getEvent(int eventId)
-  {
+
+  public static Event getEvent(int eventId) {
     initEventListAndMap();
     return eventMap.get(eventId);
   }
 
   public static void initEventListAndMap() {
-    if (eventList == null)
-    {
+    if (eventList == null) {
       eventList = new ArrayList<Event>();
       eventList.add(new Event(1, "DTP", EventType.VACCINATION, "01", ""));
       eventList.add(new Event(2, "OPV", EventType.VACCINATION, "02", ""));
@@ -159,7 +154,8 @@ public class Event implements Serializable {
       eventList.add(new Event(12, "diphtheria antitoxin", EventType.VACCINATION, "12", ""));
       eventList.add(new Event(13, "TIG", EventType.VACCINATION, "13", ""));
       eventList.add(new Event(14, "IG, unspecified formulation", EventType.VACCINATION, "14", ""));
-      eventList.add(new Event(15, "influenza, split (incl. purified surface antigen)", EventType.VACCINATION, "15", ""));
+      eventList
+          .add(new Event(15, "influenza, split (incl. purified surface antigen)", EventType.VACCINATION, "15", ""));
       eventList.add(new Event(16, "influenza, whole", EventType.VACCINATION, "16", ""));
       eventList.add(new Event(17, "Hib, unspecified formulation", EventType.VACCINATION, "17", ""));
       eventList.add(new Event(18, "rabies, intramuscular injection", EventType.VACCINATION, "18", ""));
@@ -283,11 +279,13 @@ public class Event implements Serializable {
       eventList.add(new Event(137, "HPV, unspecified formulation", EventType.VACCINATION, "137", ""));
       eventList.add(new Event(138, "Td (adult)", EventType.VACCINATION, "138", ""));
       eventList.add(new Event(139, "Td(adult) unspecified formulation", EventType.VACCINATION, "139", ""));
-      eventList.add(new Event(140, "Influenza, seasonal, injectable, preservative free", EventType.VACCINATION, "140", ""));
+      eventList
+          .add(new Event(140, "Influenza, seasonal, injectable, preservative free", EventType.VACCINATION, "140", ""));
       eventList.add(new Event(141, "Influenza, seasonal, injectable", EventType.VACCINATION, "141", ""));
       eventList.add(new Event(142, "tetanus toxoid, not adsorbed", EventType.VACCINATION, "142", ""));
       eventList.add(new Event(143, "Adenovirus types 4 and 7", EventType.VACCINATION, "143", ""));
-      eventList.add(new Event(144, "influenza, seasonal, intradermal, preservative free", EventType.VACCINATION, "144", ""));
+      eventList
+          .add(new Event(144, "influenza, seasonal, intradermal, preservative free", EventType.VACCINATION, "144", ""));
       eventList.add(new Event(145, "RSV-MAb (new)", EventType.VACCINATION, "145", ""));
       eventList.add(new Event(146, "DTaP,IPV,Hib,HepB", EventType.VACCINATION, "146", ""));
       eventList.add(new Event(147, "meningococcal MCV4, unspecified formulation", EventType.VACCINATION, "147", ""));
@@ -295,9 +293,10 @@ public class Event implements Serializable {
       eventList.add(new Event(999, "unknown", EventType.VACCINATION, "999", ""));
 
       eventMap = new HashMap<Integer, Event>();
-      for (Event event : eventList)
-      {
-        eventMap.put(event.eventId, event);
+      for (Event event : eventList) {
+        if (event != null) {
+          eventMap.put(event.eventId, event);
+        }
       }
     }
   }
