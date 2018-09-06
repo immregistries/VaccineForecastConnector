@@ -13,7 +13,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Software;
@@ -31,6 +33,27 @@ public class IISConnector implements ConnectorInterface
 
   public IISConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
+    this.forecastItemList = forecastItemList;
+    for (VaccineGroup forecastItem : forecastItemList) {
+      map(forecastItem.getVaccineCvx(), forecastItem.getVaccineGroupId());
+    }
+  }
+
+  private List<VaccineGroup> forecastItemList = null;
+  private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
+
+  private void map(String familyName, int forecastItemId) {
+    for (VaccineGroup forecastItem : forecastItemList) {
+      if (forecastItem.getVaccineGroupId() == forecastItemId) {
+        List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
+        if (forecastItemListFromMap == null) {
+          forecastItemListFromMap = new ArrayList<VaccineGroup>();
+          familyMapping.put(familyName, forecastItemListFromMap);
+        }
+        forecastItemListFromMap.add(forecastItem);
+        return;
+      }
+    }
   }
 
   public List<ForecastActual> queryForForecast(TestCase testCase, SoftwareResult softwareResult) throws Exception {
@@ -39,7 +62,8 @@ public class IISConnector implements ConnectorInterface
     PrintWriter logOut = logText ? new PrintWriter(sw) : null;
 
     if (logText) {
-      logOut.println("This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
+      logOut.println(
+          "This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
     }
     try {
       uniqueId = "" + System.currentTimeMillis() + nextIncrement();
@@ -90,11 +114,11 @@ public class IISConnector implements ConnectorInterface
     return forecastActualList;
   }
 
-  private void readRSP(List<ForecastActual> forecastActualList, String rsp) throws IOException, ParseException {
+  protected void readRSP(List<ForecastActual> forecastActualList, String rsp) throws IOException, ParseException {
     BufferedReader in = new BufferedReader(new StringReader(rsp));
     String line;
     boolean lookingForDummy = true;
-    ForecastActual forecastActual = null;
+    List<ForecastActual> fal = null;
     while ((line = in.readLine()) != null) {
       String[] f = line.split("\\|");
       if (f != null && f.length > 1 && f[0] != null && f[0].length() == 3) {
@@ -111,34 +135,37 @@ public class IISConnector implements ConnectorInterface
             String obsValue = readValue(f, 5);
 
             if (obsCode.equals("30956-7")) {
-              VaccineGroup vaccineGroup = null;
-              try {
-                vaccineGroup = VaccineGroup.getForecastItem(Integer.parseInt(obsValue));
-              } catch (NumberFormatException nfe) {
-                // ignore
-              }
-              if (vaccineGroup != null) {
-                forecastActual = new ForecastActual();
+              List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
+              fal = new ArrayList<ForecastActual>();
+              for (VaccineGroup vaccineGroup : forecastItemListFromMap) {
+                ForecastActual forecastActual = new ForecastActual();
                 forecastActualList.add(forecastActual);
+                fal.add(forecastActual);
                 forecastActual.setVaccineGroup(vaccineGroup);
                 forecastActual.setVaccineCvx(obsValue);
               }
             } else if (obsCode.equals("59783-1")) {
-              if (forecastActual != null) {
-                forecastActual.setAdminStatus(obsValue);
+              if (fal != null) {
+                for (ForecastActual forecastActual : fal) {
+                  forecastActual.setAdminStatus(obsValue);
+                }
               }
             } else if (obsCode.equals("30981-5")) {
-              if (forecastActual != null) {
+              if (fal != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 if (obsValue.length() == 8) {
-                  forecastActual.setValidDate(sdf.parse(obsValue));
+                  for (ForecastActual forecastActual : fal) {
+                    forecastActual.setValidDate(sdf.parse(obsValue));
+                  }
                 }
               }
             } else if (obsCode.equals("30980-7")) {
-              if (forecastActual != null) {
+              if (fal != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
                 if (obsValue.length() == 8) {
-                  forecastActual.setDueDate(sdf.parse(obsValue));
+                  for (ForecastActual forecastActual : fal) {
+                    forecastActual.setDueDate(sdf.parse(obsValue));
+                  }
                 }
               }
             }
