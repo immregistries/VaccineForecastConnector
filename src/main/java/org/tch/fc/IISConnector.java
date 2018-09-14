@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tch.fc.model.Admin;
+import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.SoftwareResult;
@@ -24,6 +26,8 @@ import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.util.FakePatient;
+
+import javassist.tools.framedump;
 
 public class IISConnector implements ConnectorInterface
 {
@@ -96,7 +100,7 @@ public class IISConnector implements ConnectorInterface
         logOut.println(rsp);
       }
 
-      readRSP(forecastActualList, rsp);
+      readRSP(forecastActualList, testCase, softwareResult, rsp);
     } catch (Exception e) {
       if (logOut != null) {
         logOut.println("Unable to get forecast results from IIS");
@@ -114,20 +118,68 @@ public class IISConnector implements ConnectorInterface
     return forecastActualList;
   }
 
-  protected void readRSP(List<ForecastActual> forecastActualList, String rsp) throws IOException, ParseException {
+  protected void readRSP(List<ForecastActual> forecastActualList, TestCase testCase, SoftwareResult softwareResult,
+      String rsp) throws IOException, ParseException {
     BufferedReader in = new BufferedReader(new StringReader(rsp));
     String line;
     boolean lookingForDummy = true;
     List<ForecastActual> fal = null;
+    TestEvent testEvent = null;
+    String cvxCodeInRxa = "";
+    String adminDateInRxa = "";
+    EvaluationActual evaluationActual = null;
     while ((line = in.readLine()) != null) {
       String[] f = line.split("\\|");
       if (f != null && f.length > 1 && f[0] != null && f[0].length() == 3) {
         String segmentName = f[0];
+        if (segmentName.equals("RXA")) {
+          adminDateInRxa = readFieldValue(f, 3);
+          cvxCodeInRxa = readFieldValue(f, 5);
+          testEvent = null;
+          evaluationActual = null;
+        }
         if (lookingForDummy) {
           if (segmentName.equals("RXA")) {
-            if (f.length > 5 && f[5].startsWith("998")) {
+            if (cvxCodeInRxa.equals("998")) {
               lookingForDummy = false;
             }
+          } else if (segmentName.equals("OBX") && f.length > 5) {
+            String obsCode = readValue(f, 3);
+            String obsValue = readValue(f, 5);
+
+            if (obsCode.equals("30956-7")) {
+              SimpleDateFormat sdf = new SimpleDateFormat("yyyMMdd");
+              for (TestEvent te : testCase.getTestEventList()) {
+                if (te.getEvent().getVaccineCvx().equals(cvxCodeInRxa) && te.getEventDate() != null
+                    && sdf.format(te.getEventDate()).equals(adminDateInRxa)) {
+                  testEvent = te;
+                  break;
+                }
+              }
+              evaluationActual = new EvaluationActual();
+              evaluationActual.setSoftwareResult(softwareResult);
+              evaluationActual.getSoftwareResult().setSoftware(software);
+              evaluationActual.setTestEvent(testEvent);
+              evaluationActual.setVaccineCvx(obsValue);
+              evaluationActual.setSeriesUsedCode(obsValue);
+
+              if (testEvent.getEvaluationActualList() == null) {
+                testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
+              }
+              testEvent.getEvaluationActualList().add(evaluationActual);
+            } else if (obsCode.equals("59781-5")) {
+              if (evaluationActual != null) {
+                evaluationActual.setDoseValid(obsValue);
+              }
+            } else if (obsCode.equals("30982-3")) {
+              if (evaluationActual != null) {
+                evaluationActual.setReasonText(obsValue);
+              }
+            }
+            // evaluationActual.setDoseNumber(doseNumber);
+            // evaluationActual.setEvaluationReason(evaluationReason);
+            // evaluationActual.setReasonCode(reasonCode);
+            // evaluationActual.setSeriesUsedText(doseName);
           }
         } else {
           if (segmentName.equals("OBX") && f.length > 5) {
@@ -137,35 +189,47 @@ public class IISConnector implements ConnectorInterface
             if (obsCode.equals("30956-7")) {
               List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
               fal = new ArrayList<ForecastActual>();
-              for (VaccineGroup vaccineGroup : forecastItemListFromMap) {
-                ForecastActual forecastActual = new ForecastActual();
-                forecastActualList.add(forecastActual);
-                fal.add(forecastActual);
-                forecastActual.setVaccineGroup(vaccineGroup);
-                forecastActual.setVaccineCvx(obsValue);
+              if (forecastItemListFromMap != null) {
+                for (VaccineGroup vaccineGroup : forecastItemListFromMap) {
+                  ForecastActual forecastActual = new ForecastActual();
+                  forecastActualList.add(forecastActual);
+                  fal.add(forecastActual);
+                  forecastActual.setVaccineGroup(vaccineGroup);
+                  forecastActual.setVaccineCvx(obsValue);
+                }
               }
             } else if (obsCode.equals("59783-1")) {
               if (fal != null) {
                 for (ForecastActual forecastActual : fal) {
-                  forecastActual.setAdminStatus(obsValue);
+                  forecastActual.setAdmin(mapAdmin(obsValue));
                 }
               }
             } else if (obsCode.equals("30981-5")) {
               if (fal != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                if (obsValue.length() == 8) {
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setValidDate(sdf.parse(obsValue));
-                  }
+                Date date = parseDate(obsValue);
+                for (ForecastActual forecastActual : fal) {
+                  forecastActual.setValidDate(date);
                 }
               }
             } else if (obsCode.equals("30980-7")) {
               if (fal != null) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                if (obsValue.length() == 8) {
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setDueDate(sdf.parse(obsValue));
-                  }
+                Date date = parseDate(obsValue);
+                for (ForecastActual forecastActual : fal) {
+                  forecastActual.setDueDate(date);
+                }
+              }
+            } else if (obsCode.equals("59777-3")) {
+              if (fal != null) {
+                Date date = parseDate(obsValue);
+                for (ForecastActual forecastActual : fal) {
+                  forecastActual.setFinishedDate(date);
+                }
+              }
+            } else if (obsCode.equals("59778-1")) {
+              if (fal != null) {
+                Date date = parseDate(obsValue);
+                for (ForecastActual forecastActual : fal) {
+                  forecastActual.setOverdueDate(date);
                 }
               }
             }
@@ -177,6 +241,53 @@ public class IISConnector implements ConnectorInterface
         }
       }
     }
+
+  }
+
+  private String readFieldValue(String[] f, int p) {
+    String s;
+    if (f.length > p && f[p] != null) {
+      s = f[p];
+    } else {
+      s = "";
+    }
+    int pos = s.indexOf("^");
+    if (pos > 0) {
+      s = s.substring(0, pos).trim();
+    }
+    return s;
+  }
+
+  private static final Map<String, Admin> adminStatusMap = new HashMap();
+  static {
+    adminStatusMap.put("LA13423-1", Admin.OVERDUE); // Envision LA13423-1^Overdue^LN
+    adminStatusMap.put("LA13422-3", Admin.NOT_COMPLETE); // Envision LA13422-3^On Schedule^LN
+  }
+
+  private static Admin mapAdmin(String value) {
+    if (value == null) {
+      return Admin.UNKNOWN;
+    }
+    Admin admin = adminStatusMap.get(value);
+    if (admin == null) {
+      return Admin.UNKNOWN;
+    }
+    return admin;
+  }
+
+  private Date parseDate(String value) {
+    if (value.length() > 8) {
+      value = value.substring(0, 8);
+    }
+    if (value.length() == 8) {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+      try {
+        return sdf.parse(value);
+      } catch (ParseException e) {
+        return null;
+      }
+    }
+    return null;
   }
 
   private String readValue(String[] f, int pos) {

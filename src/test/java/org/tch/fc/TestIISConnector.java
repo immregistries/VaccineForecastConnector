@@ -17,8 +17,11 @@ package org.tch.fc;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.tch.fc.model.EvaluationActual;
+import org.tch.fc.model.Event;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
@@ -123,12 +126,270 @@ public class TestIISConnector extends junit.framework.TestCase
 
   public void testReadRSP() throws Exception {
     Software software = createSoftware();
+    SoftwareResult softwareResult = new SoftwareResult();
+    TestCase testCase = new TestCase();
     IISConnector c = new IISConnector(software, VaccineGroup.getForecastItemList());
     List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
 
-    c.readRSP(forecastActualList, RSP);
+    c.readRSP(forecastActualList, testCase, softwareResult, RSP);
 
     assertTrue(forecastActualList.size() > 5);
-    
+
   }
+
+  private static String RSP_ENVISION = "MSH|^~\\&|WebIZ.18.1.20180629|NV0000||NV1001|20180914122905-0700||RSP^K11^RSP_K11|NV000020180914290578|D|2.5.1|||NE|NE|||||Z42^CDCPHINVS\r"
+      + "MSA|AE|1536953345100139\r"
+      + "ERR||QPD^1^3^1^1|999^ApplicationError^HL70357|W|3^Illogical Value error^HL70533^WEBIZ-501^Internal Parser Conformance Violation Occured^L||NumericPath: QPD[1].3[1].1, NamePath: QPD/PatientIdentifierList[0]/IDNumber, RuleId: , ApplicationErrorCode: WEBIZ-501|Internal Parser Error: Field too long: 16 > 15\r"
+      + "QAK|1536953345100139|OK|Z44^Request Evaluated History and Forecast^CDCPHINVS\r"
+      + "QPD|Z44^Request Evaluated History and Forecast^CDCPHINVS|1536953345100139|1536953340266138^^^FITS^MR|Okmulgee^Bly^Rocco^^^^L|Taylor^Iva^^^^^M|20180711|f|229 Washington Pl^^Midland^MI^48642^USA^P\r"
+      + "PID|1||3982562^^^NV0000^SR||OKMULGEE^BLY^ROCCO^^^^L|Taylor^^^^^^M|20180711|F|||||^PRN^PH^^^989^6054828|||||||||||N|||||||||20180914\r"
+      + "ORC|RE||41377439^NV0000\r"
+      + "RXA|0|1|20180819|20180819|107^DTap, UF^CVX|999|||01^Historical Information - Source Unspecified^NIP001||AIRA^^^NV1001^^^^^4150 TECHNOLOGY WAY UNIT 210^^Carson City^NV^89706|||||||||CP|A|20180914\r"
+      + "OBX|1|CE|30956-7^Vaccine Type^LN|1|107^DTaP, UF^CVX||||||F|||20180819\r"
+      + "OBX|2|ID|59781-5^Dose Validity^LN|1|Y||||||F|||20180819\r"
+      + "OBX|3|NM|30973-2^Dose Number in Series^LN|1|1|NA^Not Applicable^HL70353|||||F|||20180819\r"
+      + "OBX|4|CE|59779-9^Immunization Schedule Used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|||20180819\r"
+      + "ORC|RE||41377440^NV0000\r"
+      + "RXA|0|1|20180914|20180914|107^DTap, UF^CVX|999|||01^Historical Information - Source Unspecified^NIP001||AIRA^^^NV1001^^^^^4150 TECHNOLOGY WAY UNIT 210^^Carson City^NV^89706|||||||||CP|A|20180914\r"
+      + "OBX|1|CE|30956-7^Vaccine Type^LN|1|107^DTaP, UF^CVX||||||F|||20180914\r"
+      + "OBX|2|ID|59781-5^Dose Validity^LN|1|N||||||F|||20180914\r"
+      + "OBX|3|ST|30982-3^Reason Code^LN|1|Age: Too young, Preferable Interval: Grace period||||||F|||20180914\r"
+      + "OBX|4|CE|59779-9^Immunization Schedule Used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "ORC|RE||9999^NV0000\r" + "RXA|0|1|20180914|20180914|998^No Vaccine Administered^CVX|999||||||||||||||NA\r"
+      + "OBX|1|CE|30956-7^Vaccine Type^LN|1|08^Hep B, ped/adol^CVX||||||F|||20180914\r"
+      + "OBX|2|DT|30981-5^Earliest date dose should be given^LN|1|20180711||||||F|||20180914\r"
+      + "OBX|3|DT|30980-7^Date Vaccine Due^LN|1|20180711||||||F|||20180914\r"
+      + "OBX|4|DT|59777-3^Latest date next dose should be given^LN|1|20370710||||||F|||20180914\r"
+      + "OBX|5|DT|59778-1^Date dose is overdue^LN|1|20180807||||||F|||20180914\r"
+      + "OBX|6|CE|59783-1^Series Status^LN|1|LA13423-1^Overdue^LN||||||F|||20180914\r"
+      + "OBX|7|CE|59779-9^Immunization Schedule Used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|8|CE|30956-7^Vaccine Type^LN|2|133^PCV-13 (Prevnar 13)^CVX||||||F|||20180914\r"
+      + "OBX|9|DT|30981-5^Earliest date dose should be given^LN|2|20180822||||||F|||20180914\r"
+      + "OBX|10|DT|30980-7^Date Vaccine Due^LN|2|20180911||||||F|||20180914\r"
+      + "OBX|11|DT|59777-3^Latest date next dose should be given^LN|2|20230710||||||F|||20180914\r"
+      + "OBX|12|DT|59778-1^Date dose is overdue^LN|2|20181107||||||F|||20180914\r"
+      + "OBX|13|CE|59783-1^Series Status^LN|2|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|14|CE|59779-9^Immunization Schedule Used^LN|2|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|15|CE|30956-7^Vaccine Type^LN|3|10^IPV^CVX||||||F|||20180914\r"
+      + "OBX|16|DT|30981-5^Earliest date dose should be given^LN|3|20180822||||||F|||20180914\r"
+      + "OBX|17|DT|30980-7^Date Vaccine Due^LN|3|20180911||||||F|||20180914\r"
+      + "OBX|18|DT|59777-3^Latest date next dose should be given^LN|3|20360710||||||F|||20180914\r"
+      + "OBX|19|DT|59778-1^Date dose is overdue^LN|3|20181107||||||F|||20180914\r"
+      + "OBX|20|CE|59783-1^Series Status^LN|3|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|21|CE|59779-9^Immunization Schedule Used^LN|3|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|22|CE|30956-7^Vaccine Type^LN|4|48^Hib (PRP-T)^CVX||||||F|||20180914\r"
+      + "OBX|23|DT|30981-5^Earliest date dose should be given^LN|4|20180822||||||F|||20180914\r"
+      + "OBX|24|DT|30980-7^Date Vaccine Due^LN|4|20180911||||||F|||20180914\r"
+      + "OBX|25|DT|59777-3^Latest date next dose should be given^LN|4|20230710||||||F|||20180914\r"
+      + "OBX|26|DT|59778-1^Date dose is overdue^LN|4|20181107||||||F|||20180914\r"
+      + "OBX|27|CE|59783-1^Series Status^LN|4|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|28|CE|59779-9^Immunization Schedule Used^LN|4|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|29|CE|30956-7^Vaccine Type^LN|5|116^Rotavirus (Rotateq)^CVX||||||F|||20180914\r"
+      + "OBX|30|DT|30981-5^Earliest date dose should be given^LN|5|20180822||||||F|||20180914\r"
+      + "OBX|31|DT|30980-7^Date Vaccine Due^LN|5|20180911||||||F|||20180914\r"
+      + "OBX|32|DT|59777-3^Latest date next dose should be given^LN|5|20181023||||||F|||20180914\r"
+      + "OBX|33|CE|59783-1^Series Status^LN|5|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|34|CE|59779-9^Immunization Schedule Used^LN|5|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|35|CE|30956-7^Vaccine Type^LN|6|08^Hep B, ped/adol^CVX||||||F|||20180914\r"
+      + "OBX|36|DT|30981-5^Earliest date dose should be given^LN|6|20181012||||||F|||20180914\r"
+      + "OBX|37|DT|30980-7^Date Vaccine Due^LN|6|20181012||||||F|||20180914\r"
+      + "OBX|38|DT|59778-1^Date dose is overdue^LN|6|20181107||||||F|||20180914\r"
+      + "OBX|39|CE|59783-1^Series Status^LN|6|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|40|CE|59779-9^Immunization Schedule Used^LN|6|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|41|CE|30956-7^Vaccine Type^LN|7|133^PCV-13 (Prevnar 13)^CVX||||||F|||20180914\r"
+      + "OBX|42|DT|30981-5^Earliest date dose should be given^LN|7|20181012||||||F|||20180914\r"
+      + "OBX|43|DT|30980-7^Date Vaccine Due^LN|7|20181111||||||F|||20180914\r"
+      + "OBX|44|DT|59777-3^Latest date next dose should be given^LN|7|20230710||||||F|||20180914\r"
+      + "OBX|45|DT|59778-1^Date dose is overdue^LN|7|20190107||||||F|||20180914\r"
+      + "OBX|46|CE|59783-1^Series Status^LN|7|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|47|CE|59779-9^Immunization Schedule Used^LN|7|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|48|CE|30956-7^Vaccine Type^LN|8|10^IPV^CVX||||||F|||20180914\r"
+      + "OBX|49|DT|30981-5^Earliest date dose should be given^LN|8|20181012||||||F|||20180914\r"
+      + "OBX|50|DT|30980-7^Date Vaccine Due^LN|8|20181111||||||F|||20180914\r"
+      + "OBX|51|DT|59777-3^Latest date next dose should be given^LN|8|20360710||||||F|||20180914\r"
+      + "OBX|52|DT|59778-1^Date dose is overdue^LN|8|20190107||||||F|||20180914\r"
+      + "OBX|53|CE|59783-1^Series Status^LN|8|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|54|CE|59779-9^Immunization Schedule Used^LN|8|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|55|CE|30956-7^Vaccine Type^LN|9|20^DTaP^CVX||||||F|||20180914\r"
+      + "OBX|56|DT|30981-5^Earliest date dose should be given^LN|9|20181012||||||F|||20180914\r"
+      + "OBX|57|DT|30980-7^Date Vaccine Due^LN|9|20181111||||||F|||20180914\r"
+      + "OBX|58|DT|59778-1^Date dose is overdue^LN|9|20190107||||||F|||20180914\r"
+      + "OBX|59|CE|59783-1^Series Status^LN|9|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|60|CE|59779-9^Immunization Schedule Used^LN|9|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|61|CE|30956-7^Vaccine Type^LN|10|48^Hib (PRP-T)^CVX||||||F|||20180914\r"
+      + "OBX|62|DT|30981-5^Earliest date dose should be given^LN|10|20181012||||||F|||20180914\r"
+      + "OBX|63|DT|30980-7^Date Vaccine Due^LN|10|20181111||||||F|||20180914\r"
+      + "OBX|64|DT|59777-3^Latest date next dose should be given^LN|10|20230710||||||F|||20180914\r"
+      + "OBX|65|DT|59778-1^Date dose is overdue^LN|10|20190107||||||F|||20180914\r"
+      + "OBX|66|CE|59783-1^Series Status^LN|10|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|67|CE|59779-9^Immunization Schedule Used^LN|10|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|68|CE|30956-7^Vaccine Type^LN|11|116^Rotavirus (Rotateq)^CVX||||||F|||20180914\r"
+      + "OBX|69|DT|30981-5^Earliest date dose should be given^LN|11|20181012||||||F|||20180914\r"
+      + "OBX|70|DT|30980-7^Date Vaccine Due^LN|11|20181111||||||F|||20180914\r"
+      + "OBX|71|DT|59777-3^Latest date next dose should be given^LN|11|20190311||||||F|||20180914\r"
+      + "OBX|72|DT|59778-1^Date dose is overdue^LN|11|20190107||||||F|||20180914\r"
+      + "OBX|73|CE|59783-1^Series Status^LN|11|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|74|CE|59779-9^Immunization Schedule Used^LN|11|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|75|CE|30956-7^Vaccine Type^LN|12|150^Influenza Quad Inj P^CVX||||||F|||20180914\r"
+      + "OBX|76|DT|30981-5^Earliest date dose should be given^LN|12|20190111||||||F|||20180914\r"
+      + "OBX|77|DT|30980-7^Date Vaccine Due^LN|12|20190111||||||F|||20180914\r"
+      + "OBX|78|CE|59783-1^Series Status^LN|12|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|79|CE|59779-9^Immunization Schedule Used^LN|12|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|80|CE|30956-7^Vaccine Type^LN|13|03^MMR^CVX||||||F|||20180914\r"
+      + "OBX|81|DT|30981-5^Earliest date dose should be given^LN|13|20190711||||||F|||20180914\r"
+      + "OBX|82|DT|30980-7^Date Vaccine Due^LN|13|20190711||||||F|||20180914\r"
+      + "OBX|83|DT|59778-1^Date dose is overdue^LN|13|20191208||||||F|||20180914\r"
+      + "OBX|84|CE|59783-1^Series Status^LN|13|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|85|CE|59779-9^Immunization Schedule Used^LN|13|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|86|CE|30956-7^Vaccine Type^LN|14|21^CPOX (Varicella)^CVX||||||F|||20180914\r"
+      + "OBX|87|DT|30981-5^Earliest date dose should be given^LN|14|20190711||||||F|||20180914\r"
+      + "OBX|88|DT|30980-7^Date Vaccine Due^LN|14|20190711||||||F|||20180914\r"
+      + "OBX|89|DT|59778-1^Date dose is overdue^LN|14|20191208||||||F|||20180914\r"
+      + "OBX|90|CE|59783-1^Series Status^LN|14|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|91|CE|59779-9^Immunization Schedule Used^LN|14|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|92|CE|30956-7^Vaccine Type^LN|15|83^Hep A, ped/adol^CVX||||||F|||20180914\r"
+      + "OBX|93|DT|30981-5^Earliest date dose should be given^LN|15|20190711||||||F|||20180914\r"
+      + "OBX|94|DT|30980-7^Date Vaccine Due^LN|15|20190711||||||F|||20180914\r"
+      + "OBX|95|DT|59777-3^Latest date next dose should be given^LN|15|20370710||||||F|||20180914\r"
+      + "OBX|96|DT|59778-1^Date dose is overdue^LN|15|20200807||||||F|||20180914\r"
+      + "OBX|97|CE|59783-1^Series Status^LN|15|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|98|CE|59779-9^Immunization Schedule Used^LN|15|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|99|CE|30956-7^Vaccine Type^LN|16|114^MCV4P (MENACTRA)^CVX||||||F|||20180914\r"
+      + "OBX|100|DT|30981-5^Earliest date dose should be given^LN|16|20290711||||||F|||20180914\r"
+      + "OBX|101|DT|30980-7^Date Vaccine Due^LN|16|20290711||||||F|||20180914\r"
+      + "OBX|102|DT|59777-3^Latest date next dose should be given^LN|16|20400710||||||F|||20180914\r"
+      + "OBX|103|DT|59778-1^Date dose is overdue^LN|16|20310807||||||F|||20180914\r"
+      + "OBX|104|CE|59783-1^Series Status^LN|16|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|105|CE|59779-9^Immunization Schedule Used^LN|16|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|106|CE|30956-7^Vaccine Type^LN|17|165^HPV9^CVX||||||F|||20180914\r"
+      + "OBX|107|DT|30981-5^Earliest date dose should be given^LN|17|20270711||||||F|||20180914\r"
+      + "OBX|108|DT|30980-7^Date Vaccine Due^LN|17|20290711||||||F|||20180914\r"
+      + "OBX|109|DT|59777-3^Latest date next dose should be given^LN|17|20450710||||||F|||20180914\r"
+      + "OBX|110|DT|59778-1^Date dose is overdue^LN|17|20310807||||||F|||20180914\r"
+      + "OBX|111|CE|59783-1^Series Status^LN|17|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|112|CE|59779-9^Immunization Schedule Used^LN|17|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r"
+      + "OBX|113|CE|30956-7^Vaccine Type^LN|18|187^Zoster Recombinant^CVX||||||F|||20180914\r"
+      + "OBX|114|DT|30981-5^Earliest date dose should be given^LN|18|20680711||||||F|||20180914\r"
+      + "OBX|115|DT|30980-7^Date Vaccine Due^LN|18|20680711||||||F|||20180914\r"
+      + "OBX|116|CE|59783-1^Series Status^LN|18|LA13422-3^On Schedule^LN||||||F|||20180914\r"
+      + "OBX|117|CE|59779-9^Immunization Schedule Used^LN|18|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r";
+
+  public void testReadRSPEnvision() throws Exception {
+    Software software = createSoftware();
+    SoftwareResult softwareResult = new SoftwareResult();
+    TestCase testCase = new TestCase();
+    testCase.setTestEventList(new ArrayList<TestEvent>());
+    {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+      {
+        TestEvent testEvent = new TestEvent();
+        Event event = new Event();
+        event.setVaccineCvx("107");
+        testEvent.setEventDate(sdf.parse("20180819"));
+        testEvent.setEvent(event);
+        testCase.getTestEventList().add(testEvent);
+      }
+      {
+        TestEvent testEvent = new TestEvent();
+        Event event = new Event();
+        event.setVaccineCvx("107");
+        testEvent.setEventDate(sdf.parse("20180914"));
+        testEvent.setEvent(event);
+        testCase.getTestEventList().add(testEvent);
+      }
+    }
+
+    IISConnector c = new IISConnector(software, VaccineGroup.getForecastItemList());
+    List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+
+    c.readRSP(forecastActualList, testCase, softwareResult, RSP_ENVISION);
+
+    assertTrue(forecastActualList.size() > 5);
+    System.out.println();
+    System.out.println("VACCINE EVALUATION");
+    System.out.print("| " + pad("CVX", 6));
+    System.out.print("| " + pad("DATE", 12));
+    System.out.print("| " + pad("CVX E", 6));
+    System.out.print("| " + pad("VALID", 6));
+    System.out.print("| " + pad("REASON", 30));
+    System.out.println("|");
+    System.out.print("|" + pad("--------------------------------------", 7));
+    System.out.print("|" + pad("--------------------------------------", 13));
+    System.out.print("|" + pad("--------------------------------------", 7));
+    System.out.print("|" + pad("--------------------------------------", 7));
+    System.out.print("|" + pad("--------------------------------------", 31));
+    System.out.println("|");
+    for (TestEvent testEvent : testCase.getTestEventList()) {
+      if (testEvent.getEvaluationActualList() != null) {
+        for (EvaluationActual evaluationActual : testEvent.getEvaluationActualList()) {
+          System.out.print("| " + pad(testEvent.getEvent().getVaccineCvx(), 6));
+          System.out.print("| " + pad(testEvent.getEventDate(), 12));
+          System.out.print("| " + pad(evaluationActual.getVaccineCvx(), 6));
+          System.out.print("| " + pad(evaluationActual.getDoseValid(), 6));
+          System.out.print("| " + pad(evaluationActual.getReasonText(), 30));
+          System.out.println("|");
+        }
+      }
+    }
+
+    System.out.println();
+    System.out.println("VACCINE FORECAST");
+    System.out.print("| " + pad("VACCINE", 21));
+    System.out.print("| " + pad("#", 3));
+    System.out.print("| " + pad("STATUS", 15));
+    System.out.print("| " + pad("EARLIEST", 11));
+    System.out.print("| " + pad("RECOMMEND", 11));
+    System.out.print("| " + pad("PAST DUE", 11));
+    System.out.print("| " + pad("LATEST", 11));
+    System.out.println("|");
+    System.out.print("|" + pad("--------------------------", 22));
+    System.out.print("|" + pad("--------------------------", 4));
+    System.out.print("|" + pad("--------------------------", 16));
+    System.out.print("|" + pad("--------------------------", 12));
+    System.out.print("|" + pad("--------------------------", 12));
+    System.out.print("|" + pad("--------------------------", 12));
+    System.out.print("|" + pad("--------------------------", 12));
+    System.out.println("|");
+
+    for (ForecastActual forecastActual : forecastActualList) {
+      System.out.print("| " + pad(forecastActual.getVaccineGroup(), 21));
+      System.out.print("| " + pad(forecastActual.getDoseNumber(), 3));
+      System.out.print("| " + pad(forecastActual.getAdmin(), 15));
+      System.out.print("| " + pad(forecastActual.getValidDate(), 11));
+      System.out.print("| " + pad(forecastActual.getDueDate(), 11));
+      System.out.print("| " + pad(forecastActual.getOverdueDate(), 11));
+      System.out.print("| " + pad(forecastActual.getFinishedDate(), 11));
+      System.out.println("|");
+    }
+
+  }
+
+  private static String pad(Object o, int len) {
+    if (o == null) {
+      return pad("", len);
+    }
+    return pad(o.toString(), len);
+  }
+
+  private static String pad(Date date, int len) {
+    if (date == null) {
+      return pad("", len);
+    }
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    return pad(sdf.format(date), len);
+  }
+
+  private static String pad(String s, int len) {
+    if (s == null) {
+      s = "";
+    }
+    for (int i = s.length(); i < len; i++) {
+      s += " ";
+    }
+    if (s.length() > len) {
+      s = s.substring(0, len);
+    }
+    return s;
+  }
+
 }
