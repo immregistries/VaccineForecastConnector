@@ -137,6 +137,16 @@ public class IISConnector implements ConnectorInterface
           cvxCodeInRxa = readFieldValue(f, 5);
           testEvent = null;
           evaluationActual = null;
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyMMdd");
+          if (testCase.getTestEventList() != null) {
+            for (TestEvent te : testCase.getTestEventList()) {
+              if (te.getEvent().getVaccineCvx().equals(cvxCodeInRxa) && te.getEventDate() != null
+                  && sdf.format(te.getEventDate()).equals(adminDateInRxa)) {
+                testEvent = te;
+                break;
+              }
+            }
+          }
         }
         if (lookingForDummy) {
           if (segmentName.equals("RXA")) {
@@ -148,25 +158,19 @@ public class IISConnector implements ConnectorInterface
             String obsValue = readValue(f, 5);
 
             if (obsCode.equals("30956-7")) {
-              SimpleDateFormat sdf = new SimpleDateFormat("yyyMMdd");
-              for (TestEvent te : testCase.getTestEventList()) {
-                if (te.getEvent().getVaccineCvx().equals(cvxCodeInRxa) && te.getEventDate() != null
-                    && sdf.format(te.getEventDate()).equals(adminDateInRxa)) {
-                  testEvent = te;
-                  break;
-                }
-              }
-              evaluationActual = new EvaluationActual();
-              evaluationActual.setSoftwareResult(softwareResult);
-              evaluationActual.getSoftwareResult().setSoftware(software);
-              evaluationActual.setTestEvent(testEvent);
-              evaluationActual.setVaccineCvx(obsValue);
-              evaluationActual.setSeriesUsedCode(obsValue);
+              if (testEvent != null) {
+                evaluationActual = new EvaluationActual();
+                evaluationActual.setSoftwareResult(softwareResult);
+                evaluationActual.getSoftwareResult().setSoftware(software);
+                evaluationActual.setTestEvent(testEvent);
+                evaluationActual.setVaccineCvx(obsValue);
+                evaluationActual.setSeriesUsedCode(obsValue);
 
-              if (testEvent.getEvaluationActualList() == null) {
-                testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
+                if (testEvent.getEvaluationActualList() == null) {
+                  testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
+                }
+                testEvent.getEvaluationActualList().add(evaluationActual);
               }
-              testEvent.getEvaluationActualList().add(evaluationActual);
             } else if (obsCode.equals("59781-5")) {
               if (evaluationActual != null) {
                 evaluationActual.setDoseValid(obsValue);

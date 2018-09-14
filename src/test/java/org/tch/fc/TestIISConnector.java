@@ -63,7 +63,7 @@ public class TestIISConnector extends junit.framework.TestCase
 
   private Software createSoftware() {
     Software software = new Software();
-    software.setServiceUrl("http://localhost:8765/soap");
+    software.setServiceUrl("http://localhost:8080/iis-kernel/soap");
     software.setService(Service.IIS);
     software.setServiceUserid("Mercy");
     software.setServicePassword("password123");
