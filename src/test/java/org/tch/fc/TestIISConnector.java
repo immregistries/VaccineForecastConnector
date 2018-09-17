@@ -16,15 +16,13 @@
 package org.tch.fc;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
-import org.tch.fc.model.EvaluationActual;
-import org.tch.fc.model.Event;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
@@ -32,6 +30,7 @@ import org.tch.fc.model.SoftwareResult;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
+import org.tch.fc.util.ForecastResultPrinter;
 
 public class TestIISConnector extends junit.framework.TestCase
 {
@@ -280,236 +279,691 @@ public class TestIISConnector extends junit.framework.TestCase
   @Test
   public void testReadRSPEnvision() throws Exception {
     List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
-    TestCase testCase = run(forecastActualList);
+    TestCase testCase = run(forecastActualList, RSP_ENVISION);
 
-    assertEquals("", 5, testCase.getTestEventList().size());
+    assertEquals("", 2, testCase.getTestEventList().size());
     assertTrue(forecastActualList.size() > 5);
-    System.out.println();
-    System.out.println("VACCINE EVALUATION");
-    System.out.print("| " + pad("CVX", 6));
-    System.out.print("| " + pad("DATE", 12));
-    System.out.print("| " + pad("CVX E", 6));
-    System.out.print("| " + pad("VALID", 6));
-    System.out.print("| " + pad("REASON", 30));
-    System.out.println("|");
-    System.out.print("|" + pad("--------------------------------------", 7));
-    System.out.print("|" + pad("--------------------------------------", 13));
-    System.out.print("|" + pad("--------------------------------------", 7));
-    System.out.print("|" + pad("--------------------------------------", 7));
-    System.out.print("|" + pad("--------------------------------------", 31));
-    System.out.println("|");
-    for (TestEvent testEvent : testCase.getTestEventList()) {
-      if (testEvent.getEvaluationActualList() != null) {
-        for (EvaluationActual evaluationActual : testEvent.getEvaluationActualList()) {
-          System.out.print("| " + pad(testEvent.getEvent().getVaccineCvx(), 6));
-          System.out.print("| " + pad(testEvent.getEventDate(), 12));
-          System.out.print("| " + pad(evaluationActual.getVaccineCvx(), 6));
-          System.out.print("| " + pad(evaluationActual.getDoseValid(), 6));
-          System.out.print("| " + pad(evaluationActual.getReasonText(), 30));
-          System.out.println("|");
-        }
-      }
-    }
-
-    System.out.println();
-    System.out.println("VACCINE FORECAST");
-    System.out.print("| " + pad("VACCINE", 21));
-    System.out.print("| " + pad("#", 3));
-    System.out.print("| " + pad("STATUS", 15));
-    System.out.print("| " + pad("EARLIEST", 11));
-    System.out.print("| " + pad("RECOMMEND", 11));
-    System.out.print("| " + pad("PAST DUE", 11));
-    System.out.print("| " + pad("LATEST", 11));
-    System.out.println("|");
-    System.out.print("|" + pad("--------------------------", 22));
-    System.out.print("|" + pad("--------------------------", 4));
-    System.out.print("|" + pad("--------------------------", 16));
-    System.out.print("|" + pad("--------------------------", 12));
-    System.out.print("|" + pad("--------------------------", 12));
-    System.out.print("|" + pad("--------------------------", 12));
-    System.out.print("|" + pad("--------------------------", 12));
-    System.out.println("|");
-
-    for (ForecastActual forecastActual : forecastActualList) {
-      System.out.print("| " + pad(forecastActual.getVaccineGroup(), 21));
-      System.out.print("| " + pad(forecastActual.getDoseNumber(), 3));
-      System.out.print("| " + pad(forecastActual.getAdmin(), 15));
-      System.out.print("| " + pad(forecastActual.getValidDate(), 11));
-      System.out.print("| " + pad(forecastActual.getDueDate(), 11));
-      System.out.print("| " + pad(forecastActual.getOverdueDate(), 11));
-      System.out.print("| " + pad(forecastActual.getFinishedDate(), 11));
-      System.out.println("|");
-    }
+    PrintStream out = System.out;
+    ForecastResultPrinter.printOutResultInFixedWidth(forecastActualList, testCase, out);
 
   }
-  
-  private static final String RSP_STC = "" 
-      + "MSH|^~\\&|^^|^^|^^|^^|20180701172446||RSP^K11^RSP_K11|1724687711.100023793|P|2.5.1|||||||||Z42^CDCPHINVS^^|"
-      + "MSA|AA|2aYO-GM-2.1-Q|"
-      + "QAK|1530476519196.64097|OK|Z44^Request Evaluated History and Forecast^HL70471|"
-      + "QPD|Z44^Request Evaluated History and Forecast^HL70471|1530476519196.64097|W76Q645055^^^AIRA^MR|Comanche^Emanuel^Emogene|Pacific^Bara^^^^^M|20170618|F|309 Clark St^^Port Hope^MI^48468^USA^P|^PRN^PH^^^989^7330179|"
-      + "PID|1||6330269^^^^SR~~~~~W76Q645055^^^^MR||COMANCHE^EMANUEL^EMOGENE^^^^L|PACIFIC|20170618|F|||309 CLARK ST^^PORT HOPE^MICHIGAN^48468^United States^M^^HURON||9897330179^PRN^PH^^^989^7330179|||||||||2186-5^not Hispanic or Latino^HL70189||N|1|||||N|"
-      + "ORC|RE||6330269.54.20180630|"
-      + "RXA|0|999|20180630|20180630|94^MMRV^CVX^90710^MMRV^CPT|.5|ML^mL^ISO+||00^New immunization record^NIP001||IRMS-1033||||Q3110HZ||MSD^Merck and Co., Inc.^HL70227||||A|20180701172446|"
-      + "RXR|SC^Subcutaneous^CDCPHINVS|LT^Left Thigh^CDCPHINVS|"
-      + "OBX|1|TS|29769-7^VIS Presentation Date^LN|1|20180630||||||F|"
-      + "OBX|1|CE|VFC-STATUS^VFC Status^STC|1|V01^Not VFC eligible^HL70064||||||F|||20180630|"
-      + "OBX|1|CE|64994-7^vaccine fund pgm elig cat^LN|1|V01^Not VFC eligible^HL70064||||||F|||20180630|||CVX40^per imm^CDCPHINVS|"
-      + "OBX|1|TS|29768-9^VIS Publication Date^LN|1|20100521||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|45^HepB^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170618||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170618||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|107^DTAP^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|17^HIB^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|133^PneumoPCV^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|20220618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|88^FLU^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20171218||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20171218||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|85^HepA^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180618||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180618||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20190618||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|89^POLIO^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180728||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|03^MMR^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|21^VARICELLA^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180922||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|137^HPV^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20260618||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21170618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
-      + "ORC|RE||9999|"
-      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
-      + "OBX|1|CE|30956-7^vaccine type^LN|1|147^MENING^CVX||||||F|"
-      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
-      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
-      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|"
-      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20270618||||||F|"
-      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
-      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|"
-      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
-  ;
-    @Test
-    public void testReadRSPSTC() throws Exception {
-      List forecastActualList = new ArrayList();
-      TestCase testCase = run(forecastActualList);
-      
-      assertEquals("Not all test events read", 1, testCase.getTestEventList().size()); 
-    }
 
-  private TestCase run(List<ForecastActual> forecastActualList) throws IOException, ParseException {
+  private TestCase run(List<ForecastActual> forecastActualList, String rsp) throws IOException, ParseException {
     Software software = createSoftware();
     IISConnector c = new IISConnector(software, VaccineGroup.getForecastItemList());
-    TestCase testCase = IISConnector.recreateTestCase(RSP_ENVISION);
+    TestCase testCase = IISConnector.recreateTestCase(rsp);
     SoftwareResult softwareResult = new SoftwareResult();
-    c.readRSP(forecastActualList, testCase, softwareResult, RSP_ENVISION);
+    c.readRSP(forecastActualList, testCase, softwareResult, rsp);
     return testCase;
   }
 
-  private static String pad(Object o, int len) {
-    if (o == null) {
-      return pad("", len);
-    }
-    return pad(o.toString(), len);
+  private static final String RSP_STC = ""
+      + "MSH|^~\\&|^^|^^|^^|^^|20180701172446||RSP^K11^RSP_K11|1724687711.100023793|P|2.5.1|||||||||Z42^CDCPHINVS^^|\r"
+      + "MSA|AA|2aYO-GM-2.1-Q|\r" + "QAK|1530476519196.64097|OK|Z44^Request Evaluated History and Forecast^HL70471|\r"
+      + "QPD|Z44^Request Evaluated History and Forecast^HL70471|1530476519196.64097|W76Q645055^^^AIRA^MR|Comanche^Emanuel^Emogene|Pacific^Bara^^^^^M|20170618|F|309 Clark St^^Port Hope^MI^48468^USA^P|^PRN^PH^^^989^7330179|\r"
+      + "PID|1||6330269^^^^SR~~~~~W76Q645055^^^^MR||COMANCHE^EMANUEL^EMOGENE^^^^L|PACIFIC|20170618|F|||309 CLARK ST^^PORT HOPE^MICHIGAN^48468^United States^M^^HURON||9897330179^PRN^PH^^^989^7330179|||||||||2186-5^not Hispanic or Latino^HL70189||N|1|||||N|\r"
+      + "ORC|RE||6330269.54.20180630|\r"
+      + "RXA|0|999|20180630|20180630|94^MMRV^CVX^90710^MMRV^CPT|.5|ML^mL^ISO+||00^New immunization record^NIP001||IRMS-1033||||Q3110HZ||MSD^Merck and Co., Inc.^HL70227||||A|20180701172446|\r"
+      + "RXR|SC^Subcutaneous^CDCPHINVS|LT^Left Thigh^CDCPHINVS|\r"
+      + "OBX|1|TS|29769-7^VIS Presentation Date^LN|1|20180630||||||F|\r"
+      + "OBX|1|CE|VFC-STATUS^VFC Status^STC|1|V01^Not VFC eligible^HL70064||||||F|||20180630|\r"
+      + "OBX|1|CE|64994-7^vaccine fund pgm elig cat^LN|1|V01^Not VFC eligible^HL70064||||||F|||20180630|||CVX40^per imm^CDCPHINVS|\r"
+      + "OBX|1|TS|29768-9^VIS Publication Date^LN|1|20100521||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|45^HepB^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|107^DTAP^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|17^HIB^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|133^PneumoPCV^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|20220618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|88^FLU^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20171218||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20171218||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|85^HepA^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20190618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|89^POLIO^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180728||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|03^MMR^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|21^VARICELLA^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180922||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|137^HPV^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20260618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21170618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|147^MENING^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20270618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r";
+
+  @Test
+  public void testReadRSPSTC() throws Exception {
+    List forecastActualList = new ArrayList();
+    TestCase testCase = run(forecastActualList, RSP_STC);
+
+    assertEquals("Not all test events read", 1, testCase.getTestEventList().size());
   }
 
-  private static String pad(Date date, int len) {
-    if (date == null) {
-      return pad("", len);
-    }
+  private static final String RSP_IRIS_1 = ""
+      + "MSH|^~\\&|IRIS IIS|IRIS||12908|20180628||RSP^K11^RSP_K11|Hc-GM-2.2-Q|P|2.5.1|||||||||Z32^CDCPHINVS\r"
+      + "MSA|AA|Hc-GM-2.2-Q||0||0^Message Accepted^HL70357\r" + "QAK|Hc-GM-2.2-Q|OK|Z44\r"
+      + "QPD|Z44^Request Evaluated History and Forecast^CDCPHINVS|1530191002770.4810|Y91B56113^^^AIRA^MR|Glorinn^Miranda^Ahneta^^^^L|Roach^Gabriela^^^^^M|20020616|F|8 Karle Pl^^Oakley^MI^48649^USA^P|^PRN^PH^^^989^6970185|N\r"
+      + "PID|1||1139388^^^^SR~Y91B56113^^^^PI||GLORINN^MIRANDA^AHNETA^^^^L|ROACH^GABRIELA|20020616|F||2106-3|8 KARLE PL^^OAKLEY^MI^48649^^L||^PRN^PH^^^989^6970185|||||||||2186-5||N|0\r"
+      + "PD1|||||||||||02|N||||A\r"
+      + "NK1|1|GLORINN^ROACH^MARION|MTH|8 KARLE PL^^OAKLEY^MI^48649^^M|^PRN^PH^^^989^6970185\r" + "ORC|RE||10471065\r"
+      + "RXA|0|1|20060627|20060627|03^MMR^CVX|1.0|||01\r"
+      + "OBX|1|CE|30956-7^COMPONENT VACCINE TYPE^LN|1|03^MMR^CVX^90707^MMR^CPT||||||F\r"
+      + "OBX|2|NM|30973-2^Dose number in series^LN|1|1||||||F\r" + "ORC|RE||0\r"
+      + "RXA|0|1|20020616|20020616|998^No Vaccine Administered^CVX|999\r"
+      + "OBX|1|CE|30979-9^Vaccines Due Next^LN|0|85^HepA^CVX^90730^HepA^CPT||||||F\r"
+      + "OBX|2|TS|30980-7^Date Vaccine Due^LN|0|20030616||||||F\r"
+      + "OBX|3|NM|30973-2^Vaccine due next dose number^LN|0|1||||||F\r"
+      + "OBX|4|TS|30981-5^Earliest date to give^LN|0|20030616||||||F\r"
+      + "OBX|5|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|0|ACIP schedule||||||F\r"
+      + "OBX|6|CE|30979-9^Vaccines Due Next^LN|1|45^HEPB, unspecified formulation^CVX||||||F\r"
+      + "OBX|7|TS|30980-7^Date Vaccine Due^LN|1|20020616||||||F\r"
+      + "OBX|8|NM|30973-2^Vaccine due next dose number^LN|1|1||||||F\r"
+      + "OBX|9|TS|30981-5^Earliest date to give^LN|1|20020616||||||F\r"
+      + "OBX|10|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|1|ACIP schedule||||||F\r"
+      + "OBX|11|CE|30979-9^Vaccines Due Next^LN|2|137^HPV^CVX||||||F\r"
+      + "OBX|12|TS|30980-7^Date Vaccine Due^LN|2|20130616||||||F\r"
+      + "OBX|13|NM|30973-2^Vaccine due next dose number^LN|2|1||||||F\r"
+      + "OBX|14|TS|30981-5^Earliest date to give^LN|2|20110616||||||F\r"
+      + "OBX|15|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|2|ACIP schedule||||||F\r"
+      + "OBX|16|CE|30979-9^Vaccines Due Next^LN|3|88^Influenza-seasnl^CVX^90724^Influenza-seasnl^CPT||||||F\r"
+      + "OBX|17|TS|30980-7^Date Vaccine Due^LN|3|20170701||||||F\r"
+      + "OBX|18|NM|30973-2^Vaccine due next dose number^LN|3|3||||||F\r"
+      + "OBX|19|TS|30981-5^Earliest date to give^LN|3|20170701||||||F\r"
+      + "OBX|20|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|3|ACIP schedule||||||F\r"
+      + "OBX|21|CE|30979-9^Vaccines Due Next^LN|4|164^Meningococcal B^CVX||||||F\r"
+      + "OBX|22|TS|30980-7^Date Vaccine Due^LN|4|20180616||||||F\r"
+      + "OBX|23|NM|30973-2^Vaccine due next dose number^LN|4|1||||||F\r"
+      + "OBX|24|TS|30981-5^Earliest date to give^LN|4|20120616||||||F\r"
+      + "OBX|25|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|4|ACIP schedule||||||F\r"
+      + "OBX|26|CE|30979-9^Vaccines Due Next^LN|5|108^Meningo^CVX||||||F\r"
+      + "OBX|27|TS|30980-7^Date Vaccine Due^LN|5|20180616||||||F\r"
+      + "OBX|28|NM|30973-2^Vaccine due next dose number^LN|5|2||||||F\r"
+      + "OBX|29|TS|30981-5^Earliest date to give^LN|5|20180616||||||F\r"
+      + "OBX|30|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|5|ACIP schedule||||||F\r"
+      + "OBX|31|CE|30979-9^Vaccines Due Next^LN|6|03^MMR^CVX^90707^MMR^CPT||||||F\r"
+      + "OBX|32|TS|30980-7^Date Vaccine Due^LN|6|20060725||||||F\r"
+      + "OBX|33|NM|30973-2^Vaccine due next dose number^LN|6|2||||||F\r"
+      + "OBX|34|TS|30981-5^Earliest date to give^LN|6|20060725||||||F\r"
+      + "OBX|35|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|6|ACIP schedule||||||F\r"
+      + "OBX|36|CE|30979-9^Vaccines Due Next^LN|7|89^Polio^CVX||||||F\r"
+      + "OBX|37|TS|30980-7^Date Vaccine Due^LN|7|20020816||||||F\r"
+      + "OBX|38|NM|30973-2^Vaccine due next dose number^LN|7|1||||||F\r"
+      + "OBX|39|TS|30981-5^Earliest date to give^LN|7|20020728||||||F\r"
+      + "OBX|40|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|7|ACIP schedule||||||F\r"
+      + "OBX|41|CE|30979-9^Vaccines Due Next^LN|8|139^Td/Tdap^CVX||||||F\r"
+      + "OBX|42|TS|30980-7^Date Vaccine Due^LN|8|20090616||||||F\r"
+      + "OBX|43|NM|30973-2^Vaccine due next dose number^LN|8|1||||||F\r"
+      + "OBX|44|TS|30981-5^Earliest date to give^LN|8|20090616||||||F\r"
+      + "OBX|45|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|8|ACIP schedule||||||F\r"
+      + "OBX|46|CE|30979-9^Vaccines Due Next^LN|9|21^Varicella^CVX^90716^Varicella^CPT||||||F\r"
+      + "OBX|47|TS|30980-7^Date Vaccine Due^LN|9|20150616||||||F\r"
+      + "OBX|48|NM|30973-2^Vaccine due next dose number^LN|9|1||||||F\r"
+      + "OBX|49|TS|30981-5^Earliest date to give^LN|9|20150616||||||F\r"
+      + "OBX|50|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|9|ACIP schedule||||||F\r";
+
+  @Test
+  public void testRSP_IRIS_1() throws Exception {
+    List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+    TestCase testCase = run(forecastActualList, RSP_IRIS_1);
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-    return pad(sdf.format(date), len);
+    assertEquals("Not all test events read", 1, testCase.getTestEventList().size());
+    assertEquals("Wrong number of evaluations", 1, testCase.getTestEventList().get(0).getEvaluationActualList().size());
+    assertEquals("Wrong CVX found", "03",
+        testCase.getTestEventList().get(0).getEvaluationActualList().get(0).getVaccineCvx());
+    assertEquals("Wrong validity found", "",
+        testCase.getTestEventList().get(0).getEvaluationActualList().get(0).getDoseValid());
+    assertEquals("Not all forecasts read", 11, forecastActualList.size());
+    assertEquals("Forecast not found", "HepA", forecastActualList.get(0).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(0).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2003", sdf.format(forecastActualList.get(0).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(0).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2003", sdf.format(forecastActualList.get(0).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(0).getOverdueDate());
+    assertEquals("Forecast not found", "HepB", forecastActualList.get(1).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(1).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(1).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2002", sdf.format(forecastActualList.get(1).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(1).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2002", sdf.format(forecastActualList.get(1).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(1).getOverdueDate());
+    assertEquals("Forecast not found", "HPV", forecastActualList.get(2).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(2).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2011", sdf.format(forecastActualList.get(2).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(2).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2013", sdf.format(forecastActualList.get(2).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(2).getOverdueDate());
+    assertEquals("Forecast not found", "Influenza", forecastActualList.get(3).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(3).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(3).getValidDate());
+    assertEquals("Wrong earliest date found", "07/01/2017", sdf.format(forecastActualList.get(3).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(3).getDueDate());
+    assertEquals("Wrong due date found", "07/01/2017", sdf.format(forecastActualList.get(3).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(3).getOverdueDate());
+    assertEquals("Forecast not found", "Meningococcal", forecastActualList.get(4).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(4).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(4).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2012", sdf.format(forecastActualList.get(4).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(4).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2018", sdf.format(forecastActualList.get(4).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(4).getOverdueDate());
+    assertEquals("Forecast not found", "Meningococcal", forecastActualList.get(5).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(5).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2018", sdf.format(forecastActualList.get(5).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(5).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2018", sdf.format(forecastActualList.get(5).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(5).getOverdueDate());
+    assertEquals("Forecast not found", "MMR", forecastActualList.get(6).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(6).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(6).getValidDate());
+    assertEquals("Wrong earliest date found", "07/25/2006", sdf.format(forecastActualList.get(6).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(6).getDueDate());
+    assertEquals("Wrong due date found", "07/25/2006", sdf.format(forecastActualList.get(6).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(6).getOverdueDate());
+    assertEquals("Forecast not found", "Polio", forecastActualList.get(7).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(7).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
+    assertEquals("Wrong earliest date found", "07/28/2002", sdf.format(forecastActualList.get(7).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(7).getDueDate());
+    assertEquals("Wrong due date found", "08/16/2002", sdf.format(forecastActualList.get(7).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(7).getOverdueDate());
+    assertEquals("Forecast not found", "Td or Tdap", forecastActualList.get(8).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(8).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(8).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2009", sdf.format(forecastActualList.get(8).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(8).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2009", sdf.format(forecastActualList.get(8).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(8).getOverdueDate());
+    assertEquals("Forecast not found", "Td Only", forecastActualList.get(9).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(9).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2009", sdf.format(forecastActualList.get(9).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(9).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2009", sdf.format(forecastActualList.get(9).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(9).getOverdueDate());
+    assertEquals("Forecast not found", "Varicella", forecastActualList.get(10).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(10).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(10).getValidDate());
+    assertEquals("Wrong earliest date found", "06/16/2015", sdf.format(forecastActualList.get(10).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(10).getDueDate());
+    assertEquals("Wrong due date found", "06/16/2015", sdf.format(forecastActualList.get(10).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(10).getOverdueDate());
+
   }
 
-  private static String pad(String s, int len) {
-    if (s == null) {
-      s = "";
-    }
-    for (int i = s.length(); i < len; i++) {
-      s += " ";
-    }
-    if (s.length() > len) {
-      s = s.substring(0, len);
-    }
-    return s;
+  private static final String RSP_MIIC_1 = "" + "FHS|^~\\&|MIIC|MIIC||ATEST|20180705185443.159||3306556.response\r"
+      + "BHS|^~\\&|MIIC|MIIC||ATEST|20180705185443.159\r"
+      + "MSH|^~\\&|MIIC|MIIC||ATEST|20180705185443.279||RSP^K11^RSP_K11|1YaW-GM-2.3-Q|P|2.5.1|||||||||Z42^CDCPHINVS\r"
+      + "MSA|AA|1YaW-GM-2.3-Q||0||0^Message Accepted^HL70357\r" + "QAK|1YaW-GM-2.3-Q|OK|Z44\r"
+      + "QPD|Z44^Request Evaluated History and Forecast^CDCPHINVS|1530821469870.9543|B82X73438^^^AIRA^MR|Finn^Orana^Fascienne^^^^L|Frontier^Marcy^^^^^M|20170323|F|383 Uvalde Ave^^Deford^MI^48729^USA^P|^PRN^PH^^^989^5006903|N\r"
+      + "PID|1||8802461^^^^SR~B82X73438^^^^PI||FINN^ORANA^FASCIENNE|FRONTIER^MARCY|20170323|F|||383 UVALDE AVE^^DEFORD^MI^48729^^L|||||||||||||N|0\r"
+      + "PD1|||||||||||02|N||||A\r"
+      + "NK1|1|FINN^FRONTIER^MARION|32|383 UVALDE AVE^^DEFORD^MI^48729^^M|^^PH^^^989^5006903\r" + "ORC|RE||51754921\r"
+      + "RXA|0|1|20170323|20170323|45^HepB^CVX^90731^HepB^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170323|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754922\r" + "RXA|0|1|20170523|20170523|45^HepB^CVX^90731^HepB^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170523|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754923\r"
+      + "RXA|0|1|20170523|20170523|122^Rotavirus, unspecified formulation^CVX^RV^^WVGC|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170523|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754924\r"
+      + "RXA|0|1|20170523|20170523|107^DTaP, unspecified formulation^CVX^90700^DTaP, 5 pertussis antigens^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170523|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754925\r" + "RXA|0|1|20170523|20170523|17^Hib^CVX^90737^Hib^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170523|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754926\r"
+      + "RXA|0|1|20170523|20170523|152^Pneumococcal Conjugate, unspec form^CVX^PNCN^^WVGC|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170523|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754927\r" + "RXA|0|1|20170523|20170523|10^Polio injectable^CVX^90713^Polio-Inject^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170523|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754928\r"
+      + "RXA|0|1|20170723|20170723|122^Rotavirus, unspecified formulation^CVX^RV^^WVGC|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170723|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754929\r"
+      + "RXA|0|1|20170723|20170723|107^DTaP, unspecified formulation^CVX^90700^DTaP, 5 pertussis antigens^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170723|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754930\r" + "RXA|0|1|20170723|20170723|17^Hib^CVX^90737^Hib^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170723|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754931\r"
+      + "RXA|0|1|20170723|20170723|152^Pneumococcal Conjugate, unspec form^CVX^PNCN^^WVGC|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170723|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754932\r" + "RXA|0|1|20170723|20170723|10^Polio injectable^CVX^90713^Polio-Inject^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170723|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754933\r" + "RXA|0|1|20170922|20170922|45^HepB^CVX^90731^HepB^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170922|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754934\r"
+      + "RXA|0|1|20170922|20170922|122^Rotavirus, unspecified formulation^CVX^RV^^WVGC|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170922|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754935\r"
+      + "RXA|0|1|20170922|20170922|107^DTaP, unspecified formulation^CVX^90700^DTaP, 5 pertussis antigens^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170922|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754936\r" + "RXA|0|1|20170922|20170922|17^Hib^CVX^90737^Hib^CPT|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170922|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754937\r"
+      + "RXA|0|1|20170922|20170922|152^Pneumococcal Conjugate, unspec form^CVX^PNCN^^WVGC|1.0|mL||01\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V00^Unknown/Not determined^HL70064||||||F|||20170922|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754938\r"
+      + "RXA|0|1|20180704|20180704|120^Pentacel^CVX^90698^Pentacel^CPT|1.0|mL||00||||||983BG|20190329|PMC^Sanofi Pasteur^MVX\r"
+      + "RXR||LT\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V01^Insured^HL70064||||||F|||20180704|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754939\r"
+      + "RXA|0|1|20180704|20180704|133^Pneumo-PCV13^CVX^90670^Pneumo-PCV13^CPT|1.0|mL||00||||||A1345C|20190329|PFR^Pfizer, Inc.^MVX\r"
+      + "RXR||LT\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V01^Insured^HL70064||||||F|||20180704|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754940\r"
+      + "RXA|0|1|20180704|20180704|94^MMRV^CVX^90710^MMRV^CPT|1.0|mL||00||||||Q3110HZ|20190329|MSD^Merck and Co., Inc.^MVX\r"
+      + "RXR||LT\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V01^Insured^HL70064||||||F|||20180704|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||51754941\r"
+      + "RXA|0|1|20180704|20180704|83^HepA-Ped 2 Dose^CVX^90633^HepA-Ped 2 Dose^CPT|1.0|mL||00||||||825AR23|20190329|SKB^GlaxoSmithKline^MVX\r"
+      + "RXR||LT\r"
+      + "OBX|1|CE|64994-7^Vaccine Eligibility Code^LN|1|V01^Insured^HL70064||||||F|||20180704|||VXC40^per immunization^CDCPHINVS\r"
+      + "ORC|RE||0\r" + "RXA|0|1|20170323|20170323|998^No Vaccine Administered^CVX|999\r"
+      + "OBX|1|CE|30979-9^Vaccines Due Next^LN|0|20^DTP/aP^CVX^90700^DTP/aP^CPT||||||F\r"
+      + "OBX|2|TS|30980-7^Date Vaccine Due^LN|0|20210323||||||F\r"
+      + "OBX|3|NM|30973-2^Vaccine due next dose number^LN|0|0||||||F\r"
+      + "OBX|4|TS|30981-5^Earliest date to give^LN|0|20210323||||||F\r"
+      + "OBX|5|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|0|ACIP schedule||||||F\r"
+      + "OBX|6|CE|30979-9^Vaccines Due Next^LN|1|31^HepA^CVX||||||F\r"
+      + "OBX|7|TS|30980-7^Date Vaccine Due^LN|1|20190104||||||F\r"
+      + "OBX|8|NM|30973-2^Vaccine due next dose number^LN|1|0||||||F\r"
+      + "OBX|9|TS|30981-5^Earliest date to give^LN|1|20190104||||||F\r"
+      + "OBX|10|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|1|ACIP schedule||||||F\r"
+      + "OBX|11|CE|30979-9^Vaccines Due Next^LN|2|88^Influenza^CVX^90724^Influenza^CPT||||||F\r"
+      + "OBX|12|TS|30980-7^Date Vaccine Due^LN|2|20180701||||||F\r"
+      + "OBX|13|NM|30973-2^Vaccine due next dose number^LN|2|0||||||F\r"
+      + "OBX|14|TS|30981-5^Earliest date to give^LN|2|20170923||||||F\r"
+      + "OBX|15|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|2|ACIP schedule||||||F\r"
+      + "OBX|16|CE|30979-9^Vaccines Due Next^LN|3|03^MMR^CVX^90707^MMR^CPT||||||F\r"
+      + "OBX|17|TS|30980-7^Date Vaccine Due^LN|3|20210323||||||F\r"
+      + "OBX|18|NM|30973-2^Vaccine due next dose number^LN|3|0||||||F\r"
+      + "OBX|19|TS|30981-5^Earliest date to give^LN|3|20180801||||||F\r"
+      + "OBX|20|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|3|ACIP schedule||||||F\r"
+      + "OBX|21|CE|30979-9^Vaccines Due Next^LN|4|109^Pneumo-conj^CVX||||||F\r"
+      + "OBX|22|TS|30980-7^Date Vaccine Due^LN|4|20180829||||||F\r"
+      + "OBX|23|NM|30973-2^Vaccine due next dose number^LN|4|0||||||F\r"
+      + "OBX|24|TS|30981-5^Earliest date to give^LN|4|20180829||||||F\r"
+      + "OBX|25|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|4|ACIP schedule||||||F\r"
+      + "OBX|26|CE|30979-9^Vaccines Due Next^LN|5|89^Polio^CVX||||||F\r"
+      + "OBX|27|TS|30980-7^Date Vaccine Due^LN|5|20210323||||||F\r"
+      + "OBX|28|NM|30973-2^Vaccine due next dose number^LN|5|0||||||F\r"
+      + "OBX|29|TS|30981-5^Earliest date to give^LN|5|20210323||||||F\r"
+      + "OBX|30|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|5|ACIP schedule||||||F\r"
+      + "OBX|31|CE|30979-9^Vaccines Due Next^LN|6|21^Varicella^CVX^90716^Varicella^CPT||||||F\r"
+      + "OBX|32|TS|30980-7^Date Vaccine Due^LN|6|20210323||||||F\r"
+      + "OBX|33|NM|30973-2^Vaccine due next dose number^LN|6|0||||||F\r"
+      + "OBX|34|TS|30981-5^Earliest date to give^LN|6|20180926||||||F\r"
+      + "OBX|35|CE|30982-3^Reason applied by forecast logic to project this vaccine^LN|6|ACIP schedule||||||F\r"
+      + "BTS|1\r" + "FTS|1\r";
+
+  @Test
+  public void testRSP_MIIC_1() throws Exception {
+    List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+    TestCase testCase = run(forecastActualList, RSP_MIIC_1);
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    assertEquals("Not all test events read", 21, testCase.getTestEventList().size());
+    assertEquals("Not all forecasts read", 8, forecastActualList.size());
+    assertEquals("Forecast not found", "DTaP", forecastActualList.get(0).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(0).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
+    assertEquals("Wrong earliest date found", "03/23/2021", sdf.format(forecastActualList.get(0).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(0).getDueDate());
+    assertEquals("Wrong due date found", "03/23/2021", sdf.format(forecastActualList.get(0).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(0).getOverdueDate());
+    assertEquals("Forecast not found", "DTaP, Tdap or Td", forecastActualList.get(1).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(1).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(1).getValidDate());
+    assertEquals("Wrong earliest date found", "03/23/2021", sdf.format(forecastActualList.get(1).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(1).getDueDate());
+    assertEquals("Wrong due date found", "03/23/2021", sdf.format(forecastActualList.get(1).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(1).getOverdueDate());
+    assertEquals("Forecast not found", "HepA", forecastActualList.get(2).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(2).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
+    assertEquals("Wrong earliest date found", "01/04/2019", sdf.format(forecastActualList.get(2).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(2).getDueDate());
+    assertEquals("Wrong due date found", "01/04/2019", sdf.format(forecastActualList.get(2).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(2).getOverdueDate());
+    assertEquals("Forecast not found", "Influenza", forecastActualList.get(3).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(3).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(3).getValidDate());
+    assertEquals("Wrong earliest date found", "09/23/2017", sdf.format(forecastActualList.get(3).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(3).getDueDate());
+    assertEquals("Wrong due date found", "07/01/2018", sdf.format(forecastActualList.get(3).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(3).getOverdueDate());
+    assertEquals("Forecast not found", "MMR", forecastActualList.get(4).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(4).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(4).getValidDate());
+    assertEquals("Wrong earliest date found", "08/01/2018", sdf.format(forecastActualList.get(4).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(4).getDueDate());
+    assertEquals("Wrong due date found", "03/23/2021", sdf.format(forecastActualList.get(4).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(4).getOverdueDate());
+    assertEquals("Forecast not found", "Pneumococcal", forecastActualList.get(5).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(5).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
+    assertEquals("Wrong earliest date found", "08/29/2018", sdf.format(forecastActualList.get(5).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(5).getDueDate());
+    assertEquals("Wrong due date found", "08/29/2018", sdf.format(forecastActualList.get(5).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(5).getOverdueDate());
+    assertEquals("Forecast not found", "Polio", forecastActualList.get(6).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(6).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(6).getValidDate());
+    assertEquals("Wrong earliest date found", "03/23/2021", sdf.format(forecastActualList.get(6).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(6).getDueDate());
+    assertEquals("Wrong due date found", "03/23/2021", sdf.format(forecastActualList.get(6).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(6).getOverdueDate());
+    assertEquals("Forecast not found", "Varicella", forecastActualList.get(7).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "", forecastActualList.get(7).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
+    assertEquals("Wrong earliest date found", "09/26/2018", sdf.format(forecastActualList.get(7).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(7).getDueDate());
+    assertEquals("Wrong due date found", "03/23/2021", sdf.format(forecastActualList.get(7).getDueDate()));
+    assertNull("Overdue date should be null", forecastActualList.get(7).getOverdueDate());
+
   }
 
+  private static final String RSP_NESIIS_1 = ""
+      + "MSH|^~\\&|^^|^^|^^|^^|20180701172446||RSP^K11^RSP_K11|1724687711.100023793|P|2.5.1|||||||||Z42^CDCPHINVS^^|\r"
+      + "MSA|AA|2aYO-GM-2.1-Q|\r" + "QAK|1530476519196.64097|OK|Z44^Request Evaluated History and Forecast^HL70471|\r"
+      + "QPD|Z44^Request Evaluated History and Forecast^HL70471|1530476519196.64097|W76Q645055^^^AIRA^MR|Comanche^Emanuel^Emogene|Pacific^Bara^^^^^M|20170618|F|309 Clark St^^Port Hope^MI^48468^USA^P|^PRN^PH^^^989^7330179|\r"
+      + "PID|1||6330269^^^^SR~~~~~W76Q645055^^^^MR||COMANCHE^EMANUEL^EMOGENE^^^^L|PACIFIC|20170618|F|||309 CLARK ST^^PORT HOPE^MICHIGAN^48468^United States^M^^HURON||9897330179^PRN^PH^^^989^7330179|||||||||2186-5^not Hispanic or Latino^HL70189||N|1|||||N|\r"
+      + "ORC|RE||6330269.54.20180630|\r"
+      + "RXA|0|999|20180630|20180630|94^MMRV^CVX^90710^MMRV^CPT|.5|ML^mL^ISO+||00^New immunization record^NIP001||IRMS-1033||||Q3110HZ||MSD^Merck and Co., Inc.^HL70227||||A|20180701172446|\r"
+      + "RXR|SC^Subcutaneous^CDCPHINVS|LT^Left Thigh^CDCPHINVS|\r"
+      + "OBX|1|TS|29769-7^VIS Presentation Date^LN|1|20180630||||||F|\r"
+      + "OBX|1|CE|VFC-STATUS^VFC Status^STC|1|V01^Not VFC eligible^HL70064||||||F|||20180630|\r"
+      + "OBX|1|CE|64994-7^vaccine fund pgm elig cat^LN|1|V01^Not VFC eligible^HL70064||||||F|||20180630|||CVX40^per imm^CDCPHINVS|\r"
+      + "OBX|1|TS|29768-9^VIS Publication Date^LN|1|20100521||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|45^HepB^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|107^DTAP^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|17^HIB^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|133^PneumoPCV^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|20220618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|88^FLU^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20171218||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20171218||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|85^HepA^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20190618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|89^POLIO^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180728||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|03^MMR^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|21^VARICELLA^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180922||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|137^HPV^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20260618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21170618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r" + "ORC|RE||9999|\r"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|\r"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|147^MENING^CVX||||||F|\r"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|\r"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|\r"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|\r"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20270618||||||F|\r"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|\r"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|\r"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|\r";
+
+  @Test
+  public void testRSP_NESIIS_1() throws Exception {
+    List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+    TestCase testCase = run(forecastActualList, RSP_NESIIS_1);
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    assertEquals("Not all test events read", 1, testCase.getTestEventList().size());
+    assertEquals("Not all forecasts read", 13, forecastActualList.size());
+    assertEquals("Forecast not found", "HepB", forecastActualList.get(0).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
+    assertEquals("Wrong earliest date found", "06/18/2017", sdf.format(forecastActualList.get(0).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(0).getDueDate());
+    assertEquals("Wrong due date found", "06/18/2017", sdf.format(forecastActualList.get(0).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(0).getOverdueDate());
+    assertEquals("Wrong overdue date found", "09/18/2017", sdf.format(forecastActualList.get(0).getOverdueDate()));
+    assertEquals("Forecast not found", "DTaP", forecastActualList.get(1).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(1).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(1).getValidDate());
+    assertEquals("Wrong earliest date found", "07/30/2017", sdf.format(forecastActualList.get(1).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(1).getDueDate());
+    assertEquals("Wrong due date found", "08/18/2017", sdf.format(forecastActualList.get(1).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(1).getOverdueDate());
+    assertEquals("Wrong overdue date found", "09/18/2017", sdf.format(forecastActualList.get(1).getOverdueDate()));
+    assertEquals("Forecast not found", "DTaP, Tdap or Td", forecastActualList.get(2).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
+    assertEquals("Wrong earliest date found", "07/30/2017", sdf.format(forecastActualList.get(2).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(2).getDueDate());
+    assertEquals("Wrong due date found", "08/18/2017", sdf.format(forecastActualList.get(2).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(2).getOverdueDate());
+    assertEquals("Wrong overdue date found", "09/18/2017", sdf.format(forecastActualList.get(2).getOverdueDate()));
+    assertEquals("Forecast not found", "Hib", forecastActualList.get(3).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(3).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(3).getValidDate());
+    assertEquals("Wrong earliest date found", "07/30/2017", sdf.format(forecastActualList.get(3).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(3).getDueDate());
+    assertEquals("Wrong due date found", "08/18/2017", sdf.format(forecastActualList.get(3).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(3).getOverdueDate());
+    assertEquals("Wrong overdue date found", "09/18/2017", sdf.format(forecastActualList.get(3).getOverdueDate()));
+    assertEquals("Forecast not found", "PCV", forecastActualList.get(4).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(4).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(4).getValidDate());
+    assertEquals("Wrong earliest date found", "07/30/2017", sdf.format(forecastActualList.get(4).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(4).getDueDate());
+    assertEquals("Wrong due date found", "08/18/2017", sdf.format(forecastActualList.get(4).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(4).getOverdueDate());
+    assertEquals("Wrong overdue date found", "09/18/2017", sdf.format(forecastActualList.get(4).getOverdueDate()));
+    assertEquals("Forecast not found", "Pneumococcal", forecastActualList.get(5).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
+    assertEquals("Wrong earliest date found", "07/30/2017", sdf.format(forecastActualList.get(5).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(5).getDueDate());
+    assertEquals("Wrong due date found", "08/18/2017", sdf.format(forecastActualList.get(5).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(5).getOverdueDate());
+    assertEquals("Wrong overdue date found", "09/18/2017", sdf.format(forecastActualList.get(5).getOverdueDate()));
+    assertEquals("Forecast not found", "Influenza", forecastActualList.get(6).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(6).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(6).getValidDate());
+    assertEquals("Wrong earliest date found", "12/18/2017", sdf.format(forecastActualList.get(6).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(6).getDueDate());
+    assertEquals("Wrong due date found", "12/18/2017", sdf.format(forecastActualList.get(6).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(6).getOverdueDate());
+    assertEquals("Wrong overdue date found", "08/27/2018", sdf.format(forecastActualList.get(6).getOverdueDate()));
+    assertEquals("Forecast not found", "HepA", forecastActualList.get(7).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
+    assertEquals("Wrong earliest date found", "06/18/2018", sdf.format(forecastActualList.get(7).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(7).getDueDate());
+    assertEquals("Wrong due date found", "06/18/2018", sdf.format(forecastActualList.get(7).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(7).getOverdueDate());
+    assertEquals("Wrong overdue date found", "06/18/2019", sdf.format(forecastActualList.get(7).getOverdueDate()));
+    assertEquals("Forecast not found", "Polio", forecastActualList.get(8).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(8).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(8).getValidDate());
+    assertEquals("Wrong earliest date found", "07/28/2018", sdf.format(forecastActualList.get(8).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(8).getDueDate());
+    assertEquals("Wrong due date found", "07/28/2018", sdf.format(forecastActualList.get(8).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(8).getOverdueDate());
+    assertEquals("Wrong overdue date found", "08/27/2018", sdf.format(forecastActualList.get(8).getOverdueDate()));
+    assertEquals("Forecast not found", "MMR", forecastActualList.get(9).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
+    assertEquals("Wrong earliest date found", "07/28/2018", sdf.format(forecastActualList.get(9).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(9).getDueDate());
+    assertEquals("Wrong due date found", "06/18/2021", sdf.format(forecastActualList.get(9).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(9).getOverdueDate());
+    assertEquals("Wrong overdue date found", "06/18/2024", sdf.format(forecastActualList.get(9).getOverdueDate()));
+    assertEquals("Forecast not found", "Varicella", forecastActualList.get(10).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(10).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(10).getValidDate());
+    assertEquals("Wrong earliest date found", "09/22/2018", sdf.format(forecastActualList.get(10).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(10).getDueDate());
+    assertEquals("Wrong due date found", "06/18/2021", sdf.format(forecastActualList.get(10).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(10).getOverdueDate());
+    assertEquals("Wrong overdue date found", "06/18/2024", sdf.format(forecastActualList.get(10).getOverdueDate()));
+    assertEquals("Forecast not found", "HPV", forecastActualList.get(11).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(11).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(11).getValidDate());
+    assertEquals("Wrong earliest date found", "06/18/2026", sdf.format(forecastActualList.get(11).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(11).getDueDate());
+    assertEquals("Wrong due date found", "06/18/2028", sdf.format(forecastActualList.get(11).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(11).getOverdueDate());
+    assertEquals("Wrong overdue date found", "06/18/2030", sdf.format(forecastActualList.get(11).getOverdueDate()));
+    assertEquals("Forecast not found", "Meningococcal", forecastActualList.get(12).getVaccineGroup().getLabel());
+    assertEquals("Wrong status found", "N", forecastActualList.get(12).getAdminStatus());
+    assertNotNull("Valid date should not be null", forecastActualList.get(12).getValidDate());
+    assertEquals("Wrong earliest date found", "06/18/2027", sdf.format(forecastActualList.get(12).getValidDate()));
+    assertNotNull("Due date should not be null", forecastActualList.get(12).getDueDate());
+    assertEquals("Wrong due date found", "06/18/2028", sdf.format(forecastActualList.get(12).getDueDate()));
+    assertNotNull("Overdue date should not be null", forecastActualList.get(12).getOverdueDate());
+    assertEquals("Wrong overdue date found", "06/18/2030", sdf.format(forecastActualList.get(12).getOverdueDate()));
+  }
 }

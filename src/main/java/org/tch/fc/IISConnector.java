@@ -38,10 +38,12 @@ public class IISConnector implements ConnectorInterface
     this.software = software;
     this.forecastItemList = forecastItemList;
     map("10", VaccineGroup.ID_POLIO);
+    map("31", VaccineGroup.ID_HEPA);
     map("48", VaccineGroup.ID_HIB);
     map("83", VaccineGroup.ID_HEPA);
     map("107", VaccineGroup.ID_DTAP);
     map("107", VaccineGroup.ID_DTAP_TDAP_TD);
+    map("109", VaccineGroup.ID_PNEUMO);
     map("114", VaccineGroup.ID_MENING);
     map("116", VaccineGroup.ID_ROTA);
     map("133", VaccineGroup.ID_PCV);
@@ -49,6 +51,8 @@ public class IISConnector implements ConnectorInterface
     map("147", VaccineGroup.ID_MENING);
     map("150", VaccineGroup.ID_INFLUENZA);
     map("150", VaccineGroup.ID_INFLUENZA_IIV);
+    map("164", VaccineGroup.ID_MENINGB);
+    map("164", VaccineGroup.ID_MENING);
     map("165", VaccineGroup.ID_HPV);
     for (VaccineGroup forecastItem : forecastItemList) {
       map(forecastItem.getVaccineCvx(), forecastItem.getVaccineGroupId());
@@ -290,9 +294,11 @@ public class IISConnector implements ConnectorInterface
         if (parseDebugLine != null) {
           parseDebugLine.setSegmentName(segmentName);
         }
-        if (segmentName.equals("MSH") || segmentName.equals("MSA") || segmentName.equals("ERR")
-            || segmentName.equals("QAK") || segmentName.equals("QPD") || segmentName.equals("PID")
-            || segmentName.equals("ORC")) {
+        if (segmentName.equals("BHS") || segmentName.equals("FHS") || segmentName.equals("FTS")
+            || segmentName.equals("BTS") || segmentName.equals("MSH") || segmentName.equals("MSA")
+            || segmentName.equals("ERR") || segmentName.equals("QAK") || segmentName.equals("QPD")
+            || segmentName.equals("PID") || segmentName.equals("ORC") || segmentName.equals("RXR")
+            || segmentName.equals("NK1") || segmentName.equals("PD1")) {
           if (parseDebugLine != null) {
             parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
           }
@@ -331,7 +337,7 @@ public class IISConnector implements ConnectorInterface
             }
             continue;
           } else if (cvxCodeInRxa.equals("998")) {
-            if (obsCode.equals("30956-7")) {
+            if (obsCode.equals("30956-7") || obsCode.equals("30979-9")) {
               List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
               fal = new ArrayList<ForecastActual>();
               if (forecastItemListFromMap != null) {
@@ -431,11 +437,34 @@ public class IISConnector implements ConnectorInterface
                 if (fal.size() == 0) {
                   logNotRead(parseDebugLine);
                 } else {
+                  if (parseDebugLine != null) {
+                    parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+                  }
                   for (ForecastActual forecastActual : fal) {
                     forecastActual.setDoseNumber(obsValue);
                   }
                 }
-              } //
+              }
+            } else if (obsCode.equals("30982-3")) {
+              if (fal == null) {
+                logOutofSequence(parseDebugLine);
+              } else {
+                if (fal.size() == 0) {
+                  logNotRead(parseDebugLine);
+                } else {
+                  if (parseDebugLine != null) {
+                    parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+                  }
+                  for (ForecastActual forecastActual : fal) {
+                    forecastActual.setForecastReason(obsValue);
+                  }
+                }
+              }
+
+            } else if (obsCode.equals("59779-9")) {
+              if (parseDebugLine != null) {
+                parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
+              }
             } else {
               if (parseDebugLine != null) {
                 parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
@@ -482,6 +511,20 @@ public class IISConnector implements ConnectorInterface
                 if (parseDebugLine != null) {
                   parseDebugLine.setLineStatus(ParseDebugStatus.OK);
                 }
+              }
+            } else if (obsCode.equals("30973-2")) {
+              if (evaluationActual == null) {
+                logEvaluationReasonNotSetup(parseDebugLine);
+              } else {
+                evaluationActual.setDoseNumber(obsValue);
+                if (parseDebugLine != null) {
+                  parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+                }
+              }
+            } else if (obsCode.equals("29769-7") || obsCode.equals("VFC-STATUS") || obsCode.equals("64994-7")
+                || obsCode.equals("29768-9")) {
+              if (parseDebugLine != null) {
+                parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
               }
             } else {
               if (parseDebugLine != null) {
