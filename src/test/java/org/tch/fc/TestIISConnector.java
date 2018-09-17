@@ -15,11 +15,14 @@
  */
 package org.tch.fc;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Test;
 import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.Event;
 import org.tch.fc.model.ForecastActual;
@@ -274,36 +277,12 @@ public class TestIISConnector extends junit.framework.TestCase
       + "OBX|116|CE|59783-1^Series Status^LN|18|LA13422-3^On Schedule^LN||||||F|||20180914\r"
       + "OBX|117|CE|59779-9^Immunization Schedule Used^LN|18|VXC16^ACIP^CDCPHINVS||||||F|||20180914\r";
 
+  @Test
   public void testReadRSPEnvision() throws Exception {
-    Software software = createSoftware();
-    SoftwareResult softwareResult = new SoftwareResult();
-    TestCase testCase = new TestCase();
-    testCase.setTestEventList(new ArrayList<TestEvent>());
-    {
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-      {
-        TestEvent testEvent = new TestEvent();
-        Event event = new Event();
-        event.setVaccineCvx("107");
-        testEvent.setEventDate(sdf.parse("20180819"));
-        testEvent.setEvent(event);
-        testCase.getTestEventList().add(testEvent);
-      }
-      {
-        TestEvent testEvent = new TestEvent();
-        Event event = new Event();
-        event.setVaccineCvx("107");
-        testEvent.setEventDate(sdf.parse("20180914"));
-        testEvent.setEvent(event);
-        testCase.getTestEventList().add(testEvent);
-      }
-    }
-
-    IISConnector c = new IISConnector(software, VaccineGroup.getForecastItemList());
     List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+    TestCase testCase = run(forecastActualList);
 
-    c.readRSP(forecastActualList, testCase, softwareResult, RSP_ENVISION);
-
+    assertEquals("", 5, testCase.getTestEventList().size());
     assertTrue(forecastActualList.size() > 5);
     System.out.println();
     System.out.println("VACCINE EVALUATION");
@@ -362,6 +341,147 @@ public class TestIISConnector extends junit.framework.TestCase
       System.out.println("|");
     }
 
+  }
+  
+  private static final String RSP_STC = "" 
+      + "MSH|^~\\&|^^|^^|^^|^^|20180701172446||RSP^K11^RSP_K11|1724687711.100023793|P|2.5.1|||||||||Z42^CDCPHINVS^^|"
+      + "MSA|AA|2aYO-GM-2.1-Q|"
+      + "QAK|1530476519196.64097|OK|Z44^Request Evaluated History and Forecast^HL70471|"
+      + "QPD|Z44^Request Evaluated History and Forecast^HL70471|1530476519196.64097|W76Q645055^^^AIRA^MR|Comanche^Emanuel^Emogene|Pacific^Bara^^^^^M|20170618|F|309 Clark St^^Port Hope^MI^48468^USA^P|^PRN^PH^^^989^7330179|"
+      + "PID|1||6330269^^^^SR~~~~~W76Q645055^^^^MR||COMANCHE^EMANUEL^EMOGENE^^^^L|PACIFIC|20170618|F|||309 CLARK ST^^PORT HOPE^MICHIGAN^48468^United States^M^^HURON||9897330179^PRN^PH^^^989^7330179|||||||||2186-5^not Hispanic or Latino^HL70189||N|1|||||N|"
+      + "ORC|RE||6330269.54.20180630|"
+      + "RXA|0|999|20180630|20180630|94^MMRV^CVX^90710^MMRV^CPT|.5|ML^mL^ISO+||00^New immunization record^NIP001||IRMS-1033||||Q3110HZ||MSD^Merck and Co., Inc.^HL70227||||A|20180701172446|"
+      + "RXR|SC^Subcutaneous^CDCPHINVS|LT^Left Thigh^CDCPHINVS|"
+      + "OBX|1|TS|29769-7^VIS Presentation Date^LN|1|20180630||||||F|"
+      + "OBX|1|CE|VFC-STATUS^VFC Status^STC|1|V01^Not VFC eligible^HL70064||||||F|||20180630|"
+      + "OBX|1|CE|64994-7^vaccine fund pgm elig cat^LN|1|V01^Not VFC eligible^HL70064||||||F|||20180630|||CVX40^per imm^CDCPHINVS|"
+      + "OBX|1|TS|29768-9^VIS Publication Date^LN|1|20100521||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|45^HepB^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170618||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170618||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|107^DTAP^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|17^HIB^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|133^PneumoPCV^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20170818||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20170730||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|20220618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20170918||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|P^Past Due^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|88^FLU^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20171218||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20171218||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|85^HepA^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180618||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180618||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20190618||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|D^Due Now^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|89^POLIO^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20180728||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20180827||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|03^MMR^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180728||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|21^VARICELLA^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|2||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20210618||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20180922||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20240618||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|137^HPV^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20260618||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21170618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
+      + "ORC|RE||9999|"
+      + "RXA|0|999|20180701172446|20180701172446|998^no vaccine administered^CVX|0||||||||||||||NA||20180701172446|"
+      + "OBX|1|CE|30956-7^vaccine type^LN|1|147^MENING^CVX||||||F|"
+      + "OBX|1|CE|59779-9^Immunization Schedule used^LN|1|VXC16^ACIP^CDCPHINVS||||||F|"
+      + "OBX|1|NM|30973-2^Dose number in series^LN|1|1||||||F|"
+      + "OBX|1|TS|30980-7^Date vaccination due^LN|1|20280618||||||F|"
+      + "OBX|1|TS|30981-5^Earliest date to give^LN|1|20270618||||||F|"
+      + "OBX|1|TS|59777-3^Latest date next dose should be given^LN|1|21370618||||||F|"
+      + "OBX|1|TS|59778-1^Date dose is overdue^LN|1|20300618||||||F|"
+      + "OBX|1|CE|59783-1^Status in immunization series^LN|1|U^Up to Date^STC0002||||||F|"
+  ;
+    @Test
+    public void testReadRSPSTC() throws Exception {
+      List forecastActualList = new ArrayList();
+      TestCase testCase = run(forecastActualList);
+      
+      assertEquals("Not all test events read", 1, testCase.getTestEventList().size()); 
+    }
+
+  private TestCase run(List<ForecastActual> forecastActualList) throws IOException, ParseException {
+    Software software = createSoftware();
+    IISConnector c = new IISConnector(software, VaccineGroup.getForecastItemList());
+    TestCase testCase = IISConnector.recreateTestCase(RSP_ENVISION);
+    SoftwareResult softwareResult = new SoftwareResult();
+    c.readRSP(forecastActualList, testCase, softwareResult, RSP_ENVISION);
+    return testCase;
   }
 
   private static String pad(Object o, int len) {
