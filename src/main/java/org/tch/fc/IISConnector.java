@@ -928,6 +928,7 @@ public class IISConnector implements ConnectorInterface
     }
     input.close();
     String s = response.toString();
+
     int start = s.indexOf("MSH|");
     if (start > 0) {
       s = s.substring(start);
@@ -935,10 +936,17 @@ public class IISConnector implements ConnectorInterface
       if (e > 0) {
         s = s.substring(0, e);
       }
-    }
-    s = s.replace("&amp;", "\\&");
-    if (s.endsWith("]]>")) {
-      s = s.substring(0, s.length() - 3);
+      s = s.replace("&amp;", "\\&");
+      if (s.endsWith("]]>")) {
+        s = s.substring(0, s.length() - 3);
+      }
+    } else {
+      BufferedReader stringIn = new BufferedReader(new StringReader(s));
+      s = "";
+      String l;
+      while ((l = stringIn.readLine()) != null) {
+        s += l.trim() + "\r";
+      }
     }
     return s;
   }
