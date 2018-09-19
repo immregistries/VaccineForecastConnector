@@ -38,9 +38,27 @@ public class IISConnector implements ConnectorInterface
     this.software = software;
     this.forecastItemList = forecastItemList;
     map("10", VaccineGroup.ID_POLIO);
+    map("010", VaccineGroup.ID_POLIO);
+    map("017", VaccineGroup.ID_HIB);
+    map("16", VaccineGroup.ID_INFLUENZA);
+    map("22", VaccineGroup.ID_HIB);
+    map("28", VaccineGroup.ID_DTAP);
+    map("28", VaccineGroup.ID_DTAP_TDAP_TD);
+    map("028", VaccineGroup.ID_DTAP);
+    map("028", VaccineGroup.ID_DTAP_TDAP_TD);
     map("31", VaccineGroup.ID_HEPA);
+    map("033", VaccineGroup.ID_PPSV);
+    map("42", VaccineGroup.ID_HEPB);
+    map("045", VaccineGroup.ID_HEPB);
     map("48", VaccineGroup.ID_HIB);
+    map("52", VaccineGroup.ID_HEPA);
+    map("062", VaccineGroup.ID_HPV);
     map("83", VaccineGroup.ID_HEPA);
+    map("085", VaccineGroup.ID_HEPA);
+    map("088", VaccineGroup.ID_INFLUENZA);
+    map("100", VaccineGroup.ID_PNEUMO);
+    map("106", VaccineGroup.ID_DTAP);
+    map("106", VaccineGroup.ID_DTAP_TDAP_TD);
     map("107", VaccineGroup.ID_DTAP);
     map("107", VaccineGroup.ID_DTAP_TDAP_TD);
     map("109", VaccineGroup.ID_PNEUMO);
@@ -48,12 +66,29 @@ public class IISConnector implements ConnectorInterface
     map("116", VaccineGroup.ID_ROTA);
     map("133", VaccineGroup.ID_PCV);
     map("133", VaccineGroup.ID_PNEUMO);
+    map("141", VaccineGroup.ID_INFLUENZA);
     map("147", VaccineGroup.ID_MENING);
     map("150", VaccineGroup.ID_INFLUENZA);
     map("150", VaccineGroup.ID_INFLUENZA_IIV);
     map("164", VaccineGroup.ID_MENINGB);
     map("164", VaccineGroup.ID_MENING);
     map("165", VaccineGroup.ID_HPV);
+    map("HEP B", VaccineGroup.ID_HEPB); // FL SHOTS - HEP B^HEPATITIS B
+    map("HIB", VaccineGroup.ID_HIB); // FL SHOTS - HIB^H INFLUENZA TYPE B
+    map("POLIO", VaccineGroup.ID_POLIO); // FL SHOTS - POLIO^POLIO
+    map("VZV", VaccineGroup.ID_VAR); // FL SHOTS - VZV^CHICKEN POX
+    map("PNEUCON", VaccineGroup.ID_PNEUMO); // FL SHOTS - PNEUCON^PNEUMOCOCCAL CONJUGATE
+    map("MEASLES", VaccineGroup.ID_MEASLES_ONLY); // FL SHOTS - MEASLES^MEASLES
+    map("MEASLES", VaccineGroup.ID_MMR); // FL SHOTS - MEASLES^MEASLES
+    map("MUMPS", VaccineGroup.ID_MUMPS_ONLY); // FL SHOTS - MUMPS^MUMPS
+    map("RUBELLA", VaccineGroup.ID_RUBELLA_ONLY); // FL SHOTS - RUBELLA^RUBELLA
+    map("ROTAVIRUS", VaccineGroup.ID_ROTA); // FL SHOTS - ROTAVIRUS^ROTAVIRUS
+    map("HPV", VaccineGroup.ID_HPV); // FL SHOTS - HPV^HPV
+    map("DIPHTHERIA", VaccineGroup.ID_DTAP); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
+    map("DIPHTHERIA", VaccineGroup.ID_DTAP_TDAP_TD); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
+    // map("PERTUSSIS", VaccineGroup.ID_); // FL SHOTS - PERTUSSIS^PERTUSSIS
+    // map("TETANUS", VaccineGroup.ID); // FL SHOTS - TETANUS^TETANUS
+    // IL I-CARE - 
     for (VaccineGroup forecastItem : forecastItemList) {
       map(forecastItem.getVaccineCvx(), forecastItem.getVaccineGroupId());
     }
@@ -61,6 +96,10 @@ public class IISConnector implements ConnectorInterface
 
   private List<VaccineGroup> forecastItemList = null;
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
+
+  public Map<String, List<VaccineGroup>> getFamilyMapping() {
+    return familyMapping;
+  }
 
   private void map(String familyName, int forecastItemId) {
     for (VaccineGroup forecastItem : forecastItemList) {
@@ -135,7 +174,7 @@ public class IISConnector implements ConnectorInterface
   }
 
   public static enum ParseDebugStatus {
-    OK, EXPECTED_BUT_NOT_READ, NOT_READ, PROBLEM
+    OK, OK_FORECAST, OK_EVALUATION, EXPECTED_BUT_NOT_READ, NOT_READ, PROBLEM
   }
 
   public static class ParseDebugLine
@@ -330,6 +369,7 @@ public class IISConnector implements ConnectorInterface
         } else if (segmentName.equals("OBX")) {
           String obsCode = readValue(f, 3);
           String obsValue = readValue(f, 5);
+          String obsLabel = readValue(f, 5, 2);
           if (cvxCodeInRxa == null) {
             if (parseDebugLine != null) {
               parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
@@ -337,204 +377,10 @@ public class IISConnector implements ConnectorInterface
             }
             continue;
           } else if (cvxCodeInRxa.equals("998")) {
-            if (obsCode.equals("30956-7") || obsCode.equals("30979-9")) {
-              List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
-              fal = new ArrayList<ForecastActual>();
-              if (forecastItemListFromMap != null) {
-                for (VaccineGroup vaccineGroup : forecastItemListFromMap) {
-                  ForecastActual forecastActual = new ForecastActual();
-                  forecastActualList.add(forecastActual);
-                  fal.add(forecastActual);
-                  forecastActual.setVaccineGroup(vaccineGroup);
-                  forecastActual.setVaccineCvx(obsValue);
-                }
-              }
-              if (parseDebugLine != null) {
-                if (fal.size() == 0) {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
-                  parseDebugLine.setLineStatusReason("Unable to find mapping to one ore more vaccine groups");
-                } else {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                }
-              }
-            } else if (obsCode.equals("59783-1")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                Admin admin = mapAdmin(obsValue);
-                if (parseDebugLine != null) {
-                  if (admin == Admin.UNKNOWN) {
-                    parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
-                    parseDebugLine.setLineStatusReason("Unrecognized value received ");
-                  } else {
-                    parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                  }
-                }
-                for (ForecastActual forecastActual : fal) {
-                  forecastActual.setAdmin(admin);
-                }
-              }
-            } else if (obsCode.equals("30981-5")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                if (fal.size() == 0) {
-                  logNotRead(parseDebugLine);
-                } else {
-                  Date date = parseDate(obsValue);
-                  logDateNotParsedProblem(parseDebugLine, date);
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setValidDate(date);
-                  }
-                }
-              }
-            } else if (obsCode.equals("30980-7")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                if (fal.size() == 0) {
-                  logNotRead(parseDebugLine);
-                } else {
-                  Date date = parseDate(obsValue);
-                  logDateNotParsedProblem(parseDebugLine, date);
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setDueDate(date);
-                  }
-                }
-              }
-            } else if (obsCode.equals("59777-3")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                if (fal.size() == 0) {
-                  logNotRead(parseDebugLine);
-                } else {
-                  Date date = parseDate(obsValue);
-                  logDateNotParsedProblem(parseDebugLine, date);
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setFinishedDate(date);
-                  }
-                }
-              }
-            } else if (obsCode.equals("59778-1")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                if (fal.size() == 0) {
-                  logNotRead(parseDebugLine);
-                } else {
-                  Date date = parseDate(obsValue);
-                  logDateNotParsedProblem(parseDebugLine, date);
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setOverdueDate(date);
-                  }
-                }
-              }
-            } else if (obsCode.equals("30973-2")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                if (fal.size() == 0) {
-                  logNotRead(parseDebugLine);
-                } else {
-                  if (parseDebugLine != null) {
-                    parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                  }
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setDoseNumber(obsValue);
-                  }
-                }
-              }
-            } else if (obsCode.equals("30982-3")) {
-              if (fal == null) {
-                logOutofSequence(parseDebugLine);
-              } else {
-                if (fal.size() == 0) {
-                  logNotRead(parseDebugLine);
-                } else {
-                  if (parseDebugLine != null) {
-                    parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                  }
-                  for (ForecastActual forecastActual : fal) {
-                    forecastActual.setForecastReason(obsValue);
-                  }
-                }
-              }
-
-            } else if (obsCode.equals("59779-9")) {
-              if (parseDebugLine != null) {
-                parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
-              }
-            } else {
-              if (parseDebugLine != null) {
-                parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
-              }
-            }
+            fal = handleForecast(forecastActualList, fal, parseDebugLine, obsCode, obsValue, obsLabel);
           } else {
-            if (obsCode.equals("30956-7")) {
-
-              if (testEvent == null) {
-                if (parseDebugLine != null) {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
-                  parseDebugLine.setLineStatusReason("No test event was found, unable to link");
-                }
-              } else {
-                evaluationActual = new EvaluationActual();
-                evaluationActual.setSoftwareResult(softwareResult);
-                evaluationActual.getSoftwareResult().setSoftware(software);
-                evaluationActual.setTestEvent(testEvent);
-                evaluationActual.setVaccineCvx(obsValue);
-                evaluationActual.setSeriesUsedCode(obsValue);
-
-                if (testEvent.getEvaluationActualList() == null) {
-                  testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
-                }
-                testEvent.getEvaluationActualList().add(evaluationActual);
-                if (parseDebugLine != null) {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                }
-              }
-            } else if (obsCode.equals("59781-5")) {
-              if (evaluationActual == null) {
-                logEvaluationReasonNotSetup(parseDebugLine);
-              } else {
-                evaluationActual.setDoseValid(obsValue);
-                if (parseDebugLine != null) {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                }
-              }
-            } else if (obsCode.equals("30982-3")) {
-              if (evaluationActual == null) {
-                logEvaluationReasonNotSetup(parseDebugLine);
-              } else {
-                evaluationActual.setReasonText(obsValue);
-                if (parseDebugLine != null) {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                }
-              }
-            } else if (obsCode.equals("30973-2")) {
-              if (evaluationActual == null) {
-                logEvaluationReasonNotSetup(parseDebugLine);
-              } else {
-                evaluationActual.setDoseNumber(obsValue);
-                if (parseDebugLine != null) {
-                  parseDebugLine.setLineStatus(ParseDebugStatus.OK);
-                }
-              }
-            } else if (obsCode.equals("29769-7") || obsCode.equals("VFC-STATUS") || obsCode.equals("64994-7")
-                || obsCode.equals("29768-9")) {
-              if (parseDebugLine != null) {
-                parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
-              }
-            } else {
-              if (parseDebugLine != null) {
-                parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
-              }
-            }
-            // evaluationActual.setDoseNumber(doseNumber);
-            // evaluationActual.setEvaluationReason(evaluationReason);
-            // evaluationActual.setReasonCode(reasonCode);
-            // evaluationActual.setSeriesUsedText(doseName);
+            evaluationActual = handleEvaluation(softwareResult, testEvent, evaluationActual, parseDebugLine, obsCode,
+                obsValue);
           }
 
         } else {
@@ -547,6 +393,231 @@ public class IISConnector implements ConnectorInterface
       }
     }
 
+  }
+
+  private EvaluationActual handleEvaluation(SoftwareResult softwareResult, TestEvent testEvent,
+      EvaluationActual evaluationActual, ParseDebugLine parseDebugLine, String obsCode, String obsValue) {
+    if (obsCode.equals("30956-7") || obsCode.equals("38890-0") || obsCode.equals("59780-7")) {
+      if (testEvent == null) {
+        if (parseDebugLine != null) {
+          parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
+          parseDebugLine.setLineStatusReason("No test event was found, unable to link");
+        }
+      } else {
+        evaluationActual = new EvaluationActual();
+        evaluationActual.setSoftwareResult(softwareResult);
+        evaluationActual.getSoftwareResult().setSoftware(software);
+        evaluationActual.setTestEvent(testEvent);
+        evaluationActual.setVaccineCvx(obsValue);
+        evaluationActual.setSeriesUsedCode(obsValue);
+
+        if (testEvent.getEvaluationActualList() == null) {
+          testEvent.setEvaluationActualList(new ArrayList<EvaluationActual>());
+        }
+        testEvent.getEvaluationActualList().add(evaluationActual);
+        if (parseDebugLine != null) {
+          SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+          parseDebugLine.setLineStatus(ParseDebugStatus.OK_EVALUATION);
+          if (testEvent.getEvent() != null && testEvent.getEventDate() != null) {
+            parseDebugLine.setLineStatusReason(
+                "CVX " + testEvent.getEvent().getVaccineCvx() + " - " + sdf.format(testEvent.getEventDate()));
+          }
+        }
+      }
+    } else if (obsCode.equals("59781-5")) {
+      if (evaluationActual == null) {
+        logEvaluationReasonNotSetup(parseDebugLine);
+      } else {
+        evaluationActual.setDoseValid(obsValue);
+        if (parseDebugLine != null) {
+          parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+        }
+      }
+    } else if (obsCode.equals("30982-3")) {
+      if (evaluationActual == null) {
+        logEvaluationReasonNotSetup(parseDebugLine);
+      } else {
+        evaluationActual.setReasonText(obsValue);
+        if (parseDebugLine != null) {
+          parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+        }
+      }
+    } else if (obsCode.equals("30973-2")) {
+      if (evaluationActual == null) {
+        logEvaluationReasonNotSetup(parseDebugLine);
+      } else {
+        evaluationActual.setDoseNumber(obsValue);
+        if (parseDebugLine != null) {
+          parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+        }
+      }
+    } else if (obsCode.equals("59779-9")) {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
+      }
+    } else if (obsCode.equals("29769-7") || obsCode.equals("VFC-STATUS") || obsCode.equals("64994-7")
+        || obsCode.equals("29768-9")) {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
+      }
+    } else {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
+      }
+    }
+    // evaluationActual.setDoseNumber(doseNumber);
+    // evaluationActual.setEvaluationReason(evaluationReason);
+    // evaluationActual.setReasonCode(reasonCode);
+    // evaluationActual.setSeriesUsedText(doseName);
+    return evaluationActual;
+  }
+
+  private List<ForecastActual> handleForecast(List<ForecastActual> forecastActualList, List<ForecastActual> fal,
+      ParseDebugLine parseDebugLine, String obsCode, String obsValue, String obsLabel) {
+    if (obsCode.equals("30956-7") || obsCode.equals("30979-9") || obsCode.equals("59780-7")) {
+      List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
+      fal = new ArrayList<ForecastActual>();
+      if (forecastItemListFromMap != null) {
+        for (VaccineGroup vaccineGroup : forecastItemListFromMap) {
+          ForecastActual forecastActual = new ForecastActual();
+          forecastActualList.add(forecastActual);
+          fal.add(forecastActual);
+          forecastActual.setVaccineGroup(vaccineGroup);
+          forecastActual.setVaccineCvx(obsValue);
+        }
+      }
+      if (parseDebugLine != null) {
+        if (fal.size() == 0) {
+          parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
+          parseDebugLine.setLineStatusReason("Unable to find mapping to one ore more vaccine groups");
+        } else {
+          parseDebugLine.setLineStatus(ParseDebugStatus.OK_FORECAST);
+          String s = "";
+          boolean first = true;
+          for (ForecastActual fa : fal) {
+            if (!first) {
+              s += " / ";
+            }
+            s += fa.getVaccineGroup().getLabel();
+            first = false;
+          }
+          parseDebugLine.setLineStatusReason(s);
+        }
+      }
+    } else if (obsCode.equals("59783-1")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        Admin admin = mapAdmin(obsValue, obsLabel);
+        if (parseDebugLine != null) {
+          if (admin == Admin.UNKNOWN) {
+            parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
+            parseDebugLine.setLineStatusReason("Unrecognized value received ");
+          } else {
+            parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+          }
+        }
+        for (ForecastActual forecastActual : fal) {
+          forecastActual.setAdmin(admin);
+        }
+      }
+    } else if (obsCode.equals("30981-5")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        if (fal.size() == 0) {
+          logNotRead(parseDebugLine);
+        } else {
+          Date date = parseDate(obsValue);
+          logDateNotParsedProblem(parseDebugLine, date);
+          for (ForecastActual forecastActual : fal) {
+            forecastActual.setValidDate(date);
+          }
+        }
+      }
+    } else if (obsCode.equals("30980-7")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        if (fal.size() == 0) {
+          logNotRead(parseDebugLine);
+        } else {
+          Date date = parseDate(obsValue);
+          logDateNotParsedProblem(parseDebugLine, date);
+          for (ForecastActual forecastActual : fal) {
+            forecastActual.setDueDate(date);
+          }
+        }
+      }
+    } else if (obsCode.equals("59777-3")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        if (fal.size() == 0) {
+          logNotRead(parseDebugLine);
+        } else {
+          Date date = parseDate(obsValue);
+          logDateNotParsedProblem(parseDebugLine, date);
+          for (ForecastActual forecastActual : fal) {
+            forecastActual.setFinishedDate(date);
+          }
+        }
+      }
+    } else if (obsCode.equals("59778-1")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        if (fal.size() == 0) {
+          logNotRead(parseDebugLine);
+        } else {
+          Date date = parseDate(obsValue);
+          logDateNotParsedProblem(parseDebugLine, date);
+          for (ForecastActual forecastActual : fal) {
+            forecastActual.setOverdueDate(date);
+          }
+        }
+      }
+    } else if (obsCode.equals("30973-2")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        if (fal.size() == 0) {
+          logNotRead(parseDebugLine);
+        } else {
+          if (parseDebugLine != null) {
+            parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+          }
+          for (ForecastActual forecastActual : fal) {
+            forecastActual.setDoseNumber(obsValue);
+          }
+        }
+      }
+    } else if (obsCode.equals("30982-3")) {
+      if (fal == null) {
+        logOutofSequence(parseDebugLine);
+      } else {
+        if (fal.size() == 0) {
+          logNotRead(parseDebugLine);
+        } else {
+          if (parseDebugLine != null) {
+            parseDebugLine.setLineStatus(ParseDebugStatus.OK);
+          }
+          for (ForecastActual forecastActual : fal) {
+            forecastActual.setForecastReason(obsValue);
+          }
+        }
+      }
+
+    } else if (obsCode.equals("59779-9")) {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
+      }
+    } else {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
+      }
+    }
+    return fal;
   }
 
   private void logEvaluationReasonNotSetup(ParseDebugLine parseDebugLine) {
@@ -594,7 +665,17 @@ public class IISConnector implements ConnectorInterface
     return s;
   }
 
-  private static final Map<String, Admin> adminStatusMap = new HashMap();
+  private static final Map<String, Admin> adminStatusMap = new HashMap<String, Admin>();
+  private static final Map<String, Admin> adminStatusLabelMap = new HashMap<String, Admin>();
+
+  public static Map<String, Admin> getAdminstatusmap() {
+    return adminStatusMap;
+  }
+
+  public static Map<String, Admin> getAdminstatuslabelmap() {
+    return adminStatusLabelMap;
+  }
+
   static {
     // Here are the official codes to map to
     //    Admin.AGED_OUT;
@@ -605,18 +686,27 @@ public class IISConnector implements ConnectorInterface
     //    Admin.NOT_RECOMMENDED;
     adminStatusMap.put("LA13423-1", Admin.OVERDUE); // Envision LA13423-1^Overdue^LN
     adminStatusMap.put("LA13422-3", Admin.NOT_COMPLETE); // Envision LA13422-3^On Schedule^LN
+    adminStatusMap.put("LA13421-5", Admin.COMPLETE); // AL_ImmPrint LA13421-5^Not Recommended - Series Complete^LN
+    adminStatusMap.put("LA13424-9", Admin.AGED_OUT); // AL_ImmPrint LA13424-9^Not Recommended - Too old^LN
     adminStatusMap.put("P", Admin.NOT_COMPLETE); // STC P^Past Due^STC0002
     adminStatusMap.put("D", Admin.NOT_COMPLETE); // STC D^Due Now^STC0002
     adminStatusMap.put("U", Admin.NOT_COMPLETE); // STC U^Up to Date^STC0002
+    adminStatusMap.put("Overdue", Admin.NOT_COMPLETE); // FL SHOTS - Overdue^Overdue
+    adminStatusMap.put("Up to Date", Admin.NOT_COMPLETE); // FL SHOTS - Up to Date^Up to Dat
+    adminStatusMap.put("Complete", Admin.COMPLETE); // FL SHOTS - Complete^Complete
+
+    adminStatusLabelMap.put("OVERDUE", Admin.NOT_COMPLETE); // MI MCIR - 4^Overdue^eval_result_id
+    adminStatusLabelMap.put("COMPLETE", Admin.COMPLETE); // MI MCIR - 1^Complete^eval_result_id
   }
 
-  private static Admin mapAdmin(String value) {
-    if (value == null) {
-      return Admin.UNKNOWN;
-    }
-    Admin admin = adminStatusMap.get(value);
-    if (admin == null) {
-      return Admin.UNKNOWN;
+  private static Admin mapAdmin(String value, String label) {
+    Admin admin = Admin.UNKNOWN;
+    if (value != null) {
+      admin = adminStatusMap.get(value);
+      if (admin == null && label != null & !label.equals("")) {
+        label = label.toUpperCase();
+        admin = adminStatusLabelMap.get(label);
+      }
     }
     return admin;
   }
@@ -642,8 +732,26 @@ public class IISConnector implements ConnectorInterface
     if (i > 0) {
       s = s.substring(0, i);
     }
-    String obsCode = s;
-    return obsCode;
+    return s;
+  }
+  
+  private String readValue(String[] f, int pos, int subpos) {
+    String s = f[pos];
+    while (subpos > 1)
+    {
+      int i = s.indexOf("^");
+      if (i == -1)
+      {
+        return "";
+      }
+      s = s.substring(i + 1);
+      subpos--;
+    }
+    int i = s.indexOf("^");
+    if (i > 0) {
+      s = s.substring(0, i);
+    }
+    return s;
   }
 
   private static Integer increment = new Integer(1);

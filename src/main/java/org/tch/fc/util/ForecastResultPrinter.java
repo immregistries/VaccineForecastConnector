@@ -23,12 +23,14 @@ public class ForecastResultPrinter
     out.println("VACCINE EVALUATION");
     out.print("| " + pad("CVX", 6));
     out.print("| " + pad("DATE", 12));
+    out.print("| " + pad("#", 3));
     out.print("| " + pad("CVX E", 6));
     out.print("| " + pad("VALID", 6));
     out.print("| " + pad("REASON", 30));
     out.println("|");
     out.print("|" + pad("--------------------------------------", 7));
     out.print("|" + pad("--------------------------------------", 13));
+    out.print("|" + pad("--------------------------------------", 4));
     out.print("|" + pad("--------------------------------------", 7));
     out.print("|" + pad("--------------------------------------", 7));
     out.print("|" + pad("--------------------------------------", 31));
@@ -38,6 +40,7 @@ public class ForecastResultPrinter
         for (EvaluationActual evaluationActual : testEvent.getEvaluationActualList()) {
           out.print("| " + pad(testEvent.getEvent().getVaccineCvx(), 6));
           out.print("| " + pad(testEvent.getEventDate(), 12));
+          out.print("| " + pad(evaluationActual.getDoseNumber(), 3));
           out.print("| " + pad(evaluationActual.getVaccineCvx(), 6));
           out.print("| " + pad(evaluationActual.getDoseValid(), 6));
           out.print("| " + pad(evaluationActual.getReasonText(), 30));
@@ -46,6 +49,7 @@ public class ForecastResultPrinter
       } else {
         out.print("| " + pad(testEvent.getEvent().getVaccineCvx(), 6));
         out.print("| " + pad(testEvent.getEventDate(), 12));
+        out.print("| " + pad("", 3));
         out.print("| " + pad("", 6));
         out.print("| " + pad("", 6));
         out.print("| " + pad("", 30));
