@@ -1,7 +1,6 @@
 package org.tch.fc.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 
 public class ForecastActual extends ForecastResult implements Serializable {
