@@ -1,7 +1,9 @@
 package org.tch.fc.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SoftwareResult implements Serializable
 {
@@ -10,6 +12,15 @@ public class SoftwareResult implements Serializable
   private Date runDate = null;
   private String logText = null;
   protected TestCase testCase = null;
+  private List<ForecastEngineIssue> issueList = new ArrayList<>();
+
+  public List<ForecastEngineIssue> getIssueList() {
+    return issueList;
+  }
+
+  public void setIssueList(List<ForecastEngineIssue> issueList) {
+    this.issueList = issueList;
+  }
 
   public int getSoftwareResultId() {
     return softwareResultId;
