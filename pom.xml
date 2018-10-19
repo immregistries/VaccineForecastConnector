@@ -81,6 +81,11 @@
 			<artifactId>axis</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>gov.nist.healthcare.iz.cds.swp.client</groupId>
+			<artifactId>swp-mds-client</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
