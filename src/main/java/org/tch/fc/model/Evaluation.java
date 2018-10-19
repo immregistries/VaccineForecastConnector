@@ -36,4 +36,13 @@ public enum Evaluation implements Serializable {
     }
     return null;
   }
+  
+  public static Evaluation getEvaluationByLabel(String label) {
+	    for (Evaluation evaluation : values()) {
+	      if (evaluation.getLabel().equalsIgnoreCase(label)) {
+	        return evaluation;
+	      }
+	    }
+	    return null;
+	  }
 }
