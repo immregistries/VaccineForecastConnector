@@ -735,10 +735,10 @@ public class ICEConnector implements ConnectorInterface
                 "                        <interpretation code=\"{DISEASE_IMMUNITY_INTERPRETATION_CODE}\" codeSystem=\"2.16.840.1.113883.3.795.12.100.9\" displayName=\"..\" originalText=\"..\"/>\n");
             sb.append("                    </observationResult>\n");
             sb.append("                    <observationResult>\n");
-            sb.append("                        [Record another disease immunity information here if necessary …]\n");
+            sb.append("                        [Record another disease immunity information here if necessary ]\n");
             sb.append("                    </observationResult>\n");
             sb.append("                    <observationResult>\n");
-            sb.append("                        [Record another disease immunity information here if necessary …]\n");
+            sb.append("                        [Record another disease immunity information here if necessary ]\n");
             sb.append("                    </observationResult>\n");
             sb.append("                </observationResults>\n");
             // Patient Disease Immunity Section Ends

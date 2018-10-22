@@ -8,7 +8,7 @@ public enum Service implements Serializable {
   WEB1("web1", "Web1 Epic Interface"), TCH("tch", "TCH Forecaster"), SWP("swp", "Software Partners"), STC("stc",
       "Scientific Technologies Corporation"), ICE("ice", "Immunization Calculation Engine"), BASE("base",
           "Generic representation of any service"), IIS("IIS HL7", "IIS HL7 Interface (NEVER use for production)"),
-  			MDS("MDS v11", "MatchMerge Decision Support Service");
+  			MDS("MDS", "MatchMerge Decision Support Service v11");
 
   private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public enum Service implements Serializable {
 
   public static Service getService(String serviceType) {
     for (Service service : Service.values()) {
-      if (service.getServiceType().equalsIgnoreCase(serviceType)) {
+       if (service.getServiceType().equalsIgnoreCase(serviceType)) {
         return service;
       }
     }

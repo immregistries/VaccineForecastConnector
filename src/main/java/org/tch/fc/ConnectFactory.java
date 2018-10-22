@@ -16,7 +16,7 @@ public class ConnectFactory {
   
   public static ConnectorInterface createConnecter(Software software, List<VaccineGroup> forecastItemList) throws Exception
   {
-    
+    System.out.println("createConnecter!!!!!!" + software.getService());
     if (software.getService() == Service.TCH)
     {
       return new TCHConnector(software, forecastItemList);
@@ -40,6 +40,11 @@ public class ConnectFactory {
     if (software.getService() == Service.IIS)
     {
       return new IISConnector(software, forecastItemList);
+    }
+    if (software.getService() == Service.MDS)
+    {
+      return new MDSConnector(software, forecastItemList);
+      
     }
     return null;
   }
