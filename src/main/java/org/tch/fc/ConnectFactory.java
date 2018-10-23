@@ -16,7 +16,6 @@ public class ConnectFactory {
   
   public static ConnectorInterface createConnecter(Software software, List<VaccineGroup> forecastItemList) throws Exception
   {
-    System.out.println("createConnecter!!!!!!" + software.getService());
     if (software.getService() == Service.TCH)
     {
       return new TCHConnector(software, forecastItemList);
