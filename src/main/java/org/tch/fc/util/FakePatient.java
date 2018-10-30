@@ -93,7 +93,7 @@ public class FakePatient
     maidenLast = fake.getRandomValue("LAST_NAME");
     motherLast = fake.getRandomValue("LAST_NAME");
     patientDob = testCase.getPatientDob();
-    patientSex = testCase.getPatientSex();
+    patientSex = testCase.getPatientSex().toUpperCase();
     String address[] = fake.getValueArray("ADDRESS", 4);
     addressLine1 = (fake.getRandom().nextInt(400) + 1) + " " + fake.getRandomValue("LAST_NAME") + " "
         + fake.getRandomValue("STREET_ABBREVIATION");

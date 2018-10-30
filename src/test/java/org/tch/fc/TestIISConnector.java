@@ -27,6 +27,7 @@ import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.SoftwareResult;
+import org.tch.fc.model.SoftwareResultStatus;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
@@ -36,9 +37,11 @@ public class TestIISConnector extends junit.framework.TestCase
 {
 
   public void testConnectIIS() throws Exception {
+    
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
     TestCase testCase = new TestCase();
+    testCase.setTestCaseNumber("2013-0002");
     testCase.setEvalDate(sdf.parse("07/12/2011"));
     testCase.setPatientSex("F");
     testCase.setPatientDob(sdf.parse("04/01/2006"));
@@ -49,7 +52,8 @@ public class TestIISConnector extends junit.framework.TestCase
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    SoftwareResult softwareResult = new SoftwareResult();
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, softwareResult);
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
@@ -60,15 +64,48 @@ public class TestIISConnector extends junit.framework.TestCase
       }
     }
     assertTrue("HepB forecast not found", foundHepB);
+    System.out.println(softwareResult.getLogText());
 
   }
 
   private Software createSoftware() {
     Software software = new Software();
-    software.setServiceUrl("http://localhost:8080/iis-kernel/soap");
+    software.setServiceUrl("http://immlab.pagekite.me/iis-kernel/soap");
     software.setService(Service.IIS);
     software.setServiceUserid("Mercy");
     software.setServicePassword("password123");
+    software.setServiceFacilityid("Mercy Healthcare");
+    return software;
+  }
+  
+ public void testConnectIISNotAuthenticated() throws Exception {
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+    TestCase testCase = new TestCase();
+    testCase.setTestCaseNumber("2013-0002");
+    testCase.setEvalDate(sdf.parse("07/12/2011"));
+    testCase.setPatientSex("F");
+    testCase.setPatientDob(sdf.parse("04/01/2006"));
+    List<TestEvent> testEventList = new ArrayList<TestEvent>();
+    testEventList.add(new TestEvent(8, sdf.parse("04/01/2006")));
+    testCase.setTestEventList(testEventList);
+    Software software = createSoftwareNotAuthenticated();
+
+    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    connector.setLogText(true);
+    SoftwareResult softwareResult = new SoftwareResult();
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, softwareResult);
+    System.out.println(softwareResult.getLogText());
+    assertEquals(SoftwareResultStatus.NOT_AUTHENTICATED, softwareResult.getSoftwareResultStatus());
+  }
+  
+  private Software createSoftwareNotAuthenticated() {
+    Software software = new Software();
+    software.setServiceUrl("http://immlab.pagekite.me/iis-kernel/soap");
+    software.setService(Service.IIS);
+    software.setServiceUserid("Mercy");
+    software.setServicePassword("passwordWrong");
     software.setServiceFacilityid("Mercy Healthcare");
     return software;
   }
@@ -137,6 +174,25 @@ public class TestIISConnector extends junit.framework.TestCase
 
     assertTrue(forecastActualList.size() > 5);
 
+  }
+  
+  private static String RSP_NOT_FOUND = "MSH|^~\\&|74A^^|74A^^|^^|^^|20181029121553||RSP^K11^RSP_K11|7173854844.100120050|P|2.5.1|||||||||Z33^CDCPHINVS^^|\r" + 
+      "MSA|AA|15408441522834675|\r" + 
+      "ERR|||0|I||||No patients found for this query|\r" + 
+      "QAK|15408441522834675|NF|Z44^Request Evaluated History and Forecast^HL70471|\r" + 
+      "QPD|Z44^Request Evaluated History and Forecast^HL70471|15408441522834675|15408441491274674^^^FITS^MR|Garfield^Azland^Beck|Lyon^Cynthia^^^^^M|20180824|F|385 Custer St^^Ellsworth^MI^49729^USA^P|";
+  
+  public void testReadRSPNotFound() throws Exception{
+    Software software = createSoftware();
+    SoftwareResult softwareResult = new SoftwareResult();
+    TestCase testCase = new TestCase();
+    IISConnector c = new IISConnector(software, VaccineGroup.getForecastItemList());
+    List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+
+    c.readRSP(forecastActualList, testCase, softwareResult, RSP_NOT_FOUND);
+
+    assertTrue(forecastActualList.size()  == 0);
+    assertEquals(SoftwareResultStatus.NOT_FOUND, softwareResult.getSoftwareResultStatus());
   }
 
   private static String RSP_ENVISION = "MSH|^~\\&|WebIZ.18.1.20180629|NV0000||NV1001|20180914122905-0700||RSP^K11^RSP_K11|NV000020180914290578|D|2.5.1|||NE|NE|||||Z42^CDCPHINVS\r"

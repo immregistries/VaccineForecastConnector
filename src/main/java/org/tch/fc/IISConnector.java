@@ -23,6 +23,7 @@ import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.ForecastEngineIssue;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.SoftwareResult;
+import org.tch.fc.model.SoftwareResultStatus;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
@@ -127,7 +128,7 @@ public class IISConnector implements ConnectorInterface {
           "This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
     }
     try {
-      uniqueId = "" + System.currentTimeMillis() + nextIncrement();
+      createUniqueId(testCase.getTestCaseNumber());
 
       FakePatient fakePatient = new FakePatient(testCase, uniqueId);
       String vxu = buildVXU(testCase, fakePatient);
@@ -143,7 +144,6 @@ public class IISConnector implements ConnectorInterface {
         logOut.println(ack);
       }
 
-      uniqueId = "" + System.currentTimeMillis() + nextIncrement();
       String qbp = buildQBP(fakePatient);
       if (logText) {
         logOut.println();
@@ -158,7 +158,13 @@ public class IISConnector implements ConnectorInterface {
       }
 
       readRSP(forecastActualList, testCase, softwareResult, rsp);
+    } catch (NotAuthenticated na) {
+      if (logOut != null) {
+        logOut.println("Unable to authenticate");
+      }
+      softwareResult.setSoftwareResultStatus(SoftwareResultStatus.NOT_AUTHENTICATED);
     } catch (Exception e) {
+      softwareResult.setSoftwareResultStatus(SoftwareResultStatus.PROBLEM);
       if (logOut != null) {
         logOut.println("Unable to get forecast results from IIS");
         e.printStackTrace(logOut);
@@ -173,6 +179,31 @@ public class IISConnector implements ConnectorInterface {
       }
     }
     return forecastActualList;
+  }
+
+  private static char[] encoding = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+      'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+      'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',};
+
+  private void createUniqueId(String testId) {
+    String num = "" + System.currentTimeMillis();
+    num = nextIncrement() + num.substring(num.length() - 10);
+    long i = Long.parseLong(num);
+    num = "";
+    while (i >= encoding.length) {
+      int r = (int) (i % encoding.length);
+      num = encoding[r] + num;
+      i = i / encoding.length;
+    }
+    num = encoding[(int) i] + num;
+    if (testId.length() > 9) {
+      testId = testId.substring(testId.length() - 9);
+    }
+    if (num.length() > 6) {
+      num = num.substring(num.length() - 6);
+    }
+    uniqueId = testId + num;
   }
 
   public static enum ParseDebugStatus {
@@ -313,6 +344,7 @@ public class IISConnector implements ConnectorInterface {
   public void readRSP(List<ForecastActual> forecastActualList, TestCase testCase,
       SoftwareResult softwareResult, String rsp, List<ParseDebugLine> parseDebugLineList)
       throws IOException, ParseException {
+    SoftwareResultStatus softwareResultStatus = SoftwareResultStatus.OK;
     List<ForecastEngineIssue> issuesList = softwareResult.getIssueList();
     BufferedReader in = new BufferedReader(new StringReader(rsp));
     String line;
@@ -346,11 +378,20 @@ public class IISConnector implements ConnectorInterface {
         }
         if (segmentName.equals("BHS") || segmentName.equals("FHS") || segmentName.equals("FTS")
             || segmentName.equals("BTS") || segmentName.equals("MSH") || segmentName.equals("MSA")
-            || segmentName.equals("ERR") || segmentName.equals("QAK") || segmentName.equals("QPD")
+            || segmentName.equals("ERR") || segmentName.equals("QPD")
             || segmentName.equals("PID") || segmentName.equals("ORC") || segmentName.equals("RXR")
             || segmentName.equals("NK1") || segmentName.equals("PD1")) {
           if (parseDebugLine != null) {
             parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
+          }
+        } else if (segmentName.equals("QAK")) {
+          String queryResponseStatus = readFieldValue(f, 2);
+          if (queryResponseStatus.equals("NF"))
+          {
+            softwareResultStatus = SoftwareResultStatus.NOT_FOUND;
+          }
+          if (parseDebugLine != null) {
+            parseDebugLine.setLineStatus(ParseDebugStatus.OK);
           }
         } else if (segmentName.equals("RXA")) {
           adminDateInRxa = readFieldValue(f, 3);
@@ -405,7 +446,7 @@ public class IISConnector implements ConnectorInterface {
 
       }
     }
-
+softwareResult.setSoftwareResultStatus(softwareResultStatus);
   }
 
   private EvaluationActual handleEvaluation(SoftwareResult softwareResult, TestEvent testEvent,
@@ -679,7 +720,8 @@ public class IISConnector implements ConnectorInterface {
       parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
       parseDebugLine.setLineStatusReason(
           "Missing a previous OBX that defines the vaccines being forecast for");
-      issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "Missing a previous OBX that defines the vaccines being forecast for"));
+      issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
+          "Missing a previous OBX that defines the vaccines being forecast for"));
     }
   }
 
@@ -906,7 +948,7 @@ public class IISConnector implements ConnectorInterface {
       sb.append("|" + sdf.format(fakePatient.getPatientDob()));
       {
         // PID-8
-        sb.append("|" + fakePatient.getPatientSex());
+        sb.append("|" + (fakePatient.getPatientSex().toUpperCase().equals("M") ? "M" : "F"));
         // PID-9
         sb.append("|");
         // PID-10
@@ -1032,8 +1074,13 @@ public class IISConnector implements ConnectorInterface {
   public void setLogText(boolean logText) {
     this.logText = logText;
   }
+  
+  private class NotAuthenticated extends Exception
+  {
+    
+  }
 
-  private String sendRequest(String request) throws IOException {
+  private String sendRequest(String request) throws IOException, NotAuthenticated {
     URLConnection urlConn;
     DataOutputStream printout;
     InputStreamReader input = null;
@@ -1074,8 +1121,13 @@ public class IISConnector implements ConnectorInterface {
     }
     input.close();
     String s = response.toString();
-
+    
     int start = s.indexOf("MSH|");
+    if (s.indexOf("SecurityFault") > 0 && start < 0)
+    {
+      throw new NotAuthenticated();
+    }
+
     if (start > 0) {
       s = s.substring(start);
       int e = s.indexOf("</");
