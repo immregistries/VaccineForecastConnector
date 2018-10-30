@@ -77,6 +77,50 @@ public class TestIISConnector extends junit.framework.TestCase
     software.setServiceFacilityid("Mercy Healthcare");
     return software;
   }
+
+  public void testConnectSTC() throws Exception {
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+    TestCase testCase = new TestCase();
+    testCase.setTestCaseNumber("2013-0002");
+    testCase.setEvalDate(sdf.parse("07/12/2011"));
+    testCase.setPatientSex("F");
+    testCase.setPatientDob(sdf.parse("04/01/2006"));
+    List<TestEvent> testEventList = new ArrayList<TestEvent>();
+    testEventList.add(new TestEvent(8, sdf.parse("04/01/2006")));
+    testCase.setTestEventList(testEventList);
+    Software software = createSoftwareSTC();
+
+    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    connector.setLogText(true);
+    SoftwareResult softwareResult = new SoftwareResult();
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, softwareResult);
+    assertNotNull(forecastActualList);
+    boolean foundHepB = false;
+    for (ForecastActual forecastActual : forecastActualList) {
+      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5
+          || forecastActual.getVaccineGroup().getVaccineGroupId() == 20
+          || forecastActual.getVaccineGroup().getVaccineGroupId() == 21) {
+        foundHepB = true;
+      }
+    }
+    assertEquals(SoftwareResultStatus.OK, softwareResult.getSoftwareResultStatus());
+    assertTrue("HepB forecast not found", foundHepB);
+    System.out.println(softwareResult.getLogText());
+
+  }
+
+  private Software createSoftwareSTC() {
+    Software software = new Software();
+    software.setServiceUrl("http://immlab.pagekite.me/aart/soap");
+    software.setService(Service.IIS);
+    software.setServiceUserid("TEMP_CONN");
+    software.setServicePassword("B9VVFKMNBK8BZR8619F");
+    software.setServiceFacilityid("72A");
+    return software;
+  }
+
   
  public void testConnectIISNotAuthenticated() throws Exception {
     

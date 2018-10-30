@@ -150,14 +150,37 @@ public class IISConnector implements ConnectorInterface {
         logOut.println("Sending QBP ...");
         logOut.println(qbp);
       }
-      String rsp = sendRequest(qbp);
-      if (logText) {
-        logOut.println();
-        logOut.println("RSP received back ...");
-        logOut.println(rsp);
+      boolean lookingForMatch = true;
+      int delay = 0;
+      while (lookingForMatch) {
+        String rsp = sendRequest(qbp);
+        if (logText) {
+          logOut.println();
+          logOut.println("RSP received back ...");
+          logOut.println(rsp);
+        }
+        readRSP(forecastActualList, testCase, softwareResult, rsp);
+        if (softwareResult.getSoftwareResultStatus() == SoftwareResultStatus.NOT_FOUND) {
+          if (delay == 0) {
+            delay = 10;
+          } else if (delay == 10) {
+            delay = 20;
+          } else if (delay == 20) {
+            delay = 30;
+          } else if (delay == 30) {
+            lookingForMatch = false;
+          }
+        } else {
+          lookingForMatch = false;
+        }
+        if (lookingForMatch)
+        {
+          synchronized(this)
+          {
+            this.wait(delay * 1000);
+          }
+        }
       }
-
-      readRSP(forecastActualList, testCase, softwareResult, rsp);
     } catch (NotAuthenticated na) {
       if (logOut != null) {
         logOut.println("Unable to authenticate");
@@ -378,16 +401,15 @@ public class IISConnector implements ConnectorInterface {
         }
         if (segmentName.equals("BHS") || segmentName.equals("FHS") || segmentName.equals("FTS")
             || segmentName.equals("BTS") || segmentName.equals("MSH") || segmentName.equals("MSA")
-            || segmentName.equals("ERR") || segmentName.equals("QPD")
-            || segmentName.equals("PID") || segmentName.equals("ORC") || segmentName.equals("RXR")
-            || segmentName.equals("NK1") || segmentName.equals("PD1")) {
+            || segmentName.equals("ERR") || segmentName.equals("QPD") || segmentName.equals("PID")
+            || segmentName.equals("ORC") || segmentName.equals("RXR") || segmentName.equals("NK1")
+            || segmentName.equals("PD1")) {
           if (parseDebugLine != null) {
             parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
           }
         } else if (segmentName.equals("QAK")) {
           String queryResponseStatus = readFieldValue(f, 2);
-          if (queryResponseStatus.equals("NF"))
-          {
+          if (queryResponseStatus.equals("NF")) {
             softwareResultStatus = SoftwareResultStatus.NOT_FOUND;
           }
           if (parseDebugLine != null) {
@@ -446,7 +468,7 @@ public class IISConnector implements ConnectorInterface {
 
       }
     }
-softwareResult.setSoftwareResultStatus(softwareResultStatus);
+    softwareResult.setSoftwareResultStatus(softwareResultStatus);
   }
 
   private EvaluationActual handleEvaluation(SoftwareResult softwareResult, TestEvent testEvent,
@@ -1074,10 +1096,10 @@ softwareResult.setSoftwareResultStatus(softwareResultStatus);
   public void setLogText(boolean logText) {
     this.logText = logText;
   }
-  
-  private class NotAuthenticated extends Exception
-  {
-    
+
+  @SuppressWarnings("serial")
+  private class NotAuthenticated extends Exception {
+
   }
 
   private String sendRequest(String request) throws IOException, NotAuthenticated {
@@ -1121,10 +1143,9 @@ softwareResult.setSoftwareResultStatus(softwareResultStatus);
     }
     input.close();
     String s = response.toString();
-    
+
     int start = s.indexOf("MSH|");
-    if (s.indexOf("SecurityFault") > 0 && start < 0)
-    {
+    if (s.indexOf("SecurityFault") > 0 && start < 0) {
       throw new NotAuthenticated();
     }
 

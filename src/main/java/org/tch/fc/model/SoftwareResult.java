@@ -13,7 +13,7 @@ public class SoftwareResult implements Serializable
   private String logText = null;
   protected TestCase testCase = null;
   private List<ForecastEngineIssue> issueList = new ArrayList<>();
-  private SoftwareResultStatus softwareResultStatus = null;
+  private SoftwareResultStatus softwareResultStatus = SoftwareResultStatus.OK;
 
   public SoftwareResultStatus getSoftwareResultStatus() {
     return softwareResultStatus;
