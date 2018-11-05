@@ -173,10 +173,8 @@ public class IISConnector implements ConnectorInterface {
         } else {
           lookingForMatch = false;
         }
-        if (lookingForMatch)
-        {
-          synchronized(this)
-          {
+        if (lookingForMatch) {
+          synchronized (this) {
             this.wait(delay * 1000);
           }
         }
@@ -1008,8 +1006,11 @@ public class IISConnector implements ConnectorInterface {
         // RXA-4
         sb.append("|");
         // RXA-5
-        sb.append("|" + testEvent.getEvent().getVaccineCvx() + "^" + testEvent.getEvent().getLabel()
-            + "^CVX");
+        String cvxLabel = testEvent.getEvent().getLabel();
+        if (cvxLabel == null || cvxLabel.equals("")) {
+          cvxLabel = testEvent.getEvent().getVaccineCvx();
+        }
+        sb.append("|" + testEvent.getEvent().getVaccineCvx() + "^" + cvxLabel + "^CVX");
         {
           // RXA-6
           sb.append("|");
