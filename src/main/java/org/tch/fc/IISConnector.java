@@ -1,5 +1,8 @@
 package org.tch.fc;
 
+import static org.tch.fc.model.ForecastEngineIssueLevel.ERROR;
+import static org.tch.fc.model.ForecastEngineIssueLevel.WARNING;
+import static org.tch.fc.model.ForecastEngineIssueType.UNEXPECTED_FORMAT;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,10 +15,15 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.tch.fc.model.Admin;
 import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.Event;
@@ -28,8 +36,6 @@ import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.util.FakePatient;
-import static org.tch.fc.model.ForecastEngineIssueLevel.*;
-import static org.tch.fc.model.ForecastEngineIssueType.*;
 
 public class IISConnector implements ConnectorInterface {
   private Software software = null;
@@ -39,25 +45,34 @@ public class IISConnector implements ConnectorInterface {
   public IISConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
     this.forecastItemList = forecastItemList;
+    map("3", VaccineGroup.ID_MMR, INVALID_CVX_CODE);
+    map("9", VaccineGroup.ID_DTAP_TDAP_TD, INVALID_CVX_CODE);
+    map("9", VaccineGroup.ID_TDAP_ONLY, INVALID_CVX_CODE);
+    map("9", VaccineGroup.ID_TDAP_TD, INVALID_CVX_CODE);
+    map("09", VaccineGroup.ID_DTAP_TDAP_TD);
+    map("09", VaccineGroup.ID_TDAP_ONLY);
+    map("09", VaccineGroup.ID_TDAP_TD);
     map("10", VaccineGroup.ID_POLIO);
-    map("010", VaccineGroup.ID_POLIO);
-    map("017", VaccineGroup.ID_HIB);
+    map("010", VaccineGroup.ID_POLIO, INVALID_CVX_CODE);
+    map("017", VaccineGroup.ID_HIB, INVALID_CVX_CODE);
     map("16", VaccineGroup.ID_INFLUENZA);
+    map("020", VaccineGroup.ID_DTAP, INVALID_CVX_CODE);
     map("22", VaccineGroup.ID_HIB);
     map("28", VaccineGroup.ID_DTAP);
     map("28", VaccineGroup.ID_DTAP_TDAP_TD);
-    map("028", VaccineGroup.ID_DTAP);
-    map("028", VaccineGroup.ID_DTAP_TDAP_TD);
+    map("028", VaccineGroup.ID_DTAP, INVALID_CVX_CODE);
+    map("028", VaccineGroup.ID_DTAP_TDAP_TD, INVALID_CVX_CODE);
     map("31", VaccineGroup.ID_HEPA);
-    map("033", VaccineGroup.ID_PPSV);
+    map("033", VaccineGroup.ID_PPSV, INVALID_CVX_CODE);
     map("42", VaccineGroup.ID_HEPB);
-    map("045", VaccineGroup.ID_HEPB);
+    map("045", VaccineGroup.ID_HEPB, INVALID_CVX_CODE);
     map("48", VaccineGroup.ID_HIB);
     map("52", VaccineGroup.ID_HEPA);
-    map("062", VaccineGroup.ID_HPV);
+    map("062", VaccineGroup.ID_HPV, INVALID_CVX_CODE);
+    map("62", VaccineGroup.ID_HPV);
     map("83", VaccineGroup.ID_HEPA);
-    map("085", VaccineGroup.ID_HEPA);
-    map("088", VaccineGroup.ID_INFLUENZA);
+    map("085", VaccineGroup.ID_HEPA, INVALID_CVX_CODE);
+    map("088", VaccineGroup.ID_INFLUENZA, INVALID_CVX_CODE);
     map("100", VaccineGroup.ID_PNEUMO);
     map("106", VaccineGroup.ID_DTAP);
     map("106", VaccineGroup.ID_DTAP_TDAP_TD);
@@ -75,35 +90,46 @@ public class IISConnector implements ConnectorInterface {
     map("164", VaccineGroup.ID_MENINGB);
     map("164", VaccineGroup.ID_MENING);
     map("165", VaccineGroup.ID_HPV);
-    map("HEP B", VaccineGroup.ID_HEPB); // FL SHOTS - HEP B^HEPATITIS B
-    map("HIB", VaccineGroup.ID_HIB); // FL SHOTS - HIB^H INFLUENZA TYPE B
-    map("POLIO", VaccineGroup.ID_POLIO); // FL SHOTS - POLIO^POLIO
-    map("VZV", VaccineGroup.ID_VAR); // FL SHOTS - VZV^CHICKEN POX
-    map("PNEUCON", VaccineGroup.ID_PNEUMO); // FL SHOTS - PNEUCON^PNEUMOCOCCAL CONJUGATE
-    map("MEASLES", VaccineGroup.ID_MEASLES_ONLY); // FL SHOTS - MEASLES^MEASLES
-    map("MEASLES", VaccineGroup.ID_MMR); // FL SHOTS - MEASLES^MEASLES
-    map("MUMPS", VaccineGroup.ID_MUMPS_ONLY); // FL SHOTS - MUMPS^MUMPS
-    map("RUBELLA", VaccineGroup.ID_RUBELLA_ONLY); // FL SHOTS - RUBELLA^RUBELLA
-    map("ROTAVIRUS", VaccineGroup.ID_ROTA); // FL SHOTS - ROTAVIRUS^ROTAVIRUS
-    map("HPV", VaccineGroup.ID_HPV); // FL SHOTS - HPV^HPV
-    map("DIPHTHERIA", VaccineGroup.ID_DTAP); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
-    map("DIPHTHERIA", VaccineGroup.ID_DTAP_TDAP_TD); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
-    // map("PERTUSSIS", VaccineGroup.ID_); // FL SHOTS - PERTUSSIS^PERTUSSIS
-    // map("TETANUS", VaccineGroup.ID); // FL SHOTS - TETANUS^TETANUS
-    // IL I-CARE - 
+    map("HEP B", VaccineGroup.ID_HEPB, INVALID_CVX_CODE); // FL SHOTS - HEP B^HEPATITIS B
+    map("HIB", VaccineGroup.ID_HIB, INVALID_CVX_CODE); // FL SHOTS - HIB^H INFLUENZA TYPE B
+    map("POLIO", VaccineGroup.ID_POLIO, INVALID_CVX_CODE); // FL SHOTS - POLIO^POLIO
+    map("VZV", VaccineGroup.ID_VAR, INVALID_CVX_CODE); // FL SHOTS - VZV^CHICKEN POX
+    map("PNEUCON", VaccineGroup.ID_PNEUMO, INVALID_CVX_CODE); // FL SHOTS - PNEUCON^PNEUMOCOCCAL CONJUGATE
+    map("MEASLES", VaccineGroup.ID_MEASLES_ONLY, INVALID_CVX_CODE); // FL SHOTS - MEASLES^MEASLES
+    map("MEASLES", VaccineGroup.ID_MMR, INVALID_CVX_CODE); // FL SHOTS - MEASLES^MEASLES
+    map("MUMPS", VaccineGroup.ID_MUMPS_ONLY, INVALID_CVX_CODE); // FL SHOTS - MUMPS^MUMPS
+    map("RUBELLA", VaccineGroup.ID_RUBELLA_ONLY, INVALID_CVX_CODE); // FL SHOTS - RUBELLA^RUBELLA
+    map("ROTAVIRUS", VaccineGroup.ID_ROTA, INVALID_CVX_CODE); // FL SHOTS - ROTAVIRUS^ROTAVIRUS
+    map("HPV", VaccineGroup.ID_HPV, INVALID_CVX_CODE); // FL SHOTS - HPV^HPV
+    map("DIPHTHERIA", VaccineGroup.ID_DTAP, INVALID_CVX_CODE); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
+    map("DIPHTHERIA", VaccineGroup.ID_DTAP_TDAP_TD, INVALID_CVX_CODE); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
     for (VaccineGroup forecastItem : forecastItemList) {
+      String cvx = forecastItem.getVaccineCvx();
+
       map(forecastItem.getVaccineCvx(), forecastItem.getVaccineGroupId());
     }
   }
 
   private List<VaccineGroup> forecastItemList = null;
   private Map<String, List<VaccineGroup>> familyMapping = new HashMap<String, List<VaccineGroup>>();
+  private Set<String> invalidCvxCodes = new HashSet<>();
+
+  private static final boolean INVALID_CVX_CODE = true;
 
   public Map<String, List<VaccineGroup>> getFamilyMapping() {
     return familyMapping;
   }
 
   private void map(String familyName, int forecastItemId) {
+    map(familyName, forecastItemId, false);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void map(String familyName, int forecastItemId, boolean incorrectCvxCode) {
+    if (incorrectCvxCode) {
+      invalidCvxCodes.add(familyName);
+    }
+
     for (VaccineGroup forecastItem : forecastItemList) {
       if (forecastItem.getVaccineGroupId() == forecastItemId) {
         List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
@@ -111,7 +137,9 @@ public class IISConnector implements ConnectorInterface {
           forecastItemListFromMap = new ArrayList<VaccineGroup>();
           familyMapping.put(familyName, forecastItemListFromMap);
         }
-        forecastItemListFromMap.add(forecastItem);
+        if (!forecastItemListFromMap.contains(forecastItem)) {
+          forecastItemListFromMap.add(forecastItem);
+        }
         return;
       }
     }
@@ -166,8 +194,8 @@ public class IISConnector implements ConnectorInterface {
           } else if (delay == 10) {
             delay = 20;
           } else if (delay == 20) {
-            delay = 30;
-          } else if (delay == 30) {
+            delay = 40;
+          } else if (delay == 40) {
             lookingForMatch = false;
           }
         } else {
@@ -375,6 +403,10 @@ public class IISConnector implements ConnectorInterface {
     String cvxCodeInRxa = "";
     String adminDateInRxa = "";
     ParseDebugLine parseDebugLine = null;
+    boolean firstOBX = true;
+    boolean okayToRead597807 = true;
+    Set<String> cvxForecastSet = new HashSet<>();
+    Set<VaccineGroup> vaccineGroupSet = new HashSet<>();
     while ((line = in.readLine()) != null) {
       if (parseDebugLineList != null) {
         parseDebugLine = new ParseDebugLine(line);
@@ -438,6 +470,7 @@ public class IISConnector implements ConnectorInterface {
             parseDebugLine.setTestEvent(testEvent);
             parseDebugLine.setLineStatus(ParseDebugStatus.OK);
           }
+          firstOBX = true;
         } else if (segmentName.equals("OBX")) {
           String obsCode = readValue(f, 3);
           String obsValue = readValue(f, 5);
@@ -451,12 +484,18 @@ public class IISConnector implements ConnectorInterface {
             continue;
           } else if (cvxCodeInRxa.equals("998")) {
             fal = handleForecast(forecastActualList, fal, parseDebugLine, obsCode, obsValue,
-                obsLabel, softwareResult);
+                obsLabel, softwareResult, okayToRead597807, cvxForecastSet, vaccineGroupSet);
+            if (firstOBX) {
+              firstOBX = false;
+              okayToRead597807 = obsCode.equals("59780-7");
+
+
+            }
+
           } else {
             evaluationActual = handleEvaluation(softwareResult, testEvent, evaluationActual,
                 parseDebugLine, obsCode, obsValue);
           }
-
         } else {
           if (parseDebugLine != null) {
             parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
@@ -467,6 +506,24 @@ public class IISConnector implements ConnectorInterface {
       }
     }
     softwareResult.setSoftwareResultStatus(softwareResultStatus);
+    Collections.sort(forecastActualList, new Comparator<ForecastActual>() {
+      @Override
+      public int compare(ForecastActual fa1, ForecastActual fa2) {
+        if (fa1.getVaccineGroup().equals(fa2.getVaccineGroup())) {
+          if (fa1.getValidDate() != null && fa2.getValidDate() != null) {
+            return fa1.getValidDate().compareTo(fa2.getValidDate());
+          } else if (fa1.getDueDate() != null && fa2.getDueDate() != null) {
+            return fa1.getDueDate().compareTo(fa2.getDueDate());
+          } else if (fa1.getAdminStatus() != null && fa2.getAdminStatus() != null) {
+            return fa1.getAdminStatus().compareTo(fa2.getAdminStatus());
+          }
+        } else {
+          return fa1.getVaccineGroup().getLabel().compareTo(fa2.getVaccineGroup().getLabel());
+        }
+        return 0;
+      }
+    });
+
   }
 
   private EvaluationActual handleEvaluation(SoftwareResult softwareResult, TestEvent testEvent,
@@ -552,13 +609,39 @@ public class IISConnector implements ConnectorInterface {
 
   private List<ForecastActual> handleForecast(List<ForecastActual> forecastActualList,
       List<ForecastActual> fal, ParseDebugLine parseDebugLine, String obsCode, String obsValue,
-      String obsLabel, SoftwareResult softwareResult) {
+      String obsLabel, SoftwareResult softwareResult, boolean okayToRead597807,
+      Set<String> cvxForecastSet, Set<VaccineGroup> vaccineGroupSet) {
     List<ForecastEngineIssue> issueList = softwareResult.getIssueList();
-    if (obsCode.equals("30956-7") || obsCode.equals("30979-9") || obsCode.equals("59780-7")) {
+    if (obsCode.equals("30956-7") || obsCode.equals("30979-9")
+        || (okayToRead597807 && obsCode.equals("59780-7"))) {
+
+      if (obsCode.equals("59780-7")) {
+        issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
+            "LOINC 59780-7 should not be used to indicate which vaccination to forecast for"));
+      }
+      if (obsValue.equals("")) {
+        issueList.add(
+            new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "No vaccine CVX was sent in OBX-5"));
+      } else {
+        if (cvxForecastSet.contains(obsValue)) {
+          issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING, "CVX " + obsValue
+              + " has already been forecasted in this message, duplicate forecasts might confuse the reader"));
+        }
+      }
+      cvxForecastSet.add(obsValue);
+      if (invalidCvxCodes.contains(obsValue)) {
+        issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
+            "Value '" + obsValue + "' is not a valid CVX code"));
+      }
       List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
       fal = new ArrayList<ForecastActual>();
       if (forecastItemListFromMap != null) {
         for (VaccineGroup vaccineGroup : forecastItemListFromMap) {
+          if (vaccineGroupSet.contains(vaccineGroup)) {
+            issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING, "CVX " + obsCode
+                + " is a close match to another " + vaccineGroup.getLabel()
+                + " forecast in this message, this may be a potential duplicate that may confuse the reader"));
+          }
           ForecastActual forecastActual = new ForecastActual();
           forecastActualList.add(forecastActual);
           fal.add(forecastActual);
@@ -570,10 +653,10 @@ public class IISConnector implements ConnectorInterface {
         if (parseDebugLine != null) {
           parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
           parseDebugLine
-              .setLineStatusReason("Unable to find mapping to one ore more vaccine groups");
+              .setLineStatusReason("Unable to find mapping to one or more vaccine groups");
         }
-        issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING,
-            "Unable to find mapping to one ore more vaccine groups"));
+        issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
+            "Unable to find mapping to one or more vaccine groups"));
       } else {
         if (parseDebugLine != null) {
           parseDebugLine.setLineStatus(ParseDebugStatus.OK_FORECAST);
@@ -588,6 +671,18 @@ public class IISConnector implements ConnectorInterface {
           }
           parseDebugLine.setLineStatusReason(s);
         }
+      }
+    } else if (obsCode.equals("30999-1")) {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
+        parseDebugLine.setLineStatusReason("LOINC 30999-1 is not supported");
+      }
+      issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
+          "LOIND 30999-1 is not supported, information may be lost of ignored"));
+    } else if (obsCode.equals("59780-7")) {
+      if (parseDebugLine != null) {
+        parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
+        parseDebugLine.setLineStatusReason("Not currently supported");
       }
     } else if (obsCode.equals("59783-1")) {
       if (fal == null) {

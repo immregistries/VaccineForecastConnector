@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VaccineGroup implements Serializable
-{
+public class VaccineGroup implements Serializable, Comparable {
 
   public VaccineGroup() {
     // default;
@@ -146,54 +145,54 @@ public class VaccineGroup implements Serializable
 
   private int[] initTypicalGivenYear() {
     switch (vaccineGroupId) {
-    case ID_DTAP:
-      return new int[] { 0, 6 };
-    case ID_INFLUENZA:
-      return new int[] { 0, 120 };
-    case ID_HEPA:
-      return new int[] { 1, 18 };
-    case ID_HEPB:
-      return new int[] { 0, 18 };
-    case ID_HIB:
-      return new int[] { 0, 4 };
-    case ID_HPV:
-      return new int[] { 9, 26 };
-    case ID_MENING:
-      return new int[] { 11, 26 };
-    case ID_MMR:
-      return new int[] { 0, 18 };
-    case ID_PNEUMO:
-      return new int[] { 0, 6 };
-    case ID_POLIO:
-      return new int[] { 0, 18 };
-    case ID_ROTA:
-      return new int[] { 0, 1 };
-    case ID_VAR:
-      return new int[] { 0, 120 };
-    case ID_ZOSTER:
-      return new int[] { 60, 120 };
-    case ID_TDAP_TD:
-      return new int[] { 7, 120 };
-    case ID_PCV:
-      return new int[] { 65, 120 };
-    case ID_TD_ONLY:
-      return new int[] { 0, 0 };
-    case ID_DTAP_TDAP_TD:
-      return new int[] { 0, 0 };
-    case ID_HEPB_2_ONLY:
-      return new int[] { 0, 0 };
-    case ID_HEPB_3_ONLY:
-      return new int[] { 0, 0 };
-    case ID_MEASLES_ONLY:
-      return new int[] { 0, 0 };
-    case ID_MUMPS_ONLY:
-      return new int[] { 0, 0 };
-    case ID_RUBELLA_ONLY:
-      return new int[] { 0, 0 };
-    case ID_TDAP_ONLY:
-      return new int[] { 0, 0 };
+      case ID_DTAP:
+        return new int[] {0, 6};
+      case ID_INFLUENZA:
+        return new int[] {0, 120};
+      case ID_HEPA:
+        return new int[] {1, 18};
+      case ID_HEPB:
+        return new int[] {0, 18};
+      case ID_HIB:
+        return new int[] {0, 4};
+      case ID_HPV:
+        return new int[] {9, 26};
+      case ID_MENING:
+        return new int[] {11, 26};
+      case ID_MMR:
+        return new int[] {0, 18};
+      case ID_PNEUMO:
+        return new int[] {0, 6};
+      case ID_POLIO:
+        return new int[] {0, 18};
+      case ID_ROTA:
+        return new int[] {0, 1};
+      case ID_VAR:
+        return new int[] {0, 120};
+      case ID_ZOSTER:
+        return new int[] {60, 120};
+      case ID_TDAP_TD:
+        return new int[] {7, 120};
+      case ID_PCV:
+        return new int[] {65, 120};
+      case ID_TD_ONLY:
+        return new int[] {0, 0};
+      case ID_DTAP_TDAP_TD:
+        return new int[] {0, 0};
+      case ID_HEPB_2_ONLY:
+        return new int[] {0, 0};
+      case ID_HEPB_3_ONLY:
+        return new int[] {0, 0};
+      case ID_MEASLES_ONLY:
+        return new int[] {0, 0};
+      case ID_MUMPS_ONLY:
+        return new int[] {0, 0};
+      case ID_RUBELLA_ONLY:
+        return new int[] {0, 0};
+      case ID_TDAP_ONLY:
+        return new int[] {0, 0};
     }
-    return new int[] { 0, 120 };
+    return new int[] {0, 120};
   }
 
   public int getTypicallyGivenYearStart() {
@@ -237,6 +236,15 @@ public class VaccineGroup implements Serializable
   @Override
   public String toString() {
     return label;
+  }
+
+  @Override
+  public int compareTo(Object o) {
+    if (o instanceof VaccineGroup) {
+      VaccineGroup vg = (VaccineGroup) o;
+      return vg.getLabel().compareTo(vg.getLabel());
+    }
+    return this.toString().toString().compareTo(o.toString());
   }
 
 }
