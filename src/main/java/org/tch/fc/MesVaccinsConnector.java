@@ -7,7 +7,6 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import org.tch.fc.mesvaccins.MesVaccinsVaccine;
 import org.tch.fc.model.ForecastActual;
@@ -91,7 +90,7 @@ public class MesVaccinsConnector implements ConnectorInterface {
     urlConn = (HttpURLConnection) url.openConnection();
     urlConn.setRequestMethod("GET");
     String authorization = software.getServiceUserid() + ":" + software.getServicePassword();
-    authorization = Base64.getEncoder().encodeToString((authorization).getBytes());
+    // authorization = Base64.getEncoder().encodeToString((authorization).getBytes());
     urlConn.setRequestProperty("Authorization", "Basic " + authorization);
     urlConn.setDoInput(true);
     urlConn.setDoOutput(false);
