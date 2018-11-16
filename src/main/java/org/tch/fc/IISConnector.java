@@ -104,8 +104,6 @@ public class IISConnector implements ConnectorInterface {
     map("DIPHTHERIA", VaccineGroup.ID_DTAP, INVALID_CVX_CODE); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
     map("DIPHTHERIA", VaccineGroup.ID_DTAP_TDAP_TD, INVALID_CVX_CODE); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
     for (VaccineGroup forecastItem : forecastItemList) {
-      String cvx = forecastItem.getVaccineCvx();
-
       map(forecastItem.getVaccineCvx(), forecastItem.getVaccineGroupId());
     }
   }
@@ -156,6 +154,18 @@ public class IISConnector implements ConnectorInterface {
           "This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
     }
     try {
+      if (testCase.getTestEventList().size() == 0) {
+        if (logText) {
+          logOut.println(
+              "No vaccinations found, so adding a Typhoid to list, some IIS cannot accept a patient without at least one vaccination.");
+        }
+        // Adding typhoid given today
+        TestEvent testEvent = new TestEvent();
+        testEvent.setEvent(Event.getEvent(91));
+        testEvent.setEventDate(new Date());
+        testEvent.setTestCase(testCase);
+        testCase.getTestEventList().add(testEvent);
+      }
       createUniqueId(testCase.getTestCaseNumber());
 
       FakePatient fakePatient = new FakePatient(testCase, uniqueId);
