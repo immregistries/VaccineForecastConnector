@@ -417,6 +417,7 @@ public class IISConnector implements ConnectorInterface {
     boolean okayToRead597807 = true;
     Set<String> cvxForecastSet = new HashSet<>();
     Set<VaccineGroup> vaccineGroupSet = new HashSet<>();
+    Map<String, Integer> segmentCountMap = new HashMap<>();
     while ((line = in.readLine()) != null) {
       if (parseDebugLineList != null) {
         parseDebugLine = new ParseDebugLine(line);
@@ -431,11 +432,22 @@ public class IISConnector implements ConnectorInterface {
               .setLineStatusReason("HL7 segment has too few fields, or is not formatted properly");
         }
         issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING,
-            "Invalid HL7 format found in segment"));
+            "Invalid HL7 format found in segment", ""));
         continue;
       }
       {
         String segmentName = f[0];
+        String path = segmentName;
+        {
+          Integer count = segmentCountMap.get(segmentName);
+          if (count == null) {
+            count = 1;
+          } else {
+            count = count + 1;
+            path += "[" + count + "]";
+          }
+          segmentCountMap.put(segmentName, count);
+        }
         if (parseDebugLine != null) {
           parseDebugLine.setSegmentName(segmentName);
         }
@@ -494,7 +506,7 @@ public class IISConnector implements ConnectorInterface {
             continue;
           } else if (cvxCodeInRxa.equals("998")) {
             fal = handleForecast(forecastActualList, fal, parseDebugLine, obsCode, obsValue,
-                obsLabel, softwareResult, okayToRead597807, cvxForecastSet, vaccineGroupSet);
+                obsLabel, softwareResult, okayToRead597807, cvxForecastSet, vaccineGroupSet, path);
             if (firstOBX) {
               firstOBX = false;
               okayToRead597807 = obsCode.equals("59780-7");
@@ -504,7 +516,7 @@ public class IISConnector implements ConnectorInterface {
 
           } else {
             evaluationActual = handleEvaluation(softwareResult, testEvent, evaluationActual,
-                parseDebugLine, obsCode, obsValue);
+                parseDebugLine, obsCode, obsValue, path);
           }
         } else {
           if (parseDebugLine != null) {
@@ -538,7 +550,7 @@ public class IISConnector implements ConnectorInterface {
 
   private EvaluationActual handleEvaluation(SoftwareResult softwareResult, TestEvent testEvent,
       EvaluationActual evaluationActual, ParseDebugLine parseDebugLine, String obsCode,
-      String obsValue) {
+      String obsValue, String path) {
     List<ForecastEngineIssue> issuesList = softwareResult.getIssueList();
     if (obsCode.equals("30956-7") || obsCode.equals("38890-0") || obsCode.equals("59780-7")) {
       if (testEvent == null) {
@@ -547,7 +559,7 @@ public class IISConnector implements ConnectorInterface {
           parseDebugLine.setLineStatusReason("No test event was found, unable to link");
         }
         issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-            "OBX " + obsCode + " found, but not able to link with vaccine administered"));
+            "OBX " + obsCode + " found, but not able to link with vaccine administered", path + "-3"));
       } else {
         evaluationActual = new EvaluationActual();
         evaluationActual.setSoftwareResult(softwareResult);
@@ -571,7 +583,7 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("59781-5")) {
       if (evaluationActual == null) {
-        logEvaluationReasonNotSetup(parseDebugLine, issuesList);
+        logEvaluationReasonNotSetup(parseDebugLine, issuesList, path + "-3");
       } else {
         evaluationActual.setDoseValid(obsValue);
         if (parseDebugLine != null) {
@@ -580,7 +592,7 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("30982-3")) {
       if (evaluationActual == null) {
-        logEvaluationReasonNotSetup(parseDebugLine, issuesList);
+        logEvaluationReasonNotSetup(parseDebugLine, issuesList, path + "-3");
       } else {
         evaluationActual.setReasonText(obsValue);
         if (parseDebugLine != null) {
@@ -589,7 +601,7 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("30973-2")) {
       if (evaluationActual == null) {
-        logEvaluationReasonNotSetup(parseDebugLine, issuesList);
+        logEvaluationReasonNotSetup(parseDebugLine, issuesList, path + "-3");
       } else {
         evaluationActual.setDoseNumber(obsValue);
         if (parseDebugLine != null) {
@@ -620,28 +632,28 @@ public class IISConnector implements ConnectorInterface {
   private List<ForecastActual> handleForecast(List<ForecastActual> forecastActualList,
       List<ForecastActual> fal, ParseDebugLine parseDebugLine, String obsCode, String obsValue,
       String obsLabel, SoftwareResult softwareResult, boolean okayToRead597807,
-      Set<String> cvxForecastSet, Set<VaccineGroup> vaccineGroupSet) {
+      Set<String> cvxForecastSet, Set<VaccineGroup> vaccineGroupSet, String path) {
     List<ForecastEngineIssue> issueList = softwareResult.getIssueList();
     if (obsCode.equals("30956-7") || obsCode.equals("30979-9")
         || (okayToRead597807 && obsCode.equals("59780-7"))) {
 
       if (obsCode.equals("59780-7")) {
         issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-            "LOINC 59780-7 should not be used to indicate which vaccination to forecast for"));
+            "LOINC 59780-7 should not be used to indicate which vaccination to forecast for", path + "-3"));
       }
       if (obsValue.equals("")) {
         issueList.add(
-            new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "No vaccine CVX was sent in OBX-5"));
+            new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "No vaccine CVX was sent in OBX-5", path + "-5"));
       } else {
         if (cvxForecastSet.contains(obsValue)) {
           issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING, "CVX " + obsValue
-              + " has already been forecasted in this message, duplicate forecasts might confuse the reader"));
+              + " has already been forecasted in this message, duplicate forecasts might confuse the reader", path + "-5"));
         }
       }
       cvxForecastSet.add(obsValue);
       if (invalidCvxCodes.contains(obsValue)) {
         issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-            "Value '" + obsValue + "' is not a valid CVX code"));
+            "Value '" + obsValue + "' is not a valid CVX code", path + "-5"));
       }
       List<VaccineGroup> forecastItemListFromMap = familyMapping.get(obsValue);
       fal = new ArrayList<ForecastActual>();
@@ -650,7 +662,7 @@ public class IISConnector implements ConnectorInterface {
           if (vaccineGroupSet.contains(vaccineGroup)) {
             issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING, "CVX " + obsCode
                 + " is a close match to another " + vaccineGroup.getLabel()
-                + " forecast in this message, this may be a potential duplicate that may confuse the reader"));
+                + " forecast in this message, this may be a potential duplicate that may confuse the reader", path + "-5"));
           }
           ForecastActual forecastActual = new ForecastActual();
           forecastActualList.add(forecastActual);
@@ -666,7 +678,7 @@ public class IISConnector implements ConnectorInterface {
               .setLineStatusReason("Unable to find mapping to one or more vaccine groups");
         }
         issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-            "Unable to find mapping to one or more vaccine groups"));
+            "Unable to find mapping to one or more vaccine groups", path + "-5"));
       } else {
         if (parseDebugLine != null) {
           parseDebugLine.setLineStatus(ParseDebugStatus.OK_FORECAST);
@@ -688,7 +700,7 @@ public class IISConnector implements ConnectorInterface {
         parseDebugLine.setLineStatusReason("LOINC 30999-1 is not supported");
       }
       issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-          "LOIND 30999-1 is not supported, information may be lost of ignored"));
+          "LOINC 30999-1 is not supported, information may be lost of ignored", path + "-3"));
     } else if (obsCode.equals("59780-7")) {
       if (parseDebugLine != null) {
         parseDebugLine.setLineStatus(ParseDebugStatus.EXPECTED_BUT_NOT_READ);
@@ -696,7 +708,7 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("59783-1")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         Admin admin = mapAdmin(obsValue, obsLabel);
         if (parseDebugLine != null) {
@@ -709,7 +721,7 @@ public class IISConnector implements ConnectorInterface {
         }
         if (admin == Admin.UNKNOWN) {
           issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING,
-              "Unrecognized series status code: " + obsValue));
+              "Unrecognized series status code: " + obsValue, path + "-5"));
         }
         for (ForecastActual forecastActual : fal) {
           forecastActual.setAdmin(admin);
@@ -717,13 +729,13 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("30981-5")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         if (fal.size() == 0) {
           logNotRead(parseDebugLine);
         } else {
           Date date = parseDate(obsValue);
-          logDateNotParsedProblem(parseDebugLine, date, issueList);
+          logDateNotParsedProblem(parseDebugLine, date, issueList, path + "-5");
           for (ForecastActual forecastActual : fal) {
             forecastActual.setValidDate(date);
           }
@@ -731,13 +743,13 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("30980-7")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         if (fal.size() == 0) {
           logNotRead(parseDebugLine);
         } else {
           Date date = parseDate(obsValue);
-          logDateNotParsedProblem(parseDebugLine, date, issueList);
+          logDateNotParsedProblem(parseDebugLine, date, issueList, path + "-5");
           for (ForecastActual forecastActual : fal) {
             forecastActual.setDueDate(date);
           }
@@ -745,13 +757,13 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("59777-3")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         if (fal.size() == 0) {
           logNotRead(parseDebugLine);
         } else {
           Date date = parseDate(obsValue);
-          logDateNotParsedProblem(parseDebugLine, date, issueList);
+          logDateNotParsedProblem(parseDebugLine, date, issueList, path + "-5");
           for (ForecastActual forecastActual : fal) {
             forecastActual.setFinishedDate(date);
           }
@@ -759,13 +771,13 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("59778-1")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         if (fal.size() == 0) {
           logNotRead(parseDebugLine);
         } else {
           Date date = parseDate(obsValue);
-          logDateNotParsedProblem(parseDebugLine, date, issueList);
+          logDateNotParsedProblem(parseDebugLine, date, issueList, path + "-5");
           for (ForecastActual forecastActual : fal) {
             forecastActual.setOverdueDate(date);
           }
@@ -773,7 +785,7 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("30973-2")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         if (fal.size() == 0) {
           logNotRead(parseDebugLine);
@@ -788,7 +800,7 @@ public class IISConnector implements ConnectorInterface {
       }
     } else if (obsCode.equals("30982-3")) {
       if (fal == null) {
-        logOutofSequence(parseDebugLine, issueList);
+        logOutofSequence(parseDebugLine, issueList, path + "-3");
       } else {
         if (fal.size() == 0) {
           logNotRead(parseDebugLine);
@@ -815,23 +827,23 @@ public class IISConnector implements ConnectorInterface {
   }
 
   private void logEvaluationReasonNotSetup(ParseDebugLine parseDebugLine,
-      List<ForecastEngineIssue> issuesList) {
+      List<ForecastEngineIssue> issuesList, String path) {
     if (parseDebugLine != null) {
       parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
       parseDebugLine.setLineStatusReason("No evaluation actual setup");
     }
     issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING,
-        "Evaluation was not setup properly, cannot link concept to evaluation "));
+        "Evaluation was not setup properly, cannot link concept to evaluation ", path));
   }
 
   private void logDateNotParsedProblem(ParseDebugLine parseDebugLine, Date date,
-      List<ForecastEngineIssue> issuesList) {
+      List<ForecastEngineIssue> issuesList, String path) {
     if (date == null) {
       if (parseDebugLine != null) {
         parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
         parseDebugLine.setLineStatusReason("Date not parseable");
       }
-      issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "Date not parseable"));
+      issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "Date not parseable", path));
     } else {
       if (parseDebugLine != null) {
         parseDebugLine.setLineStatus(ParseDebugStatus.OK);
@@ -840,13 +852,13 @@ public class IISConnector implements ConnectorInterface {
   }
 
   private void logOutofSequence(ParseDebugLine parseDebugLine,
-      List<ForecastEngineIssue> issuesList) {
+      List<ForecastEngineIssue> issuesList, String path) {
     if (parseDebugLine != null) {
       parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
       parseDebugLine.setLineStatusReason(
           "Missing a previous OBX that defines the vaccines being forecast for");
       issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-          "Missing a previous OBX that defines the vaccines being forecast for"));
+          "Missing a previous OBX that defines the vaccines being forecast for", path));
     }
   }
 

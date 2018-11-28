@@ -5,7 +5,7 @@
 	<groupId>org.tch.fc</groupId>
 	<artifactId>ForecastConnector</artifactId>
 	<packaging>jar</packaging>
-	<version>3.13</version>
+	<version>3.14</version>
 	<name>Forecast Connector</name>
 	<description></description>
 	<!-- TODO <organization> <name>company name</name> <url>company url</url> 

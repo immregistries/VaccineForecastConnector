@@ -4,16 +4,18 @@ public class ForecastEngineIssue {
   private ForecastEngineIssueType issueType = null;
   private ForecastEngineIssueLevel issueLevel = null;
   private String description = "";
+  private String path = "";
 
   public ForecastEngineIssue() {
     // default
   }
 
   public ForecastEngineIssue(ForecastEngineIssueType issueType, ForecastEngineIssueLevel issueLevel,
-      String description) {
+      String description, String path) {
     this.issueType = issueType;
     this.issueLevel = issueLevel;
     this.description = description;
+    this.path = path;
   }
 
   public ForecastEngineIssueType getIssueType() {
@@ -38,5 +40,13 @@ public class ForecastEngineIssue {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
   }
 }

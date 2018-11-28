@@ -22,6 +22,7 @@ import org.tch.fc.model.Event;
 import org.tch.fc.model.EventType;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
+import org.tch.fc.model.SoftwareResultStatus;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
@@ -354,6 +355,7 @@ public class SWPConnector implements ConnectorInterface
       }
 
     } catch (Exception e) {
+      softwareResult.setSoftwareResultStatus(SoftwareResultStatus.PROBLEM);
       if (logOut != null) {
         logOut.println("Unable to get forecast results");
         e.printStackTrace(logOut);

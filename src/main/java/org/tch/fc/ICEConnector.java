@@ -26,6 +26,7 @@ import org.apache.axis.encoding.Base64;
 import org.tch.fc.model.Admin;
 import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.SoftwareResult;
+import org.tch.fc.model.SoftwareResultStatus;
 import org.tch.fc.model.VaccineGroup;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.TestCase;
@@ -224,6 +225,7 @@ public class ICEConnector implements ConnectorInterface
         }
       }
     } catch (Exception e) {
+      softwareResult.setSoftwareResultStatus(SoftwareResultStatus.PROBLEM);
       if (logOut != null) {
         logOut.println("Unable to get forecast results");
         e.printStackTrace(logOut);
