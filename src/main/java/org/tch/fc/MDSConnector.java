@@ -1,23 +1,14 @@
 package org.tch.fc;
 
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.joda.time.LocalDate;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.tch.fc.model.Evaluation;
 import org.tch.fc.model.EvaluationActual;
 import org.tch.fc.model.Event;
@@ -25,12 +16,11 @@ import org.tch.fc.model.ForecastActual;
 import org.tch.fc.model.Service;
 import org.tch.fc.model.Software;
 import org.tch.fc.model.SoftwareResult;
+import org.tch.fc.model.SoftwareResultStatus;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import gov.nist.healthcare.iz.cds.swp.mds.client.domain.Dose;
 import gov.nist.healthcare.iz.cds.swp.mds.client.domain.Patient;
 import gov.nist.healthcare.iz.cds.swp.mds.client.service.impl.MDSClientImpl;
@@ -42,13 +32,11 @@ import swp.mds.wsdl.domain.SeriesDose;
 public class MDSConnector implements ConnectorInterface {
 
     private Software software = null;
-
     static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    boolean logText = false;
 
     MDSConnector(Software software, List<VaccineGroup> forecastItemList) {
-
         this.software = software;
-
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -78,14 +66,23 @@ public class MDSConnector implements ConnectorInterface {
         }
 
         MDSClientImpl client = new MDSClientImpl();
-       // Careplan careplan = client.getForecast(softwareResult.getSoftware().getServiceUrl(), patient, evalDate, doses);
-        Careplan careplan = client.getForecast(this.software.getServiceUrl(), patient, evalDate, doses);
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(eventsMap));
-        System.out.println(mapper.writeValueAsString(careplan));
-        readEvalution(careplan, eventsMap);
-        List<ForecastActual> forecast = readForecast(careplan);
-        return forecast;
+        StringWriter writer = new StringWriter();
+        
+        try {
+        	
+            Careplan careplan = client.getForecast(this.software.getServiceUrl(), patient, evalDate, doses, writer);
+            this.setLogText(true);
+            softwareResult.setLogText(writer.toString());
+            readEvalution(careplan, eventsMap);
+            List<ForecastActual> forecast = readForecast(careplan);
+            return forecast;
+            
+        } catch(Exception exp) {
+        	this.setLogText(true);
+        	softwareResult.setSoftwareResultStatus(SoftwareResultStatus.PROBLEM);
+            softwareResult.setLogText(writer.toString());
+            return null;
+        }
     }
 
     private List<ForecastActual> readForecast(Careplan careplan) {
@@ -127,7 +124,7 @@ public class MDSConnector implements ConnectorInterface {
         SoftwareResult sftr = new SoftwareResult();
         Software sft = new Software();
         sft.setService(Service.MDS);
-sft.setServiceUrl("http://testws.swpartners.com/mdsservice/mds");
+        sft.setServiceUrl("http://testws.swpartners.com/mdsservice/mds");
         sftr.setSoftware(sft);
 
         List<ForecastActual> fa = connector.queryForForecast(tc, sftr);
@@ -149,7 +146,7 @@ sft.setServiceUrl("http://testws.swpartners.com/mdsservice/mds");
 
                         TestEvent event = eventsMap.get(Integer.parseInt(dose.getCvx())).get(xmlToDate(dose.getAdmindate()).getTime());
                         EvaluationActual evaluationActual = new EvaluationActual();
-//	                    evaluationActual.setTestEvent(event);
+	                    evaluationActual.setTestEvent(event);
 
                         Evaluation ev = Evaluation.getEvaluationByLabel(dose.getStatus());
                         if (ev == null && "Invalid".equalsIgnoreCase(dose.getStatus())) {
@@ -196,13 +193,11 @@ sft.setServiceUrl("http://testws.swpartners.com/mdsservice/mds");
     }
 
     public void setLogText(boolean logText) {
-        // TODO Auto-generated method stub
-
+    	this.logText = logText;
     }
 
     public boolean isLogText() {
-        // TODO Auto-generated method stub
-        return false;
+        return this.logText;
     }
 
 }
