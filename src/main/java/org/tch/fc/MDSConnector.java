@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.tch.fc.model.Evaluation;
 import org.tch.fc.model.EvaluationActual;
@@ -20,7 +21,6 @@ import org.tch.fc.model.SoftwareResultStatus;
 import org.tch.fc.model.TestCase;
 import org.tch.fc.model.TestEvent;
 import org.tch.fc.model.VaccineGroup;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nist.healthcare.iz.cds.swp.mds.client.domain.Dose;
 import gov.nist.healthcare.iz.cds.swp.mds.client.domain.Patient;
 import gov.nist.healthcare.iz.cds.swp.mds.client.service.impl.MDSClientImpl;
@@ -55,16 +55,15 @@ public class MDSConnector implements ConnectorInterface {
             String cvx = event.getEvent().getVaccineCvx();
             Date date = event.getEventDate();
             doses.add(new Dose(cvx, date));
-
-            if (eventsMap.containsKey(cvx)) {
-                eventsMap.get(cvx).put(date.getTime(), event);
+            if (eventsMap.containsKey(Integer.parseInt(cvx))) {
+                eventsMap.get(Integer.parseInt(cvx)).put(date.getTime(), event);
             } else {
                 Map<Long, TestEvent> map = new HashMap<Long, TestEvent>();
                 map.put(date.getTime(), event);
                 eventsMap.put(Integer.parseInt(cvx), map);
             }
         }
-
+        
         MDSClientImpl client = new MDSClientImpl();
         StringWriter writer = new StringWriter();
         
@@ -78,6 +77,7 @@ public class MDSConnector implements ConnectorInterface {
             return forecast;
             
         } catch(Exception exp) {
+        	exp.printStackTrace();
         	this.setLogText(true);
         	softwareResult.setSoftwareResultStatus(SoftwareResultStatus.PROBLEM);
             softwareResult.setLogText(writer.toString());
@@ -112,14 +112,15 @@ public class MDSConnector implements ConnectorInterface {
         tc.setPatientDob(new Date());
         tc.setEvalDate(new Date());
 
-        TestEvent te = new TestEvent();
-        te.setEvent(Event.getEvent(110));
-//		te.setTestCase(tc);
-        Date d = sdf.parse("09/24/2018");
+        TestEvent te1 = new TestEvent();
+        te1.setEvent(Event.getEvent(107));
+        te1.setEventDate(sdf.parse("03/29/2018"));
+        
+        TestEvent te2 = new TestEvent();
+        te2.setEvent(Event.getEvent(107));
+        te2.setEventDate(sdf.parse("04/24/2018"));
 
-        te.setEventDate(d);
-
-        tc.setTestEventList(Arrays.asList(te));
+        tc.setTestEventList(Arrays.asList(te1, te2));
 
         SoftwareResult sftr = new SoftwareResult();
         Software sft = new Software();
@@ -128,9 +129,11 @@ public class MDSConnector implements ConnectorInterface {
         sftr.setSoftware(sft);
 
         List<ForecastActual> fa = connector.queryForForecast(tc, sftr);
-        ObjectMapper mapper = new ObjectMapper();
-        System.out.println(mapper.writeValueAsString(fa));
-        System.out.println(mapper.writeValueAsString(tc.getTestEventList()));
+//        System.out.println(fa);
+//        System.out.println(sftr.getLogText());
+//        ObjectMapper mapper = new ObjectMapper();
+//        System.out.println(mapper.writeValueAsString(fa));
+////        System.out.println(mapper.writeValueAsString(tc.getTestEventList()));
 
     }
 
@@ -141,9 +144,8 @@ public class MDSConnector implements ConnectorInterface {
     private void readEvalution(Careplan careplan, Map<Integer, Map<Long, TestEvent>> eventsMap) {
         for (Antigen antigen : careplan.getAntigen()) {
             for (Series series : antigen.getSeries()) {
-                for (SeriesDose dose : series.getSeriesDose()) {
+                for (SeriesDose dose : series.getSeriesDose()) {       	
                     if (eventsMap.containsKey(Integer.parseInt(dose.getCvx())) && eventsMap.get(Integer.parseInt(dose.getCvx())).containsKey(xmlToDate(dose.getAdmindate()).getTime())) {
-
                         TestEvent event = eventsMap.get(Integer.parseInt(dose.getCvx())).get(xmlToDate(dose.getAdmindate()).getTime());
                         EvaluationActual evaluationActual = new EvaluationActual();
 	                    evaluationActual.setTestEvent(event);
@@ -170,19 +172,33 @@ public class MDSConnector implements ConnectorInterface {
     private String findCvx(String antigen, String allowableStr) {
         List<String> allowable = allowable(allowableStr);
         List<VaccineGroup> groups = VaccineGroup.getForecastItemList();
-        List<VaccineGroup> candidates = new ArrayList<VaccineGroup>();
+        List<VaccineGroup> candidates = new ArrayList<VaccineGroup>(); 
+        
         for (VaccineGroup group : groups) {
-            if (group.getLabel().equalsIgnoreCase(antigen) && allowable.contains(group.getVaccineCvx())) {
+        	
+        	boolean isAllowable = this.groupIsAllowable(allowable, group);
+        	
+            if (group.getLabel().equalsIgnoreCase(antigen) && isAllowable) {
                 return group.getVaccineCvx();
             }
-            if (allowable.contains(group.getVaccineCvx())) {
+            if (isAllowable) {
                 candidates.add(group);
             }
+            
         }
         if (candidates.size() > 0) {
             return candidates.get(0).getVaccineCvx();
         }
         return allowable.get(0);
+    }
+    
+    private boolean groupIsAllowable(List<String> allowable,  VaccineGroup group) {
+    	for(String cvx: allowable) {
+    		if(Integer.parseInt(cvx) == Integer.parseInt(group.getVaccineCvx())) {
+    			return true;
+    		}
+    	}
+    	return false;
     }
 
     private Date xmlToDate(XMLGregorianCalendar c) {
@@ -199,5 +215,4 @@ public class MDSConnector implements ConnectorInterface {
     public boolean isLogText() {
         return this.logText;
     }
-
 }
