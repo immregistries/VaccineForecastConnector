@@ -81,6 +81,7 @@ public class IISConnector implements ConnectorInterface {
     map("109", VaccineGroup.ID_PNEUMO);
     map("114", VaccineGroup.ID_MENING);
     map("116", VaccineGroup.ID_ROTA);
+    map("119", VaccineGroup.ID_ROTA);
     map("133", VaccineGroup.ID_PCV);
     map("133", VaccineGroup.ID_PNEUMO);
     map("141", VaccineGroup.ID_INFLUENZA);
@@ -90,6 +91,7 @@ public class IISConnector implements ConnectorInterface {
     map("164", VaccineGroup.ID_MENINGB);
     map("164", VaccineGroup.ID_MENING);
     map("165", VaccineGroup.ID_HPV);
+    map("189", VaccineGroup.ID_HEPB);
     map("HEP B", VaccineGroup.ID_HEPB, INVALID_CVX_CODE); // FL SHOTS - HEP B^HEPATITIS B
     map("HIB", VaccineGroup.ID_HIB, INVALID_CVX_CODE); // FL SHOTS - HIB^H INFLUENZA TYPE B
     map("POLIO", VaccineGroup.ID_POLIO, INVALID_CVX_CODE); // FL SHOTS - POLIO^POLIO
