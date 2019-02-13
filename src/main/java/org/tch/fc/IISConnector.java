@@ -1159,8 +1159,11 @@ public class IISConnector implements ConnectorInterface {
         sb.append("|");
         // RXA-17
         sb.append("|");
-        sb.append(testEvent.getEvent().getVaccineMvx() + "^" + testEvent.getEvent().getVaccineMvx()
-            + "^MVX");
+        if (testEvent.getEvent().getVaccineMvx() != null
+            && !testEvent.getEvent().getVaccineMvx().equals("null")) {
+          sb.append(testEvent.getEvent().getVaccineMvx() + "^"
+              + testEvent.getEvent().getVaccineMvx() + "^MVX");
+        }
         // RXA-18
         sb.append("|");
         // RXA-19

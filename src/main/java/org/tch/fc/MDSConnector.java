@@ -145,7 +145,7 @@ public class MDSConnector implements ConnectorInterface {
                         evaluationActual.setSeriesUsedCode(evaluationActual.getVaccineCvx());
 
                         if(event.getEvaluationActualList() == null) {
-                        	event.setEvaluationActualList(new ArrayList<>());
+                        	event.setEvaluationActualList(new ArrayList<EvaluationActual>());
                         }
                         event.getEvaluationActualList().add(evaluationActual);
                     }
