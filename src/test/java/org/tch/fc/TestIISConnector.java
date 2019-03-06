@@ -34,7 +34,7 @@ import org.tch.fc.util.ForecastResultPrinter;
 
 public class TestIISConnector extends junit.framework.TestCase {
 
-  private static boolean ENABLE_LIVE_TESTS = false;
+  private static boolean ENABLE_LIVE_TESTS = true;
 
   private static final String RSP =
       "MSH|^~\\&|Mercy Healthcare|Mercy Healthcare|||20180906123151-0600||RSP^K11^RSP_K11|15362587110058|P|2.5.1|||NE|NE|||||Z32^CDCPHINVS\r"
@@ -4342,17 +4342,17 @@ public class TestIISConnector extends junit.framework.TestCase {
 
   private Software createSoftware() {
     Software software = new Software();
-    software.setServiceUrl("http://immlab.pagekite.me/iis-kernel/soap");
+    software.setServiceUrl("http://localhost/iis-kernel/soap");
     software.setService(Service.IIS);
     software.setServiceUserid("Mercy");
-    software.setServicePassword("password123");
+    software.setServicePassword("password1234");
     software.setServiceFacilityid("Mercy Healthcare");
     return software;
   }
 
   private Software createSoftwareNotAuthenticated() {
     Software software = new Software();
-    software.setServiceUrl("http://immlab.pagekite.me/iis-kernel/soap");
+    software.setServiceUrl("http://localhost/iis-kernel/soap");
     software.setService(Service.IIS);
     software.setServiceUserid("Mercy");
     software.setServicePassword("passwordWrong");
@@ -4412,8 +4412,8 @@ public class TestIISConnector extends junit.framework.TestCase {
         foundHepB = true;
       }
     }
-    assertTrue("HepB forecast not found", foundHepB);
     System.out.println(softwareResult.getLogText());
+    assertTrue("HepB forecast not found", foundHepB);
 
   }
 

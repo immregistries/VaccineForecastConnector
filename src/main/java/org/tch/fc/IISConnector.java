@@ -15,7 +15,6 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -124,7 +123,6 @@ public class IISConnector implements ConnectorInterface {
     map(familyName, forecastItemId, false);
   }
 
-  @SuppressWarnings("unchecked")
   private void map(String familyName, int forecastItemId, boolean incorrectCvxCode) {
     if (incorrectCvxCode) {
       invalidCvxCodes.add(familyName);
@@ -151,12 +149,13 @@ public class IISConnector implements ConnectorInterface {
     StringWriter sw = new StringWriter();
     PrintWriter logOut = logText ? new PrintWriter(sw) : null;
 
-    if (logText) {
-      logOut.println(
-          "This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
-    }
+    logMessage(logOut, "Starting HL7 connection",
+        "This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
     try {
       if (testCase.getTestEventList().size() == 0) {
+
+        logMessage(logOut, "", "");
+
         if (logText) {
           logOut.println(
               "No vaccinations found, so adding a Typhoid to list, some IIS cannot accept a patient without at least one vaccination.");
@@ -172,35 +171,33 @@ public class IISConnector implements ConnectorInterface {
 
       FakePatient fakePatient = new FakePatient(testCase, uniqueId);
       String vxu = buildVXU(testCase, fakePatient);
+      logMessage(logOut, "Sending VXU",
+          "Sending update to IIS to create a fake record with test case vaccination history");
       if (logText) {
-        logOut.println();
-        logOut.println("VXU SENT: ");
         logOut.println(vxu);
       }
       String ack = sendRequest(vxu);
+      logMessage(logOut, "Reading ACK", "IIS returned a response that should contain an HL7 ACK");
       if (logText) {
-        logOut.println();
-        logOut.println("ACK received back ...");
         logOut.println(ack);
       }
 
       String qbp = buildQBP(fakePatient);
+      logMessage(logOut, "Sending QBP", "Sending query to IIS");
       if (logText) {
-        logOut.println();
-        logOut.println("Sending QBP ...");
         logOut.println(qbp);
       }
       boolean lookingForMatch = true;
       int delay = 0;
       while (lookingForMatch) {
         String rsp = sendRequest(qbp);
+        logMessage(logOut, "RSP Received", "IIS returned a response that needs to be inspected");
         if (logText) {
-          logOut.println();
-          logOut.println("RSP received back ...");
           logOut.println(rsp);
         }
         readRSP(forecastActualList, testCase, softwareResult, rsp);
         if (softwareResult.getSoftwareResultStatus() == SoftwareResultStatus.NOT_FOUND) {
+          logMessage(logOut, "Match not found", "Unable to find matching patient in response");
           if (delay == 0) {
             delay = 10;
           } else if (delay == 10) {
@@ -214,32 +211,42 @@ public class IISConnector implements ConnectorInterface {
           lookingForMatch = false;
         }
         if (lookingForMatch) {
+          logMessage(logOut, "Waiting", "Will wait for " + delay + "s and query again");
           synchronized (this) {
             this.wait(delay * 1000);
           }
         }
       }
     } catch (NotAuthenticated na) {
-      if (logOut != null) {
-        logOut.println("Unable to authenticate");
-      }
+      logMessage(logOut, "Unable to Authenticate",
+          "Unable to authenticate with IIS, please check credentials and URL");
       softwareResult.setSoftwareResultStatus(SoftwareResultStatus.NOT_AUTHENTICATED);
     } catch (Exception e) {
       softwareResult.setSoftwareResultStatus(SoftwareResultStatus.PROBLEM);
+      logMessage(logOut, "Exception ocurred", "Unable to get forecast results from IIS");
       if (logOut != null) {
-        logOut.println("Unable to get forecast results from IIS");
         e.printStackTrace(logOut);
       } else {
         e.printStackTrace();
       }
       throw new Exception("Unable to get forecast results", e);
     } finally {
+      logMessage(logOut, "Finished process",
+          "The HL7 connector for IIS is finished, results are being returned to FITS");
       if (logOut != null) {
         logOut.close();
         softwareResult.setLogText(sw.toString());
       }
     }
     return forecastActualList;
+  }
+
+  public void logMessage(PrintWriter logOut, String message, String details) {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss Z");
+    if (logText) {
+      logOut.println("[" + sdf.format(System.currentTimeMillis()) + "] " + message);
+      logOut.println(details);
+    }
   }
 
   private static char[] encoding = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -561,7 +568,8 @@ public class IISConnector implements ConnectorInterface {
           parseDebugLine.setLineStatusReason("No test event was found, unable to link");
         }
         issuesList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-            "OBX " + obsCode + " found, but not able to link with vaccine administered", path + "-3"));
+            "OBX " + obsCode + " found, but not able to link with vaccine administered",
+            path + "-3"));
       } else {
         evaluationActual = new EvaluationActual();
         evaluationActual.setSoftwareResult(softwareResult);
@@ -641,15 +649,17 @@ public class IISConnector implements ConnectorInterface {
 
       if (obsCode.equals("59780-7")) {
         issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
-            "LOINC 59780-7 should not be used to indicate which vaccination to forecast for", path + "-3"));
+            "LOINC 59780-7 should not be used to indicate which vaccination to forecast for",
+            path + "-3"));
       }
       if (obsValue.equals("")) {
-        issueList.add(
-            new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR, "No vaccine CVX was sent in OBX-5", path + "-5"));
+        issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, ERROR,
+            "No vaccine CVX was sent in OBX-5", path + "-5"));
       } else {
         if (cvxForecastSet.contains(obsValue)) {
           issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING, "CVX " + obsValue
-              + " has already been forecasted in this message, duplicate forecasts might confuse the reader", path + "-5"));
+              + " has already been forecasted in this message, duplicate forecasts might confuse the reader",
+              path + "-5"));
         }
       }
       cvxForecastSet.add(obsValue);
@@ -664,7 +674,8 @@ public class IISConnector implements ConnectorInterface {
           if (vaccineGroupSet.contains(vaccineGroup)) {
             issueList.add(new ForecastEngineIssue(UNEXPECTED_FORMAT, WARNING, "CVX " + obsCode
                 + " is a close match to another " + vaccineGroup.getLabel()
-                + " forecast in this message, this may be a potential duplicate that may confuse the reader", path + "-5"));
+                + " forecast in this message, this may be a potential duplicate that may confuse the reader",
+                path + "-5"));
           }
           ForecastActual forecastActual = new ForecastActual();
           forecastActualList.add(forecastActual);
@@ -853,8 +864,8 @@ public class IISConnector implements ConnectorInterface {
     }
   }
 
-  private void logOutofSequence(ParseDebugLine parseDebugLine,
-      List<ForecastEngineIssue> issuesList, String path) {
+  private void logOutofSequence(ParseDebugLine parseDebugLine, List<ForecastEngineIssue> issuesList,
+      String path) {
     if (parseDebugLine != null) {
       parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
       parseDebugLine.setLineStatusReason(
