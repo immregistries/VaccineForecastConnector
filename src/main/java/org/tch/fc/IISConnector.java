@@ -242,7 +242,7 @@ public class IISConnector implements ConnectorInterface {
   }
 
   public void logMessage(PrintWriter logOut, String message, String details) {
-    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss Z");
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS Z");
     if (logText) {
       logOut.println("[" + sdf.format(System.currentTimeMillis()) + "] " + message);
       logOut.println(details);
