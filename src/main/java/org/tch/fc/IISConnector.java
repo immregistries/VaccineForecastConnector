@@ -183,13 +183,14 @@ public class IISConnector implements ConnectorInterface {
       }
 
       String qbp = buildQBP(fakePatient);
-      logMessage(logOut, "Sending QBP", "Sending query to IIS");
+      logMessage(logOut, "QBP prepped", "Will try to send this query to the IIS");
       if (logText) {
         logOut.println(qbp);
       }
       boolean lookingForMatch = true;
       int delay = 0;
       while (lookingForMatch) {
+        logMessage(logOut, "Sending QBP", "Sending query to IIS");
         String rsp = sendRequest(qbp);
         logMessage(logOut, "RSP Received", "IIS returned a response that needs to be inspected");
         if (logText) {
