@@ -430,6 +430,9 @@ public class IISConnector implements ConnectorInterface {
     Set<VaccineGroup> vaccineGroupSet = new HashSet<>();
     Map<String, Integer> segmentCountMap = new HashMap<>();
     while ((line = in.readLine()) != null) {
+      if (line.length() == 0) {
+        continue;
+      }
       if (parseDebugLineList != null) {
         parseDebugLine = new ParseDebugLine(line);
         parseDebugLineList.add(parseDebugLine);
@@ -438,7 +441,7 @@ public class IISConnector implements ConnectorInterface {
 
       if (f == null || f.length <= 1 || f[0] == null || f[0].length() != 3) {
         if (parseDebugLine != null) {
-          parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
+          parseDebugLine.setLineStatus(ParseDebugStatus.NOT_READ);
           parseDebugLine
               .setLineStatusReason("HL7 segment has too few fields, or is not formatted properly");
         }
