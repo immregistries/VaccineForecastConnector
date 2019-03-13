@@ -424,7 +424,8 @@ public class IISConnector implements ConnectorInterface {
     String adminDateInRxa = "";
     ParseDebugLine parseDebugLine = null;
     boolean firstOBX = true;
-    boolean okayToRead597807 = true;
+    boolean okayToRead597807inEvaluation = true;
+    boolean okayToRead597807inForecast = true;
     Set<String> cvxForecastSet = new HashSet<>();
     Set<VaccineGroup> vaccineGroupSet = new HashSet<>();
     Map<String, Integer> segmentCountMap = new HashMap<>();
@@ -516,17 +517,20 @@ public class IISConnector implements ConnectorInterface {
             continue;
           } else if (cvxCodeInRxa.equals("998")) {
             fal = handleForecast(forecastActualList, fal, parseDebugLine, obsCode, obsValue,
-                obsLabel, softwareResult, okayToRead597807, cvxForecastSet, vaccineGroupSet, path);
+                obsLabel, softwareResult, okayToRead597807inForecast, cvxForecastSet,
+                vaccineGroupSet, path);
             if (firstOBX) {
               firstOBX = false;
-              okayToRead597807 = obsCode.equals("59780-7");
-
-
+              okayToRead597807inForecast = obsCode.equals("59780-7");
             }
 
           } else {
             evaluationActual = handleEvaluation(softwareResult, testEvent, evaluationActual,
-                parseDebugLine, obsCode, obsValue, path);
+                parseDebugLine, obsCode, obsValue, path, okayToRead597807inEvaluation);
+            if (firstOBX) {
+              firstOBX = false;
+              okayToRead597807inEvaluation = obsCode.equals("59780-7");
+            }
           }
         } else {
           if (parseDebugLine != null) {
@@ -560,9 +564,10 @@ public class IISConnector implements ConnectorInterface {
 
   private EvaluationActual handleEvaluation(SoftwareResult softwareResult, TestEvent testEvent,
       EvaluationActual evaluationActual, ParseDebugLine parseDebugLine, String obsCode,
-      String obsValue, String path) {
+      String obsValue, String path, boolean okayToRead597807) {
     List<ForecastEngineIssue> issuesList = softwareResult.getIssueList();
-    if (obsCode.equals("30956-7") || obsCode.equals("38890-0") || obsCode.equals("59780-7")) {
+    if (obsCode.equals("30956-7") || obsCode.equals("38890-0")
+        || (okayToRead597807 && obsCode.equals("59780-7"))) {
       if (testEvent == null) {
         if (parseDebugLine != null) {
           parseDebugLine.setLineStatus(ParseDebugStatus.PROBLEM);
