@@ -10921,4 +10921,122 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNotNull("Overdue date should not be null", forecastActualList.get(9).getOverdueDate()); 
     assertEquals("Wrong overdue date found", "01/13/2023", sdf.format(forecastActualList.get(9).getOverdueDate())); 
   }
+  
+  private static final String RSP_NE_NESIIS_2 = "" 
+      + "MSH|^~\\&|NESIIS|NESIIS||WPIH|20190318||RSP^K11^RSP_K11|993473.1|P|2.5.1|||NE|NE|||||Z42^CDCPHINVS||WPIH\r"
+      + "MSA|AA|FvQExK||0||0^Message Accepted^HL70357\r"
+      + "QAK|FvQExK|OK|Z44\r"
+      + "QPD|Z44^Request Evaluated History and Forecast^CDCPHINVS|FvQExK|FvQExK^^^FITS^MR|Santa Clara^Amoke^Freeman^^^^L|Gogebic^Delyth^^^^^M|19690312|F|267 Gray Ave^^Gwinn^MI^49841^USA^P\r"
+      + "PID|1||7395036^^^NEA^SR~FvQExK^^^FITS^MR||SANTA CLARA^AMOKE^FREEMAN|GOGEBIC^DELYTH|19690312|F|||267 GRAY AVE^^GWINN^MI^49841^^C||^^PH^^^906^5803226|||||||||||N|0\r"
+      + "ORC|RE||41787932\r"
+      + "RXA|0|1|20190312|20190312|121^Zoster (shingles), live^CVX^Varicella^^WVGC|1.0|||01\r"
+      + "OBX|1|CE|30956-7^VACCINE TYPE^LN|1|188^Zoster, unspecified formulation^CVX^Zoster^^WVGC||||||F\r"
+      + "OBX|2|CE|59779-9^Schedule Used^LN|1|VXC16^ACIP^CDCPHINVS||||||F\r"
+      + "OBX|3|NM|30973-2^Dose number in series^LN|1|1||||||F\r"
+      + "ORC|RE||0\r"
+      + "RXA|0|1|19690312|19690312|998^No Vaccine Administered^CVX|999\r"
+      + "OBX|4|CE|30956-7^VACCINE_TYPE^LN|0|88^Influenza^CVX^90724^Influenza^CPT||||||F\r"
+      + "OBX|5|TS|30980-7^Date Vaccine Due^LN|0|20180801||||||F\r"
+      + "OBX|6|TS|59778-1^Date Dose Is Overdue^LN|0|19700312||||||F\r"
+      + "OBX|7|NM|30973-2^Vaccine due next dose number^LN|0|1||||||F\r"
+      + "OBX|8|TS|30981-5^Earliest date to give^LN|0|19690912||||||F\r"
+      + "OBX|9|CE|59779-9^Schedule Used^LN|0|VXC16^ACIP^CDCPHINVS||||||F\r"
+      + "OBX|10|CE|30956-7^VACCINE_TYPE^LN|1|03^MMR^CVX^90707^MMR^CPT||||||F\r"
+      + "OBX|11|TS|30980-7^Date Vaccine Due^LN|1|20190409||||||F\r"
+      + "OBX|12|TS|59778-1^Date Dose Is Overdue^LN|1|20190409||||||F\r"
+      + "OBX|13|NM|30973-2^Vaccine due next dose number^LN|1|1||||||F\r"
+      + "OBX|14|TS|30981-5^Earliest date to give^LN|1|20190409||||||F\r"
+      + "OBX|15|CE|59779-9^Schedule Used^LN|1|VXC16^ACIP^CDCPHINVS||||||F\r"
+      + "OBX|16|CE|30956-7^VACCINE_TYPE^LN|2|115^Pertussis(Tdap)^CVX^90715^Pertussis(Tdap)^CPT||||||F\r"
+      + "OBX|17|TS|30980-7^Date Vaccine Due^LN|2|19800312||||||F\r"
+      + "OBX|18|TS|59778-1^Date Dose Is Overdue^LN|2|19820312||||||F\r"
+      + "OBX|19|NM|30973-2^Vaccine due next dose number^LN|2|1||||||F\r"
+      + "OBX|20|TS|30981-5^Earliest date to give^LN|2|19760312||||||F\r"
+      + "OBX|21|CE|59779-9^Schedule Used^LN|2|VXC16^ACIP^CDCPHINVS||||||F\r"
+      + "OBX|22|CE|30956-7^VACCINE_TYPE^LN|3|139^Td^CVX^90714^Td^CPT||||||F\r"
+      + "OBX|23|TS|30980-7^Date Vaccine Due^LN|3|19760312||||||F\r"
+      + "OBX|24|TS|59778-1^Date Dose Is Overdue^LN|3|19760412||||||F\r"
+      + "OBX|25|NM|30973-2^Vaccine due next dose number^LN|3|1||||||F\r"
+      + "OBX|26|TS|30981-5^Earliest date to give^LN|3|19760312||||||F\r"
+      + "OBX|27|CE|59779-9^Schedule Used^LN|3|VXC16^ACIP^CDCPHINVS||||||F\r"
+      + "OBX|28|CE|30956-7^VACCINE_TYPE^LN|4|21^Varicella^CVX^90716^Varicella^CPT||||||F\r"
+      + "OBX|29|TS|30980-7^Date Vaccine Due^LN|4|20190409||||||F\r"
+      + "OBX|30|TS|59778-1^Date Dose Is Overdue^LN|4|20190409||||||F\r"
+      + "OBX|31|NM|30973-2^Vaccine due next dose number^LN|4|1||||||F\r"
+      + "OBX|32|TS|30981-5^Earliest date to give^LN|4|20190409||||||F\r"
+      + "OBX|33|CE|59779-9^Schedule Used^LN|4|VXC16^ACIP^CDCPHINVS||||||F\r"
+      + "OBX|34|CE|30956-7^VACCINE_TYPE^LN|5|188^Zoster^CVX||||||F\r"
+      + "OBX|35|TS|30980-7^Date Vaccine Due^LN|5|20190507||||||F\r"
+      + "OBX|36|TS|59778-1^Date Dose Is Overdue^LN|5|20190604||||||F\r"
+      + "OBX|37|NM|30973-2^Vaccine due next dose number^LN|5|2||||||F\r"
+      + "OBX|38|TS|30981-5^Earliest date to give^LN|5|20190507||||||F\r"
+      + "OBX|39|CE|59779-9^Schedule Used^LN|5|VXC16^ACIP^CDCPHINVS||||||F\r"
+    ;
+    @Test
+    public void testRSP_NE_NESIIS_2() throws Exception {
+      List<ForecastActual> forecastActualList = new ArrayList<ForecastActual>();
+      TestCase testCase = run(forecastActualList, RSP_NE_NESIIS_2);
+      SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+      assertEquals("Not all test events read", 1, testCase.getTestEventList().size()); 
+      assertEquals("Wrong number of evaluations", 1, testCase.getTestEventList().get(0).getEvaluationActualList().size()); 
+      assertEquals("Wrong CVX found", "188", testCase.getTestEventList().get(0).getEvaluationActualList().get(0).getVaccineCvx()); 
+      assertEquals("Wrong validity found", "", testCase.getTestEventList().get(0).getEvaluationActualList().get(0).getDoseValid()); 
+      assertEquals("Not all forecasts read", 7,forecastActualList.size()); 
+      assertEquals("Forecast not found", "HerpesZoster", forecastActualList.get(0).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(0).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate()); 
+      assertEquals("Wrong earliest date found", "05/07/2019", sdf.format(forecastActualList.get(0).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(0).getDueDate()); 
+      assertEquals("Wrong due date found", "05/07/2019", sdf.format(forecastActualList.get(0).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(0).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "06/04/2019", sdf.format(forecastActualList.get(0).getOverdueDate())); 
+      assertEquals("Forecast not found", "Influenza", forecastActualList.get(1).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(1).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(1).getValidDate()); 
+      assertEquals("Wrong earliest date found", "09/12/1969", sdf.format(forecastActualList.get(1).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(1).getDueDate()); 
+      assertEquals("Wrong due date found", "08/01/2018", sdf.format(forecastActualList.get(1).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(1).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "03/12/1970", sdf.format(forecastActualList.get(1).getOverdueDate())); 
+      assertEquals("Forecast not found", "MMR", forecastActualList.get(2).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(2).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate()); 
+      assertEquals("Wrong earliest date found", "04/09/2019", sdf.format(forecastActualList.get(2).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(2).getDueDate()); 
+      assertEquals("Wrong due date found", "04/09/2019", sdf.format(forecastActualList.get(2).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(2).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "04/09/2019", sdf.format(forecastActualList.get(2).getOverdueDate())); 
+      assertEquals("Forecast not found", "Td Only", forecastActualList.get(3).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(3).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(3).getValidDate()); 
+      assertEquals("Wrong earliest date found", "03/12/1976", sdf.format(forecastActualList.get(3).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(3).getDueDate()); 
+      assertEquals("Wrong due date found", "03/12/1976", sdf.format(forecastActualList.get(3).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(3).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "04/12/1976", sdf.format(forecastActualList.get(3).getOverdueDate())); 
+      assertEquals("Forecast not found", "Td or Tdap", forecastActualList.get(4).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(4).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(4).getValidDate()); 
+      assertEquals("Wrong earliest date found", "03/12/1976", sdf.format(forecastActualList.get(4).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(4).getDueDate()); 
+      assertEquals("Wrong due date found", "03/12/1976", sdf.format(forecastActualList.get(4).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(4).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "04/12/1976", sdf.format(forecastActualList.get(4).getOverdueDate())); 
+      assertEquals("Forecast not found", "Tdap Only", forecastActualList.get(5).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(5).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate()); 
+      assertEquals("Wrong earliest date found", "03/12/1976", sdf.format(forecastActualList.get(5).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(5).getDueDate()); 
+      assertEquals("Wrong due date found", "03/12/1980", sdf.format(forecastActualList.get(5).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(5).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "03/12/1982", sdf.format(forecastActualList.get(5).getOverdueDate())); 
+      assertEquals("Forecast not found", "Varicella", forecastActualList.get(6).getVaccineGroup().getLabel()); 
+      assertEquals("Wrong status found", "", forecastActualList.get(6).getAdminStatus()); 
+      assertNotNull("Valid date should not be null", forecastActualList.get(6).getValidDate()); 
+      assertEquals("Wrong earliest date found", "04/09/2019", sdf.format(forecastActualList.get(6).getValidDate())); 
+      assertNotNull("Due date should not be null", forecastActualList.get(6).getDueDate()); 
+      assertEquals("Wrong due date found", "04/09/2019", sdf.format(forecastActualList.get(6).getDueDate())); 
+      assertNotNull("Overdue date should not be null", forecastActualList.get(6).getOverdueDate()); 
+      assertEquals("Wrong overdue date found", "04/09/2019", sdf.format(forecastActualList.get(6).getOverdueDate())); 
+    }
 }

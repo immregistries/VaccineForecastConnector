@@ -90,6 +90,7 @@ public class IISConnector implements ConnectorInterface {
     map("164", VaccineGroup.ID_MENINGB);
     map("164", VaccineGroup.ID_MENING);
     map("165", VaccineGroup.ID_HPV);
+    map("188", VaccineGroup.ID_ZOSTER);
     map("189", VaccineGroup.ID_HEPB);
     map("HEP B", VaccineGroup.ID_HEPB, INVALID_CVX_CODE); // FL SHOTS - HEP B^HEPATITIS B
     map("HIB", VaccineGroup.ID_HIB, INVALID_CVX_CODE); // FL SHOTS - HIB^H INFLUENZA TYPE B
