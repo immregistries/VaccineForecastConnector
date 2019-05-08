@@ -7,3 +7,4 @@ target/
 .settings/org.springframework.ide.eclipse.prefs
 .settings/org.eclipse.wst.common.component
 src/test/java/META-INF/MANIFEST.MF
+.settings/org.eclipse.wst.validation.prefs
