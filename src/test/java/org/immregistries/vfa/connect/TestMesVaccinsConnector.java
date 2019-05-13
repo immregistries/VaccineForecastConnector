@@ -1,12 +1,11 @@
 package org.immregistries.vfa.connect;
 
-import java.io.IOException;
-import java.text.ParseException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.immregistries.vfa.connect.MesVaccinsConnector;
+import java.util.Properties;
 import org.immregistries.vfa.connect.mesvaccins.MesVaccinsDisease;
 import org.immregistries.vfa.connect.mesvaccins.MesVaccinsVaccine;
 import org.immregistries.vfa.connect.model.ForecastActual;
@@ -18,21 +17,45 @@ import org.immregistries.vfa.connect.model.VaccineGroup;
 import org.junit.Test;
 
 public class TestMesVaccinsConnector extends junit.framework.TestCase {
-  String uid = "6889ffa77e02d8c378ccd825ed667ee741b7f0506e51a0c92b3f0c9efc3c1462";
-  String secret = "16ebf21db15917e5c7bb6be8f94d40fbed572b0a02b36df1fd4bf73077af69ea";
-  String url = "https://test.mesvaccins.net/api/v1";
-  
+  private static String uid = "";
+  private static String secret = "";
+  private static String url = "";
+
+  public void init() throws Exception {
+    System.out.println("Loading mesvaccins properties...");
+    InputStream input = getClass().getClassLoader().getResourceAsStream("mesvaccins.properties");
+
+    Properties prop = new Properties();
+
+    // load a properties file
+    prop.load(input);
+
+    // get the property value and print it out
+    uid = prop.getProperty("mesvaccins.uid");
+    secret = prop.getProperty("mesvaccins.secret");
+    url = prop.getProperty("mesvaccins.url");
+
+    if (url.length() == 0) {
+      throw new Exception("URL is required");
+    }
+    System.out.println("Done loading properties");
+
+    input.close();
+
+  }
+
   @Test
   public void testForecast() throws Exception {
+    init();
     Software software = new Software();
     software.setServiceUserid(uid);
     software.setServicePassword(secret);
     software.setServiceUrl(url);
     MesVaccinsConnector connector =
         new MesVaccinsConnector(software, VaccineGroup.getForecastItemList());
-    
-    
-    
+
+
+
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     TestCase testCase = new TestCase();
     testCase.setEvalDate(sdf.parse("04/25/2019"));
@@ -41,9 +64,10 @@ public class TestMesVaccinsConnector extends junit.framework.TestCase {
     List<TestEvent> testEventList = new ArrayList<TestEvent>();
     testEventList.add(new TestEvent(45, sdf.parse("04/025/2019")));
     testCase.setTestEventList(testEventList);
-    
+
     connector.setLogText(true);
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    List<ForecastActual> forecastActualList =
+        connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     assertEquals(5, forecastActualList.size());
     boolean foundHepB = false;
@@ -60,7 +84,8 @@ public class TestMesVaccinsConnector extends junit.framework.TestCase {
   }
 
   @Test
-  public void testGetVaccine() throws IOException {
+  public void testGetVaccine() throws Exception {
+    init();
     Software software = new Software();
     software.setServiceUserid(uid);
     software.setServicePassword(secret);

@@ -17,7 +17,7 @@ public class ForecastDemo {
 
   public static void main(String[] args) throws Exception {
     String serviceUrl = "http://tchforecasttester.org/fv/forecast";
-    Service service = Service.TCH;
+    Service service = Service.LSVF;
 
     // java org.tch.fc.ForecastDemo service=tch
     // serviceUrl=http://tchforecasttester.org/fv/forecast evalDate=07/12/2011

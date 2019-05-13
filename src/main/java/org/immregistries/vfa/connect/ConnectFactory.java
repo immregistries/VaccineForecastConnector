@@ -15,8 +15,8 @@ public class ConnectFactory {
   public static ConnectorInterface createConnecter(Software software,
       List<VaccineGroup> forecastItemList) throws Exception {
 
-    if (software.getService() == Service.TCH) {
-      return new TCHConnector(software, forecastItemList);
+    if (software.getService() == Service.LSVF) {
+      return new LSVFConnector(software, forecastItemList);
     }
     if (software.getService() == Service.WEB1) {
 

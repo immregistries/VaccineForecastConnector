@@ -28,7 +28,7 @@ import org.immregistries.vfa.connect.model.TestCaseSetting;
 import org.immregistries.vfa.connect.model.TestEvent;
 import org.immregistries.vfa.connect.model.VaccineGroup;
 
-public class TCHConnector implements ConnectorInterface
+public class LSVFConnector implements ConnectorInterface
 {
 
   private static final String STATUS = " status ";
@@ -69,7 +69,7 @@ public class TCHConnector implements ConnectorInterface
     this.logText = logText;
   }
 
-  public TCHConnector(Software software, List<VaccineGroup> forecastItemList) {
+  public LSVFConnector(Software software, List<VaccineGroup> forecastItemList) {
     this.software = software;
     addForcastItem(forecastItemList, "Hib", VaccineGroup.ID_HIB);
     addForcastItem(forecastItemList, "HepB", VaccineGroup.ID_HEPB);

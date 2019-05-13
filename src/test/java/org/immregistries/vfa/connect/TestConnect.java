@@ -18,9 +18,6 @@ package org.immregistries.vfa.connect;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import org.immregistries.vfa.connect.ConnectFactory;
-import org.immregistries.vfa.connect.ConnectorInterface;
-import org.immregistries.vfa.connect.model.EvaluationActual;
 import org.immregistries.vfa.connect.model.Event;
 import org.immregistries.vfa.connect.model.EventType;
 import org.immregistries.vfa.connect.model.ForecastActual;
@@ -34,7 +31,7 @@ import org.immregistries.vfa.connect.model.VaccineGroup;
 public class TestConnect extends junit.framework.TestCase
 {
   
-  public void testTCHShingrix() throws Exception {
+  public void testLSVFShingrix() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     TestCase testCase = new TestCase();
     testCase.setEvalDate(sdf.parse("01/01/1999"));
@@ -46,7 +43,7 @@ public class TestConnect extends junit.framework.TestCase
     testCase.setTestEventList(testEventList);
     Software software = new Software();
     software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
-    software.setService(Service.TCH);
+    software.setService(Service.LSVF);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
@@ -68,7 +65,7 @@ public class TestConnect extends junit.framework.TestCase
     assertTrue(found);
   }
 
-  public void testTCHDoseNumberProblem() throws Exception {
+  public void testLSVFDoseNumberProblem() throws Exception {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     TestCase testCase = new TestCase();
@@ -85,7 +82,7 @@ public class TestConnect extends junit.framework.TestCase
     testCase.setTestEventList(testEventList);
     Software software = new Software();
     software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
-    software.setService(Service.TCH);
+    software.setService(Service.LSVF);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
@@ -154,7 +151,7 @@ public class TestConnect extends junit.framework.TestCase
     assertTrue("HepB forecast not found", foundHepB);
   }
 
-  public void testConnectTCH() throws Exception {
+  public void testConnectLSVF() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
     TestCase testCase = new TestCase();
@@ -166,7 +163,7 @@ public class TestConnect extends junit.framework.TestCase
     testCase.setTestEventList(testEventList);
     Software software = new Software();
     software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
-    software.setService(Service.TCH);
+    software.setService(Service.LSVF);
 
     ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
