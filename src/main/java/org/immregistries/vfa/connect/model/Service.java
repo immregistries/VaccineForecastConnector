@@ -6,7 +6,7 @@ import java.util.List;
 
 public enum Service implements Serializable {
                                              WEB1("web1", "Web1 Epic Interface"),
-                                             LSVF("tch", "Lone Star Vaccine Forecaster"),
+                                             LSVF("lsvf", "Lone Star Vaccine Forecaster"),
                                              SWP("swp", "Software Partners"),
                                              STC("stc", "Scientific Technologies Corporation"),
                                              ICE("ice", "Immunization Calculation Engine"),
