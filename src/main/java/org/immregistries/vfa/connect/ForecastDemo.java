@@ -19,7 +19,7 @@ public class ForecastDemo {
     String serviceUrl = "http://tchforecasttester.org/fv/forecast";
     Service service = Service.LSVF;
 
-    // java org.tch.fc.ForecastDemo service=tch
+    // java org.immregistries.vfa.connect.ForecastDemo service=tch
     // serviceUrl=http://tchforecasttester.org/fv/forecast evalDate=07/12/2011
     // patientDob=04/01/2006 patientSex=F vaccine08=04/01/2006
 

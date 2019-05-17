@@ -154,19 +154,20 @@ public class IISConnector implements ConnectorInterface {
         "This service will attempt to send a fake VXU with the vaccination history and then request the forecast back using a QBP. ");
     try {
       if (testCase.getTestEventList().size() == 0) {
-
-        logMessage(logOut, "", "");
-
-        if (logText) {
-          logOut.println(
-              "No vaccinations found, so adding a Typhoid to list, some IIS cannot accept a patient without at least one vaccination.");
-        }
+        logMessage(logOut, "No vaccinations found, so adding a Typhoid to list, "
+            + "some IIS cannot accept a patient without at least one vaccination.", "");
         // Adding typhoid given today
         TestEvent testEvent = new TestEvent();
         testEvent.setEvent(Event.getEvent(91));
-        testEvent.setEventDate(new Date());
+        Date evalDate = testCase.getEvalDate();
+        if (evalDate == null) {
+          evalDate = new Date();
+          logMessage(logOut, "Evaluation date not set, so defaulting to today", "");
+        }
+        testEvent.setEventDate(evalDate);
         testEvent.setTestCase(testCase);
         testCase.getTestEventList().add(testEvent);
+        logMessage(logOut, "Typhoid added for " + evalDate, "");
       }
       createUniqueId(testCase.getTestCaseNumber());
 
