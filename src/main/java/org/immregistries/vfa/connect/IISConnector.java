@@ -199,8 +199,8 @@ public class IISConnector implements ConnectorInterface {
           logOut.println(rsp);
         }
         readRSP(forecastActualList, testCase, softwareResult, rsp);
-        if (softwareResult.getSoftwareResultStatus() == SoftwareResultStatus.NOT_FOUND) {
-          logMessage(logOut, "Match not found", "Unable to find matching patient in response");
+        if (softwareResult.getSoftwareResultStatus() == SoftwareResultStatus.NOT_FOUND || forecastActualList.size() == 0) {
+          logMessage(logOut, "Match or forecasts not found", "Unable to find matching patient or forecasts in response");
           if (delay == 0) {
             delay = 10;
           } else if (delay == 10) {
