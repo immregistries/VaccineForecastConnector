@@ -116,6 +116,7 @@ public class LSVFConnector implements ConnectorInterface
     addForcastItem(forecastItemList, "RZV (Shingrix)", VaccineGroup.ID_ZOSTER);
     addForcastItem(forecastItemList, "RZV (Shingrix)", VaccineGroup.ID_SHINGRIX_ZOSTER);
     addForcastItem(forecastItemList, "PPSV", VaccineGroup.ID_PPSV);
+    addForcastItem(forecastItemList, "Covid", VaccineGroup.ID_COVID);
 
     evaluationToCvxMapping.put("Varicella", "21");
     evaluationToCvxMapping.put("Rubella", "06");
@@ -134,6 +135,7 @@ public class LSVFConnector implements ConnectorInterface
     evaluationToCvxMapping.put("Rotavirus", "122");
     evaluationToCvxMapping.put("Zoster", "121");
     evaluationToCvxMapping.put("PPSV", "33");
+    evaluationToCvxMapping.put("Covid", "213");
 
     adminStatusMapping.put(STATUS_DESCRIPTION_DUE_LATER, Admin.DUE_LATER);
     adminStatusMapping.put(STATUS_DESCRIPTION_DUE, Admin.DUE);
