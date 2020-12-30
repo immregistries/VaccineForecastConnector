@@ -87,7 +87,7 @@ public class VaccineGroup implements Serializable, Comparable {
   public static final int ID_JAPENESE_ENCEPHALITIS = 30;
   public static final int ID_RABIES = 31;
   public static final int ID_YELLOW_FEVER = 32;
-  public static final int ID_COVID = 33;
+  public static final int ID_COVID = 39;
 
   private static List<VaccineGroup> forecastItemList = null;
   private static Map<Integer, VaccineGroup> forecastItemMap = null;
