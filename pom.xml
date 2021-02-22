@@ -5,7 +5,7 @@
 	<groupId>org.immregistries.vfa</groupId>
 	<artifactId>ForecastConnector</artifactId>
 	<packaging>jar</packaging>
-	<version>3.17</version>
+	<version>3.18</version>
 	<name>Forecast Connector</name>
 	<description></description>
 	<!-- TODO <organization> <name>company name</name> <url>company url</url> 

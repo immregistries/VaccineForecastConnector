@@ -446,6 +446,7 @@ public class ICEConnector implements ConnectorInterface
               sb.append(" + Patient has proof of immunity, marking as complete\n");
               break;
             case TOO_OLD:
+            case TOO_OLD_TO_INITIATE:
               forecastActual.setAdmin(Admin.FINISHED);
               sb.append(" + Patient is too old, marking as complete\n");
               break;
@@ -471,7 +472,7 @@ public class ICEConnector implements ConnectorInterface
   }
 
   private static enum RecommendationReason {
-    ABOVE_AGE_MAY_COMPLETE, COMPLETE, COMPLETE_HIGH_RISK, DISEASE_DOCUMENTED, DUE_IN_FUTURE, DUE_NOW, HIGH_RISK, IGNORE, NOT_SPECIFIED, OUTSIDE_FLU_SEASON, PROOF_OF_IMMUNITY, TOO_OLD, TOO_OLD_HIGH_RISK, WRONG_GENDER
+    ABOVE_AGE_MAY_COMPLETE, COMPLETE, COMPLETE_HIGH_RISK, DISEASE_DOCUMENTED, DUE_IN_FUTURE, DUE_NOW, HIGH_RISK, IGNORE, NOT_SPECIFIED, OUTSIDE_FLU_SEASON, PROOF_OF_IMMUNITY, TOO_OLD, TOO_OLD_HIGH_RISK, WRONG_GENDER, TOO_OLD_TO_INITIATE
   };
 
   private static String readObservationValue(Element pElement) {
