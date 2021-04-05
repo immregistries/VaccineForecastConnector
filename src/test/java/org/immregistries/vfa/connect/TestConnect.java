@@ -28,9 +28,39 @@ import org.immregistries.vfa.connect.model.TestCase;
 import org.immregistries.vfa.connect.model.TestEvent;
 import org.immregistries.vfa.connect.model.VaccineGroup;
 
-public class TestConnect extends junit.framework.TestCase
-{
-  
+public class TestConnect extends junit.framework.TestCase {
+
+  private static final String LONE_STAR_URL =
+      "https://florence.immregistries.org/lonestar/forecast";
+
+  public void testNoDuplicates() throws Exception {
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    TestCase testCase = new TestCase();
+    testCase.setEvalDate(sdf.parse("12/30/2020"));
+    testCase.setPatientSex("M");
+    testCase.setPatientDob(sdf.parse("12/01/2019"));
+    List<TestEvent> testEventList = new ArrayList<TestEvent>();
+    //    testEventList.add(new TestEvent(187, sdf.parse("12/09/1999") ));
+    //    testEventList.add(new TestEvent(187, sdf.parse("12/15/1999") ));
+    testCase.setTestEventList(testEventList);
+    Software software = new Software();
+    software.setServiceUrl(LONE_STAR_URL);
+    software.setService(Service.LSVF);
+
+    ConnectorInterface connector =
+        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    connector.setLogText(true);
+    SoftwareResult softwareResult = new SoftwareResult();
+    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, softwareResult);
+    assertForecasts(VaccineGroup.ID_COVID, forecastActualList);
+    System.out.println(softwareResult.getLogText());
+    for (ForecastActual forecastActual : forecastActualList) {
+      System.out.println(" + " + forecastActual.getVaccineGroup().getLabel() + " "
+          + forecastActual.getAdminStatus() + " "
+          + (forecastActual.getDueDate() == null ? "" : sdf.format(forecastActual.getDueDate())));
+    }
+  }
+
   public void testLSVFShingrix() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     TestCase testCase = new TestCase();
@@ -38,27 +68,27 @@ public class TestConnect extends junit.framework.TestCase
     testCase.setPatientSex("M");
     testCase.setPatientDob(sdf.parse("01/01/1950"));
     List<TestEvent> testEventList = new ArrayList<TestEvent>();
-    testEventList.add(new TestEvent(187, sdf.parse("12/09/1999") ));
-    testEventList.add(new TestEvent(187, sdf.parse("12/15/1999") ));
+    testEventList.add(new TestEvent(187, sdf.parse("12/09/1999")));
+    testEventList.add(new TestEvent(187, sdf.parse("12/15/1999")));
     testCase.setTestEventList(testEventList);
     Software software = new Software();
-    software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
+    software.setServiceUrl(LONE_STAR_URL);
     software.setService(Service.LSVF);
 
-    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    ConnectorInterface connector =
+        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    List<ForecastActual> forecastActualList =
+        connector.queryForForecast(testCase, new SoftwareResult());
     assertForecasts(VaccineGroup.ID_HEPB, forecastActualList);
     assertForecasts(VaccineGroup.ID_SHINGRIX_ZOSTER, forecastActualList);
     assertForecasts(VaccineGroup.ID_ZOSTER, forecastActualList);
-   }
+  }
 
   private void assertForecasts(int id, List<ForecastActual> forecastActualList) {
     boolean found = false;
-    for (ForecastActual forecastActual: forecastActualList)
-    {
-      if (forecastActual.getVaccineGroup().getVaccineGroupId() == id)
-      {
+    for (ForecastActual forecastActual : forecastActualList) {
+      if (forecastActual.getVaccineGroup().getVaccineGroupId() == id) {
         found = true;
       }
     }
@@ -81,10 +111,11 @@ public class TestConnect extends junit.framework.TestCase
     testEventList.add(testEvent3);
     testCase.setTestEventList(testEventList);
     Software software = new Software();
-    software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
+    software.setServiceUrl(LONE_STAR_URL);
     software.setService(Service.LSVF);
 
-    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    ConnectorInterface connector =
+        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
     connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(testEvent1.getEvaluationActualList());
@@ -123,8 +154,10 @@ public class TestConnect extends junit.framework.TestCase
     software.setServiceUrl("http://69.64.70.10:8080/vfmservice/VFMWebService");
     software.setService(Service.SWP);
 
-    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    ConnectorInterface connector =
+        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    List<ForecastActual> forecastActualList =
+        connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
@@ -162,12 +195,14 @@ public class TestConnect extends junit.framework.TestCase
     testEventList.add(new TestEvent(8, sdf.parse("04/01/2006")));
     testCase.setTestEventList(testEventList);
     Software software = new Software();
-    software.setServiceUrl("http://tchforecasttester.org/fv/forecast");
+    software.setServiceUrl(LONE_STAR_URL);
     software.setService(Service.LSVF);
 
-    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    ConnectorInterface connector =
+        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    List<ForecastActual> forecastActualList =
+        connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
@@ -196,9 +231,11 @@ public class TestConnect extends junit.framework.TestCase
     software.setServiceUrl("http://epicenter.stchome.com/safdemo/soa/forecast/getForecast.wsdl");
     software.setService(Service.STC);
 
-    ConnectorInterface connector = ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+    ConnectorInterface connector =
+        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
     connector.setLogText(true);
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, new SoftwareResult());
+    List<ForecastActual> forecastActualList =
+        connector.queryForForecast(testCase, new SoftwareResult());
     assertNotNull(forecastActualList);
     boolean foundHepB = false;
     for (ForecastActual forecastActual : forecastActualList) {
