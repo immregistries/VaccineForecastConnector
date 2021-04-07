@@ -66,6 +66,7 @@ public class IISConnector implements ConnectorInterface {
     map("42", VaccineGroup.ID_HEPB);
     map("045", VaccineGroup.ID_HEPB, INVALID_CVX_CODE);
     map("48", VaccineGroup.ID_HIB);
+    map("49", VaccineGroup.ID_HIB);
     map("52", VaccineGroup.ID_HEPA);
     map("062", VaccineGroup.ID_HPV, INVALID_CVX_CODE);
     map("62", VaccineGroup.ID_HPV);
@@ -77,7 +78,7 @@ public class IISConnector implements ConnectorInterface {
     map("106", VaccineGroup.ID_DTAP_TDAP_TD);
     map("107", VaccineGroup.ID_DTAP);
     map("107", VaccineGroup.ID_DTAP_TDAP_TD);
-    map("108", VaccineGroup.ID_MENING, INVALID_CVX_CODE);
+    map("108", VaccineGroup.ID_MENING);
     map("109", VaccineGroup.ID_PNEUMO);
     map("114", VaccineGroup.ID_MENING);
     map("116", VaccineGroup.ID_ROTA);
@@ -90,7 +91,7 @@ public class IISConnector implements ConnectorInterface {
     map("150", VaccineGroup.ID_INFLUENZA_IIV);
     map("162", VaccineGroup.ID_MENINGB);
     map("163", VaccineGroup.ID_MENINGB);
-    map("164", VaccineGroup.ID_MENINGB, INVALID_CVX_CODE);
+    map("164", VaccineGroup.ID_MENINGB);
     map("165", VaccineGroup.ID_HPV);
     map("188", VaccineGroup.ID_ZOSTER);
     map("189", VaccineGroup.ID_HEPB);
@@ -107,11 +108,12 @@ public class IISConnector implements ConnectorInterface {
     map("HPV", VaccineGroup.ID_HPV, INVALID_CVX_CODE); // FL SHOTS - HPV^HPV
     map("DIPHTHERIA", VaccineGroup.ID_DTAP, INVALID_CVX_CODE); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
     map("DIPHTHERIA", VaccineGroup.ID_DTAP_TDAP_TD, INVALID_CVX_CODE); // FL SHOTS - DIPHTHERIA^DIPHTHERIA
+    map("203", VaccineGroup.ID_MENING);
     map("207", VaccineGroup.ID_COVID);
     map("208", VaccineGroup.ID_COVID);
     map("210", VaccineGroup.ID_COVID);
     map("212", VaccineGroup.ID_COVID);
-    map("213", VaccineGroup.ID_COVID, INVALID_CVX_CODE);
+    map("213", VaccineGroup.ID_COVID);
     for (VaccineGroup forecastItem : forecastItemList) {
       map(forecastItem.getVaccineCvx(), forecastItem.getVaccineGroupId());
     }
