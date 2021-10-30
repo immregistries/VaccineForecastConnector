@@ -33,9 +33,6 @@ public class ConnectFactory {
     if (software.getService() == Service.IIS) {
       return new IISConnector(software, forecastItemList);
     }
-    if (software.getService() == Service.MDS) {
-      return new MDSConnector(software, forecastItemList);
-    }
     if (software.getService() == Service.MES_VACCINE) {
       return new MesVaccinsConnector(software, forecastItemList);
     }
