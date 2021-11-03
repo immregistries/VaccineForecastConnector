@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>Vaccine Forecast Connector</name>
-	<description>Vaccine Forecast Connector</description>
+    <description>Vaccine Forecast Connector</description>
     <url>https://immregistries.org</url>
 
 	<licenses>
@@ -203,7 +203,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
