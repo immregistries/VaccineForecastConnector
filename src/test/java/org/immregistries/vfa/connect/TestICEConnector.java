@@ -25,12 +25,13 @@ public class TestICEConnector extends junit.framework.TestCase
     TestCase testCase = createTestCase(sdf);
 
     Software software = new Software();
-    software.setServiceUrl("http://immlab.pagekite.me/opencds-decision-support-service/evaluate");
+    //software.setServiceUrl("http://immlab.pagekite.me/opencds-decision-support-service/evaluate");
+    software.setServiceUrl("https://cds.hln.com/opencds-decision-support-service/evaluate");
     ICEConnector iceConnector = new ICEConnector(software, VaccineGroup.getForecastItemList());
     iceConnector.setLogText(true);
     SoftwareResult softwareResult = new SoftwareResult();
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase, softwareResult);
-    assertEquals(19, forecastActualList.size());
+    assertEquals(22, forecastActualList.size());
     for (ForecastActual forecastActual : forecastActualList) {
       System.out.print("--> " + (forecastActual.getVaccineGroup().getLabel() + "               ").substring(0, 15) + " "
           + (forecastActual.getAdmin() + "          ").substring(0, 10));
