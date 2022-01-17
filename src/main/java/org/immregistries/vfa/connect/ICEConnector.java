@@ -18,11 +18,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Base64;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.axis.encoding.Base64;
 import org.immregistries.vfa.connect.model.Admin;
 import org.immregistries.vfa.connect.model.ForecastActual;
 import org.immregistries.vfa.connect.model.Software;
@@ -172,7 +172,7 @@ public class ICEConnector implements ConnectorInterface
         }
       } else {
         line = line.substring(posStart + BASE64_ENCODED_PAYLOAD_TAG_START.length(), posEnd);
-        line = new String(Base64.decode(line));
+        line = new String(Base64.getDecoder().decode(line));
         if (logOut != null) {
           logOut.print(line);
         }
@@ -627,7 +627,7 @@ public class ICEConnector implements ConnectorInterface
     StringBuilder sb = new StringBuilder();
 
     String content = makeVMR(testCase);
-    String contentEncoded = Base64.encode(content.getBytes());
+    String contentEncoded = Base64.getEncoder().encodeToString(content.getBytes());
 
     sb.append("<?xml version='1.0' encoding='UTF-8'?>\n");
     sb.append("<S:Envelope xmlns:S=\"http://www.w3.org/2003/05/soap-envelope\">\n");
