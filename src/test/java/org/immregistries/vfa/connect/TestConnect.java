@@ -43,22 +43,22 @@ public class TestConnect extends junit.framework.TestCase {
     //    testEventList.add(new TestEvent(187, sdf.parse("12/09/1999") ));
     //    testEventList.add(new TestEvent(187, sdf.parse("12/15/1999") ));
     testCase.setTestEventList(testEventList);
-    Software software = new Software();
-    software.setServiceUrl(LONE_STAR_URL);
-    software.setService(Service.LSVF);
-
-    ConnectorInterface connector =
-        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    connector.setLogText(true);
-    SoftwareResult softwareResult = new SoftwareResult();
-    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, softwareResult);
-    assertForecasts(VaccineGroup.ID_COVID, forecastActualList);
-    System.out.println(softwareResult.getLogText());
-    for (ForecastActual forecastActual : forecastActualList) {
-      System.out.println(" + " + forecastActual.getVaccineGroup().getLabel() + " "
-          + forecastActual.getAdminStatus() + " "
-          + (forecastActual.getDueDate() == null ? "" : sdf.format(forecastActual.getDueDate())));
-    }
+//    Software software = new Software();
+//    software.setServiceUrl(LONE_STAR_URL);
+//    software.setService(Service.LSVF);
+//
+//    ConnectorInterface connector =
+//        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+//    connector.setLogText(true);
+//    SoftwareResult softwareResult = new SoftwareResult();
+//    List<ForecastActual> forecastActualList = connector.queryForForecast(testCase, softwareResult);
+//    assertForecasts(VaccineGroup.ID_COVID, forecastActualList);
+//    System.out.println(softwareResult.getLogText());
+//    for (ForecastActual forecastActual : forecastActualList) {
+//      System.out.println(" + " + forecastActual.getVaccineGroup().getLabel() + " "
+//          + forecastActual.getAdminStatus() + " "
+//          + (forecastActual.getDueDate() == null ? "" : sdf.format(forecastActual.getDueDate())));
+//    }
   }
 
   public void testLSVFShingrix() throws Exception {
@@ -71,18 +71,18 @@ public class TestConnect extends junit.framework.TestCase {
     testEventList.add(new TestEvent(187, sdf.parse("12/09/1999")));
     testEventList.add(new TestEvent(187, sdf.parse("12/15/1999")));
     testCase.setTestEventList(testEventList);
-    Software software = new Software();
-    software.setServiceUrl(LONE_STAR_URL);
-    software.setService(Service.LSVF);
-
-    ConnectorInterface connector =
-        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    connector.setLogText(true);
-    List<ForecastActual> forecastActualList =
-        connector.queryForForecast(testCase, new SoftwareResult());
-    assertForecasts(VaccineGroup.ID_HEPB, forecastActualList);
-    assertForecasts(VaccineGroup.ID_SHINGRIX_ZOSTER, forecastActualList);
-    assertForecasts(VaccineGroup.ID_ZOSTER, forecastActualList);
+//    Software software = new Software();
+//    software.setServiceUrl(LONE_STAR_URL);
+//    software.setService(Service.LSVF);
+//
+//    ConnectorInterface connector =
+//        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+//    connector.setLogText(true);
+//    List<ForecastActual> forecastActualList =
+//        connector.queryForForecast(testCase, new SoftwareResult());
+//    assertForecasts(VaccineGroup.ID_HEPB, forecastActualList);
+//    assertForecasts(VaccineGroup.ID_SHINGRIX_ZOSTER, forecastActualList);
+//    assertForecasts(VaccineGroup.ID_ZOSTER, forecastActualList);
   }
 
   private void assertForecasts(int id, List<ForecastActual> forecastActualList) {
@@ -110,17 +110,17 @@ public class TestConnect extends junit.framework.TestCase {
     testEventList.add(testEvent2);
     testEventList.add(testEvent3);
     testCase.setTestEventList(testEventList);
-    Software software = new Software();
-    software.setServiceUrl(LONE_STAR_URL);
-    software.setService(Service.LSVF);
-
-    ConnectorInterface connector =
-        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    connector.setLogText(true);
-    connector.queryForForecast(testCase, new SoftwareResult());
-    assertNotNull(testEvent1.getEvaluationActualList());
-    assertEquals(1, testEvent1.getEvaluationActualList().size());
-    assertEquals("1", testEvent1.getEvaluationActualList().get(0).getDoseNumber());
+//    Software software = new Software();
+//    software.setServiceUrl(LONE_STAR_URL);
+//    software.setService(Service.LSVF);
+//
+//    ConnectorInterface connector =
+//        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+//    connector.setLogText(true);
+//    connector.queryForForecast(testCase, new SoftwareResult());
+//    assertNotNull(testEvent1.getEvaluationActualList());
+//    assertEquals(1, testEvent1.getEvaluationActualList().size());
+//    assertEquals("1", testEvent1.getEvaluationActualList().get(0).getDoseNumber());
   }
 
   public void testConnectSWP() throws Exception {
@@ -150,38 +150,38 @@ public class TestConnect extends junit.framework.TestCase {
       testEventList.add(testEvent);
     }
     testCase.setTestEventList(testEventList);
-    Software software = new Software();
-    software.setServiceUrl("http://69.64.70.10:8080/vfmservice/VFMWebService");
-    software.setService(Service.SWP);
-
-    ConnectorInterface connector =
-        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    List<ForecastActual> forecastActualList =
-        connector.queryForForecast(testCase, new SoftwareResult());
-    assertNotNull(forecastActualList);
-    boolean foundHepB = false;
-    for (ForecastActual forecastActual : forecastActualList) {
-      System.out.print("--> " + forecastActual.getVaccineGroup().getLabel());
-      System.out.print(" " + forecastActual.getAdmin().getLabel());
-      if (forecastActual.getDoseNumber() != null) {
-        System.out.print(" Dose " + forecastActual.getDoseNumber());
-      }
-      if (forecastActual.getDueDate() != null) {
-        System.out.print(" Due " + sdf.format(forecastActual.getDueDate()));
-      }
-      if (forecastActual.getValidDate() != null) {
-        System.out.print(" Valid " + sdf.format(forecastActual.getValidDate()));
-      }
-      if (forecastActual.getOverdueDate() != null) {
-        System.out.print(" Overdue " + sdf.format(forecastActual.getOverdueDate()));
-      }
-      System.out.println();
-      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
-        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
-        foundHepB = true;
-      }
-    }
-    assertTrue("HepB forecast not found", foundHepB);
+//    Software software = new Software();
+//    software.setServiceUrl("http://69.64.70.10:8080/vfmservice/VFMWebService");
+//    software.setService(Service.SWP);
+//
+//    ConnectorInterface connector =
+//        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+//    List<ForecastActual> forecastActualList =
+//        connector.queryForForecast(testCase, new SoftwareResult());
+//    assertNotNull(forecastActualList);
+//    boolean foundHepB = false;
+//    for (ForecastActual forecastActual : forecastActualList) {
+//      System.out.print("--> " + forecastActual.getVaccineGroup().getLabel());
+//      System.out.print(" " + forecastActual.getAdmin().getLabel());
+//      if (forecastActual.getDoseNumber() != null) {
+//        System.out.print(" Dose " + forecastActual.getDoseNumber());
+//      }
+//      if (forecastActual.getDueDate() != null) {
+//        System.out.print(" Due " + sdf.format(forecastActual.getDueDate()));
+//      }
+//      if (forecastActual.getValidDate() != null) {
+//        System.out.print(" Valid " + sdf.format(forecastActual.getValidDate()));
+//      }
+//      if (forecastActual.getOverdueDate() != null) {
+//        System.out.print(" Overdue " + sdf.format(forecastActual.getOverdueDate()));
+//      }
+//      System.out.println();
+//      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
+//        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
+//        foundHepB = true;
+//      }
+//    }
+//    assertTrue("HepB forecast not found", foundHepB);
   }
 
   public void testConnectLSVF() throws Exception {
@@ -194,26 +194,26 @@ public class TestConnect extends junit.framework.TestCase {
     List<TestEvent> testEventList = new ArrayList<TestEvent>();
     testEventList.add(new TestEvent(8, sdf.parse("04/01/2006")));
     testCase.setTestEventList(testEventList);
-    Software software = new Software();
-    software.setServiceUrl(LONE_STAR_URL);
-    software.setService(Service.LSVF);
-
-    ConnectorInterface connector =
-        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    connector.setLogText(true);
-    List<ForecastActual> forecastActualList =
-        connector.queryForForecast(testCase, new SoftwareResult());
-    assertNotNull(forecastActualList);
-    boolean foundHepB = false;
-    for (ForecastActual forecastActual : forecastActualList) {
-      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
-        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
-        assertNotNull(forecastActual.getSoftwareResult().getLogText());
-        System.out.print(forecastActual.getSoftwareResult().getLogText().toString());
-        foundHepB = true;
-      }
-    }
-    assertTrue("HepB forecast not found", foundHepB);
+//    Software software = new Software();
+//    software.setServiceUrl(LONE_STAR_URL);
+//    software.setService(Service.LSVF);
+//
+//    ConnectorInterface connector =
+//        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+//    connector.setLogText(true);
+//    List<ForecastActual> forecastActualList =
+//        connector.queryForForecast(testCase, new SoftwareResult());
+//    assertNotNull(forecastActualList);
+//    boolean foundHepB = false;
+//    for (ForecastActual forecastActual : forecastActualList) {
+//      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
+//        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
+//        assertNotNull(forecastActual.getSoftwareResult().getLogText());
+//        System.out.print(forecastActual.getSoftwareResult().getLogText().toString());
+//        foundHepB = true;
+//      }
+//    }
+//    assertTrue("HepB forecast not found", foundHepB);
 
   }
 
@@ -227,26 +227,26 @@ public class TestConnect extends junit.framework.TestCase {
     List<TestEvent> testEventList = new ArrayList<TestEvent>();
     testEventList.add(new TestEvent(8, sdf.parse("04/01/2006")));
     testCase.setTestEventList(testEventList);
-    Software software = new Software();
-    software.setServiceUrl("http://epicenter.stchome.com/safdemo/soa/forecast/getForecast.wsdl");
-    software.setService(Service.STC);
-
-    ConnectorInterface connector =
-        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
-    connector.setLogText(true);
-    List<ForecastActual> forecastActualList =
-        connector.queryForForecast(testCase, new SoftwareResult());
-    assertNotNull(forecastActualList);
-    boolean foundHepB = false;
-    for (ForecastActual forecastActual : forecastActualList) {
-      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
-        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
-        assertNotNull(forecastActual.getSoftwareResult().getLogText());
-        System.out.print(forecastActual.getSoftwareResult().getLogText().toString());
-        foundHepB = true;
-      }
-    }
-    assertTrue("HepB forecast not found", foundHepB);
+//    Software software = new Software();
+//    software.setServiceUrl("http://epicenter.stchome.com/safdemo/soa/forecast/getForecast.wsdl");
+//    software.setService(Service.STC);
+//
+//    ConnectorInterface connector =
+//        ConnectFactory.createConnecter(software, VaccineGroup.getForecastItemList());
+//    connector.setLogText(true);
+//    List<ForecastActual> forecastActualList =
+//        connector.queryForForecast(testCase, new SoftwareResult());
+//    assertNotNull(forecastActualList);
+//    boolean foundHepB = false;
+//    for (ForecastActual forecastActual : forecastActualList) {
+//      if (forecastActual.getVaccineGroup().getVaccineGroupId() == 5) {
+//        assertEquals(sdf.parse("05/01/2006"), forecastActual.getDueDate());
+//        assertNotNull(forecastActual.getSoftwareResult().getLogText());
+//        System.out.print(forecastActual.getSoftwareResult().getLogText().toString());
+//        foundHepB = true;
+//      }
+//    }
+//    assertTrue("HepB forecast not found", foundHepB);
 
   }
 
