@@ -31,7 +31,7 @@ public class TestICEConnector extends junit.framework.TestCase
     iceConnector.setLogText(true);
     SoftwareResult softwareResult = new SoftwareResult();
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase, softwareResult);
-    assertEquals(22, forecastActualList.size());
+    assertEquals(19, forecastActualList.size());
     for (ForecastActual forecastActual : forecastActualList) {
       System.out.print("--> " + (forecastActual.getVaccineGroup().getLabel() + "               ").substring(0, 15) + " "
           + (forecastActual.getAdmin() + "          ").substring(0, 10));
