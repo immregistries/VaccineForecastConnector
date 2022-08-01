@@ -48,7 +48,8 @@
 
 	<properties>
 		<forecaster.version>1.0</forecaster.version>
-		<wicket.version>1.5.7</wicket.version>
+        <wicket.version>1.5.7</wicket.version>
+        <gpg.skip>true</gpg.skip>
 	</properties>
 	<dependencies>
 		<!-- JUNIT DEPENDENCY FOR TESTING -->
