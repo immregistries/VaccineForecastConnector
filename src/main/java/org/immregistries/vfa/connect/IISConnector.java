@@ -139,7 +139,7 @@ public class IISConnector implements ConnectorInterface {
     }
 
     for (VaccineGroup forecastItem : forecastItemList) {
-      if (forecastItem.getVaccineGroupId() == forecastItemId) {
+      if (forecastItem != null && forecastItem.getVaccineGroupId() == forecastItemId) {
         List<VaccineGroup> forecastItemListFromMap = familyMapping.get(familyName);
         if (forecastItemListFromMap == null) {
           forecastItemListFromMap = new ArrayList<VaccineGroup>();
