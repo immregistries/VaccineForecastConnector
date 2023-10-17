@@ -2,9 +2,5 @@ target/
 .settings/org.eclipse.jdt.core.prefs
 .project
 .classpath
-.settings/org.eclipse.m2e.core.prefs
-.settings/org.eclipse.wst.common.project.facet.core.xml
-.settings/org.springframework.ide.eclipse.prefs
-.settings/org.eclipse.wst.common.component
+.settings
 src/test/java/META-INF/MANIFEST.MF
-.settings/org.eclipse.wst.validation.prefs
