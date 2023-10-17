@@ -88,6 +88,7 @@ public class VaccineGroup implements Serializable, Comparable {
   public static final int ID_RABIES = 31;
   public static final int ID_YELLOW_FEVER = 32;
   public static final int ID_COVID = 39;
+  public static final int ID_RSV = 40;
   private static List<VaccineGroup> forecastItemList = null;
   private static Map<Integer, VaccineGroup> forecastItemMap = null;
 
@@ -125,6 +126,7 @@ public class VaccineGroup implements Serializable, Comparable {
       forecastItemList.add(new VaccineGroup(ID_RUBELLA_ONLY, "Rubella Only", "06"));
       forecastItemList.add(new VaccineGroup(ID_TDAP_ONLY, "Tdap Only", "115"));
       forecastItemList.add(new VaccineGroup(ID_COVID, "Covid", "213"));
+      forecastItemList.add(new VaccineGroup(ID_RSV, "RSV", "304"));
       forecastItemList.add(new VaccineGroup(ID_MENINGB, "MENINGB", "164"));
       forecastItemMap = new HashMap<Integer, VaccineGroup>();
       for (VaccineGroup forecastItem : forecastItemList) {
@@ -194,6 +196,8 @@ public class VaccineGroup implements Serializable, Comparable {
       case ID_TDAP_ONLY:
         return new int[] {0, 0};
       case ID_COVID:
+        return new int[] {0, 120};
+      case ID_RSV:
         return new int[] {0, 120};
     }
     return new int[] {0, 120};
