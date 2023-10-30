@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import org.immregistries.vfa.connect.ICEConnector;
 import org.immregistries.vfa.connect.model.Event;
@@ -23,15 +24,17 @@ public class TestICEConnector extends junit.framework.TestCase
   public void testForecast() throws Exception {
     SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
     TestCase testCase = createTestCase(sdf);
+    testCase = createTestCaseHepANoHistory();
 
     Software software = new Software();
     //software.setServiceUrl("http://immlab.pagekite.me/opencds-decision-support-service/evaluate");
+    // https://cds.hln.com/opencds-decision-support-service/evaluate
     software.setServiceUrl("https://cds.hln.com/opencds-decision-support-service/evaluate");
     ICEConnector iceConnector = new ICEConnector(software, VaccineGroup.getForecastItemList());
     iceConnector.setLogText(true);
     SoftwareResult softwareResult = new SoftwareResult();
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase, softwareResult);
-    assertEquals(22, forecastActualList.size());
+    assertEquals(21, forecastActualList.size());
     for (ForecastActual forecastActual : forecastActualList) {
       System.out.print("--> " + (forecastActual.getVaccineGroup().getLabel() + "               ").substring(0, 15) + " "
           + (forecastActual.getAdmin() + "          ").substring(0, 10));
@@ -194,6 +197,18 @@ public class TestICEConnector extends junit.framework.TestCase
       testEvent.setTestCase(testCase);
       testEventList.add(testEvent);
     }
+    return testCase;
+  }
+
+  public TestCase createTestCaseHepANoHistory()
+  {
+    TestCase testCase = new TestCase();    
+    testCase.setPatientSex("M");
+    Calendar calendar = Calendar.getInstance();
+    calendar.add(Calendar.MONTH, -8);
+    testCase.setPatientDob(calendar.getTime());
+    List<TestEvent> testEventList = new ArrayList<TestEvent>();
+    testCase.setTestEventList(testEventList);
     return testCase;
   }
 
