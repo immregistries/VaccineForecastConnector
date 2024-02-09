@@ -84,12 +84,12 @@ public class FakePatient
   public FakePatient(TestCase testCase, String mrn) {
     Fake fake = Fake.getFake();
     this.mrn = mrn;
-    nameLast = fake.getRandomValue("LAST_NAME");
-    nameFirst = fake.getRandomValue("GIRL");
+    nameLast = fake.getRandomValue("LAST_NAME") + "AIRA";
+    nameFirst = fake.getRandomValue("GIRL") + "AIRA";
     nameMiddle = fake.getRandomValue("BOY");
     motherFirst = fake.getRandomValue("GIRL");
     maidenFirst = motherFirst;
-    maidenLast = fake.getRandomValue("LAST_NAME");
+    maidenLast = fake.getRandomValue("LAST_NAME") + "AIRA";
     motherLast = fake.getRandomValue("LAST_NAME");
     patientDob = testCase.getPatientDob();
     patientSex = testCase.getPatientSex().toUpperCase();

@@ -79,6 +79,7 @@ public class IISConnector implements ConnectorInterface {
     map("107", VaccineGroup.ID_DTAP);
     map("107", VaccineGroup.ID_DTAP_TDAP_TD);
     map("108", VaccineGroup.ID_MENING);
+    map("136", VaccineGroup.ID_MENING);
     map("109", VaccineGroup.ID_PNEUMO);
     map("114", VaccineGroup.ID_MENING);
     map("116", VaccineGroup.ID_ROTA);
