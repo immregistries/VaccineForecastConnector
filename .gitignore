@@ -4,3 +4,4 @@ target/
 .classpath
 .settings
 src/test/java/META-INF/MANIFEST.MF
+/bin/

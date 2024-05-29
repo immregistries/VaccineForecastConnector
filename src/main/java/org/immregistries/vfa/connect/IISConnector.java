@@ -1180,7 +1180,7 @@ public class IISConnector implements ConnectorInterface {
         sb.append("|");
         // PID-11
         sb.append("|" + fakePatient.getAddressLine1() + "^^" + fakePatient.getAddressCity() + "^"
-            + fakePatient.getAddressState() + "^" + fakePatient.getAddressZip() + "^USA");
+            + fakePatient.getAddressState() + "^" + fakePatient.getAddressZip() + "^USA^H");
         // PID-12
         sb.append("|");
         // PID-13
@@ -1227,8 +1227,7 @@ public class IISConnector implements ConnectorInterface {
         // RXA-8
         sb.append("|");
         // RXA-9
-        sb.append("|");
-        sb.append("01");
+        sb.append("|01^Historical Administration^NIP001");
         // RXA-10
         sb.append("|");
         // RXA-11
@@ -1246,7 +1245,8 @@ public class IISConnector implements ConnectorInterface {
         // RXA-17
         sb.append("|");
         if (testEvent.getEvent().getVaccineMvx() != null
-            && !testEvent.getEvent().getVaccineMvx().equals("null")) {
+            && !testEvent.getEvent().getVaccineMvx().isBlank()
+            && !"null".equals(testEvent.getEvent().getVaccineMvx())) {
           sb.append(testEvent.getEvent().getVaccineMvx() + "^"
               + testEvent.getEvent().getVaccineMvx() + "^MVX");
         }
@@ -1255,7 +1255,7 @@ public class IISConnector implements ConnectorInterface {
         // RXA-19
         sb.append("|");
         // RXA-20
-        sb.append("|");
+        sb.append("|CP");
         // RXA-21
         sb.append("|A");
         sb.append("\r");
