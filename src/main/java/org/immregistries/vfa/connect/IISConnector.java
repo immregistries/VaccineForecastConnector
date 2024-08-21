@@ -989,7 +989,7 @@ public class IISConnector implements ConnectorInterface {
     //    Admin.IMMUNE;
     //    Admin.NOT_COMPLETE;
     //    Admin.NOT_RECOMMENDED;
-    adminStatusMap.put("LA13423-1", Admin.OVERDUE); // Envision LA13423-1^Overdue^LN
+    adminStatusMap.put("LA13423-1", Admin.NOT_COMPLETE); // Envision LA13423-1^Overdue^LN
     adminStatusMap.put("LA13422-3", Admin.NOT_COMPLETE); // Envision LA13422-3^On Schedule^LN
     adminStatusMap.put("LA13421-5", Admin.COMPLETE); // AL_ImmPrint LA13421-5^Not Recommended - Series Complete^LN
     adminStatusMap.put("LA13424-9", Admin.AGED_OUT); // AL_ImmPrint LA13424-9^Not Recommended - Too old^LN
