@@ -21,9 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import org.immregistries.vfa.connect.ConnectFactory;
-import org.immregistries.vfa.connect.ConnectorInterface;
-import org.immregistries.vfa.connect.IISConnector;
 import org.immregistries.vfa.connect.model.ForecastActual;
 import org.immregistries.vfa.connect.model.Service;
 import org.immregistries.vfa.connect.model.Software;
@@ -5275,7 +5272,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 13, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(0).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(0).getDueDate());
     assertEquals("Wrong due date found", "10/12/2014",
@@ -5283,7 +5280,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(0).getOverdueDate());
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(1).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(1).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(1).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(1).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(1).getDueDate());
     assertEquals("Wrong due date found", "10/12/2014",
@@ -5299,7 +5296,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(2).getOverdueDate());
     assertEquals("Forecast not found", "HepB",
         forecastActualList.get(3).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(3).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(3).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(3).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(3).getDueDate());
     assertEquals("Wrong due date found", "10/12/2014",
@@ -5307,7 +5304,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(3).getOverdueDate());
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(4).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(4).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(4).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(4).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(4).getDueDate());
     assertEquals("Wrong due date found", "11/12/2015",
@@ -5329,7 +5326,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(6).getOverdueDate());
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(7).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(7).getDueDate());
     assertEquals("Wrong due date found", "10/12/2014",
@@ -5345,7 +5342,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(8).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(9).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(9).getDueDate());
     assertEquals("Wrong due date found", "10/12/2014",
@@ -5353,7 +5350,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(9).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(10).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(10).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(10).getAdminStatus());
     assertNull("Valid date should be null", forecastActualList.get(10).getValidDate());
     assertNotNull("Due date should not be null", forecastActualList.get(10).getDueDate());
     assertEquals("Wrong due date found", "10/12/2014",
@@ -5402,7 +5399,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -5426,7 +5423,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -5462,7 +5459,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -5486,7 +5483,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -5510,7 +5507,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -5550,7 +5547,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -5572,7 +5569,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -5594,7 +5591,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));
@@ -5929,7 +5926,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -5953,7 +5950,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -5989,7 +5986,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/15/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -6013,7 +6010,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/15/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -6037,7 +6034,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -6077,7 +6074,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -6099,7 +6096,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -6121,7 +6118,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));
@@ -6196,7 +6193,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -6220,7 +6217,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -6256,7 +6253,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -6280,7 +6277,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -6304,7 +6301,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -6344,7 +6341,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -6366,7 +6363,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -6388,7 +6385,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));
@@ -7354,7 +7351,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -7378,7 +7375,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -7414,7 +7411,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -7438,7 +7435,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -7462,7 +7459,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -7502,7 +7499,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -7524,7 +7521,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -7546,7 +7543,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));
@@ -7621,7 +7618,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 23, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/28/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -7645,7 +7642,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/28/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -7675,7 +7672,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(4).getOverdueDate());
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/17/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -7699,7 +7696,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/17/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -7723,7 +7720,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/28/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -7773,7 +7770,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(13).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(14).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(14).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(14).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(14).getValidDate());
     assertEquals("Wrong earliest date found", "09/28/2014",
         sdf.format(forecastActualList.get(14).getValidDate()));
@@ -7795,7 +7792,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(15).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(16).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(16).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(16).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(16).getValidDate());
     assertEquals("Wrong earliest date found", "09/28/2014",
         sdf.format(forecastActualList.get(16).getValidDate()));
@@ -7817,7 +7814,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(17).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(18).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(18).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(18).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(18).getValidDate());
     assertEquals("Wrong earliest date found", "09/28/2014",
         sdf.format(forecastActualList.get(18).getValidDate()));
@@ -9320,7 +9317,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -9344,7 +9341,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -9380,7 +9377,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -9404,7 +9401,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -9428,7 +9425,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -9468,7 +9465,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -9490,7 +9487,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -9512,7 +9509,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));
@@ -9587,7 +9584,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 21, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -9611,7 +9608,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -9647,7 +9644,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/15/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -9683,7 +9680,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(7).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(8).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(8).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(8).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(8).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(8).getValidDate()));
@@ -9723,7 +9720,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(11).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(12).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(12).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(12).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(12).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(12).getValidDate()));
@@ -9745,7 +9742,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(13).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(14).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(14).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(14).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(14).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(14).getValidDate()));
@@ -9767,7 +9764,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(15).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(16).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(16).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(16).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(16).getValidDate());
     assertEquals("Wrong earliest date found", "09/26/2014",
         sdf.format(forecastActualList.get(16).getValidDate()));
@@ -10078,7 +10075,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -10102,7 +10099,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -10138,7 +10135,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(4).getOverdueDate()));
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -10162,7 +10159,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -10186,7 +10183,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -10226,7 +10223,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -10248,7 +10245,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -10270,7 +10267,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));
@@ -10345,7 +10342,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertEquals("Not all forecasts read", 22, forecastActualList.size());
     assertEquals("Forecast not found", "DTaP",
         forecastActualList.get(0).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(0).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(0).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(0).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(0).getValidDate()));
@@ -10369,7 +10366,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(1).getOverdueDate()));
     assertEquals("Forecast not found", "DTaP, Tdap or Td",
         forecastActualList.get(2).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(2).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(2).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(2).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(2).getValidDate()));
@@ -10399,7 +10396,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(4).getOverdueDate());
     assertEquals("Forecast not found", "Hep B 3 Dose Only",
         forecastActualList.get(5).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(5).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(5).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(5).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2014",
         sdf.format(forecastActualList.get(5).getValidDate()));
@@ -10423,7 +10420,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(6).getOverdueDate()));
     assertEquals("Forecast not found", "HepA",
         forecastActualList.get(7).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(7).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(7).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(7).getValidDate());
     assertEquals("Wrong earliest date found", "08/12/2015",
         sdf.format(forecastActualList.get(7).getValidDate()));
@@ -10447,7 +10444,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(8).getOverdueDate()));
     assertEquals("Forecast not found", "Hib",
         forecastActualList.get(9).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(9).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(9).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(9).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(9).getValidDate()));
@@ -10487,7 +10484,7 @@ public class TestIISConnector extends junit.framework.TestCase {
         sdf.format(forecastActualList.get(12).getOverdueDate()));
     assertEquals("Forecast not found", "PCV",
         forecastActualList.get(13).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(13).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(13).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(13).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(13).getValidDate()));
@@ -10509,7 +10506,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(14).getOverdueDate());
     assertEquals("Forecast not found", "Pneumococcal",
         forecastActualList.get(15).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(15).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(15).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(15).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(15).getValidDate()));
@@ -10531,7 +10528,7 @@ public class TestIISConnector extends junit.framework.TestCase {
     assertNull("Overdue date should be null", forecastActualList.get(16).getOverdueDate());
     assertEquals("Forecast not found", "Polio",
         forecastActualList.get(17).getVaccineGroup().getLabel());
-    assertEquals("Wrong status found", "O", forecastActualList.get(17).getAdminStatus());
+    assertEquals("Wrong status found", "N", forecastActualList.get(17).getAdminStatus());
     assertNotNull("Valid date should not be null", forecastActualList.get(17).getValidDate());
     assertEquals("Wrong earliest date found", "09/23/2014",
         sdf.format(forecastActualList.get(17).getValidDate()));

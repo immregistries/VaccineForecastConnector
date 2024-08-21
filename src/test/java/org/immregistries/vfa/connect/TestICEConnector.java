@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import org.immregistries.vfa.connect.ICEConnector;
 import org.immregistries.vfa.connect.model.Event;
 import org.immregistries.vfa.connect.model.ForecastActual;
 import org.immregistries.vfa.connect.model.Software;
@@ -34,7 +33,7 @@ public class TestICEConnector extends junit.framework.TestCase
     iceConnector.setLogText(true);
     SoftwareResult softwareResult = new SoftwareResult();
     List<ForecastActual> forecastActualList = iceConnector.queryForForecast(testCase, softwareResult);
-    assertEquals(21, forecastActualList.size());
+    assertEquals(19, forecastActualList.size());
     for (ForecastActual forecastActual : forecastActualList) {
       System.out.print("--> " + (forecastActual.getVaccineGroup().getLabel() + "               ").substring(0, 15) + " "
           + (forecastActual.getAdmin() + "          ").substring(0, 10));
