@@ -81,6 +81,7 @@ public class IISConnector implements ConnectorInterface {
     map("108", VaccineGroup.ID_MENING);
     map("136", VaccineGroup.ID_MENING);
     map("109", VaccineGroup.ID_PNEUMO);
+    map("111", VaccineGroup.ID_INFLUENZA);
     map("114", VaccineGroup.ID_MENING);
     map("116", VaccineGroup.ID_ROTA);
     map("119", VaccineGroup.ID_ROTA);
@@ -88,14 +89,19 @@ public class IISConnector implements ConnectorInterface {
     map("215", VaccineGroup.ID_PCV);
     map("216", VaccineGroup.ID_PCV);
     map("133", VaccineGroup.ID_PNEUMO);
+    map("135", VaccineGroup.ID_INFLUENZA);
+    map("140", VaccineGroup.ID_INFLUENZA);
     map("141", VaccineGroup.ID_INFLUENZA);
     map("147", VaccineGroup.ID_MENING);
     map("150", VaccineGroup.ID_INFLUENZA);
     map("150", VaccineGroup.ID_INFLUENZA_IIV);
+    map("153", VaccineGroup.ID_INFLUENZA);
+    map("155", VaccineGroup.ID_INFLUENZA);
     map("162", VaccineGroup.ID_MENINGB);
     map("163", VaccineGroup.ID_MENINGB);
     map("164", VaccineGroup.ID_MENINGB);
     map("165", VaccineGroup.ID_HPV);
+    map("168", VaccineGroup.ID_INFLUENZA);
     map("188", VaccineGroup.ID_ZOSTER);
     map("189", VaccineGroup.ID_HEPB);
     map("HEP B", VaccineGroup.ID_HEPB, INVALID_CVX_CODE); // FL SHOTS - HEP B^HEPATITIS B
@@ -144,6 +150,7 @@ public class IISConnector implements ConnectorInterface {
     map("313", VaccineGroup.ID_COVID);
     map("314", VaccineGroup.ID_RSV);
     map("315", VaccineGroup.ID_RSV);
+    map("320", VaccineGroup.ID_INFLUENZA);
     map("500", VaccineGroup.ID_COVID);
     map("501", VaccineGroup.ID_COVID);
     map("502", VaccineGroup.ID_COVID);
