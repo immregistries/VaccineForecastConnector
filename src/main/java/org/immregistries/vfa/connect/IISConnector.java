@@ -509,7 +509,7 @@ public class IISConnector implements ConnectorInterface {
         parseDebugLine = new ParseDebugLine(line);
         parseDebugLineList.add(parseDebugLine);
       }
-      String[] f = line.split("\\|");
+      String[] f = line.split("\\|", -1);
 
       if (f == null || f.length <= 1 || f[0] == null || f[0].length() != 3) {
         if (parseDebugLine != null) {
@@ -1392,7 +1392,7 @@ public class IISConnector implements ConnectorInterface {
     BufferedReader in = new BufferedReader(new StringReader(rsp));
     String line;
     while ((line = in.readLine()) != null) {
-      String[] f = line.split("\\|");
+      String[] f = line.split("\\|", -1);
       if (f == null || f.length <= 1 || f[0] == null || f[0].length() != 3) {
         continue;
       }
