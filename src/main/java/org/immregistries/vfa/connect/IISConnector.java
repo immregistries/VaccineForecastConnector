@@ -1327,8 +1327,8 @@ public class IISConnector implements ConnectorInterface {
     urlConn.setDoInput(true);
     urlConn.setDoOutput(true);
     urlConn.setUseCaches(false);
-    urlConn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
-    urlConn.setRequestProperty("SOAPAction", "\"http://tempuri.org/ExecuteHL7Message\"");
+    urlConn.setRequestProperty("Content-Type", "application/soap+xml; charset=utf-8");
+    urlConn.setRequestProperty("SOAPAction", "\"urn:cdc:iisb:2011:submitSingleMessage\"");
     printout = new DataOutputStream(urlConn.getOutputStream());
     StringWriter stringWriter = new StringWriter();
     PrintWriter out = new PrintWriter(stringWriter);
