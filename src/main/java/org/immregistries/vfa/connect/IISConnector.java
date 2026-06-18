@@ -1406,6 +1406,12 @@ public class IISConnector implements ConnectorInterface {
               TestEvent testEvent = new TestEvent();
               Event event = new Event();
               event.setVaccineCvx(cvxCode);
+              
+              // truncate longer dates like Docket's 20260601000000
+              if (adminDate.length() > 8) {
+                adminDate = adminDate.substring(0, 8);
+              }
+              
               testEvent.setEventDate(sdf.parse(adminDate));
               testEvent.setEvent(event);
               testCase.getTestEventList().add(testEvent);
