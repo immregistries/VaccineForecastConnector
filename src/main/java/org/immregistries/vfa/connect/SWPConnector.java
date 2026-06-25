@@ -231,6 +231,7 @@ public class SWPConnector implements ConnectorInterface
       urlConn.setDoOutput(true);
       urlConn.setUseCaches(true);
       urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
+      urlConn.setRequestProperty("Accept", "text/xml");
       printOut = new DataOutputStream(urlConn.getOutputStream());
       StringBuilder sb = new StringBuilder();
 

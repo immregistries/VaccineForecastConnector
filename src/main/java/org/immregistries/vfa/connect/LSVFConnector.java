@@ -192,6 +192,7 @@ public class LSVFConnector implements ConnectorInterface
       urlConn.setDoOutput(true);
       urlConn.setUseCaches(true);
       urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
+      urlConn.setRequestProperty("Accept", "text/xml");
       urlConn.connect();
 
       InputStreamReader input = null;
