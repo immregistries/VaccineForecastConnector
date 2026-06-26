@@ -146,6 +146,7 @@ public class ICEConnector implements ConnectorInterface
       urlConn.setRequestProperty("Content-Type", "text/xml; charset=\"utf-8\"");
       urlConn.setRequestProperty("SoapAction",
           "http://www.omg.org/spec/CDSS/201105/dssWsdl:operation:evaluateAtSpecifiedTime");
+      urlConn.setRequestProperty("Accept", "text/xml");
 
       DataOutputStream printout = new DataOutputStream(urlConn.getOutputStream());
       printout.writeBytes(makeRequest(testCase));

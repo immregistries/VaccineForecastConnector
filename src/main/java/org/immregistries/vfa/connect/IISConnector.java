@@ -1328,6 +1328,7 @@ public class IISConnector implements ConnectorInterface {
     urlConn.setDoOutput(true);
     urlConn.setUseCaches(false);
     urlConn.setRequestProperty("Content-Type", "application/soap+xml; charset=utf-8");
+    urlConn.setRequestProperty("Accept", "application/soap+xml");
     printout = new DataOutputStream(urlConn.getOutputStream());
     StringWriter stringWriter = new StringWriter();
     PrintWriter out = new PrintWriter(stringWriter);
